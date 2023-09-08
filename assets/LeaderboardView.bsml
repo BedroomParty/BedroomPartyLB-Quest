@@ -1,0 +1,9 @@
+<bg id='root' xmlns:xsi='http://www.w3.org/1501/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    
+    
+    <vertical pref-width="76" pref-height="60" anchor-pos-x="7" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+        <leaderboard id="BPLeaderboard" cell-size="6.05" >
+            <text id="errorText" text="No scores on this leaderboard!" active="false" />
+        </leaderboard>
+    </vertical>
+</bg>

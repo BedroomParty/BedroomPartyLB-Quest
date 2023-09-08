@@ -1,0 +1,30 @@
+<bg id='root' xmlns:xsi='http://www.w3.org/1501/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    <horizontal pref-width="87" pref-height="7" anchor-pos-y="10.3" horizontal-fit="PreferredSize" child-align="UpperLeft" child-expand-width="false" spacing="1">
+        <loading-indicator id="prompt_loader" active="false" preserve-aspect="true" pref-width="4" pref-height="4"/>
+        <clickable-text rich-text="true" id="prompt_text" text="" active="false" anchor-pos-x="0" anchor-pos-y="10" align="BottomLeft" italics="true" on-click="OpenUserProfile"/>
+    </horizontal>
+    <horizontal anchor-pos-x="-2" anchor-pos-y="0" ignore-layout="true" pref-height="20" horizontal-fit="Unconstrained">
+        <vertical pref-width="20" child-align="MiddleLeft">
+            <horizontal pref-height="14">
+                <clickable-image src="BedroomParty-LB_Logo_png" preserve-aspect="true" pref-width="7" pref-height="7" on-click="bpLogoClick"/>
+            </horizontal>
+        </vertical>
+
+        <vertical child-align="MiddleCenter">
+            <horizontal pref-height="10">
+                <vertical pref-height="6" pad="1" spacing="1" horizontal-fit="PreferredSize">
+                    <clickable-text id="playerUsername" font-size="6" text="loading..." rich-text="false" align="Center" on-click="playerUsernameClick" word-wrapping="false"/>
+                </vertical>
+            </horizontal>
+        </vertical>
+
+        <vertical pref-width="20" child-align="MiddleRight">
+			<horizontal pref-height="14">
+				<stack >
+					<image id="playerAvatar" src="BedroomParty-LB_Blank_png" preserve-aspect="true" preferred-height="7" preferred-width="7"/>
+					<loading-indicator  id="playerAvatarLoading" preserve-aspect="true" preferred-height="5" preferred-width="5"/>
+				</stack>
+			</horizontal>
+		</vertical>
+    </horizontal>
+</bg>
