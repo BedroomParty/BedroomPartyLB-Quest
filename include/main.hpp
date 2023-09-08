@@ -15,9 +15,9 @@
 Configuration& getConfig();
 Logger& getLogger();
 
-static std::string apiKey = "bHlkamJpQ2lwNDFGVjBPbUh6WGhZd29aSDJSZXZybWJSbk1tU2Rtb0ZDbHFDejVudDE=";
+extern std::string apiKey;
 extern std::string sessionKey;
-static std::string userID = "76561198345634943";
+extern std::string userID;
 static bool isAuthed = false;
 
 const std::string BASE_URL = "https://api.thebedroom.party/";

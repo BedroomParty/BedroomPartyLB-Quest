@@ -12,6 +12,7 @@
 #include "logging.hpp"
 #include <functional>
 #include "main.hpp"
+#include "Base64.h"
 
 #include <iostream>
 #include <string>
@@ -20,14 +21,20 @@
 
 DEFINE_TYPE(BedroomPartyLB::UI, PanelViewController);
 
+std::string apiKey;
+std::string userID;
+
 namespace BedroomPartyLB::UI
 {
     void ReadScary()
     {
-        auto file = readfile("/sdcard/ModData/com.beatgames.beatsaber/Mods/BPLB/DO_NOT_SHARE.scary");
-        //DEBUG("File contents: {}", file);
-        apiKey = file.substr(0, file.find(','));
-        userID = file.substr(file.find(","), file.size());
+        INFO("Reading scary file");
+        std::string content;
+        macaron::Base64::Decode(readfile("/sdcard/ModData/com.beatgames.beatsaber/Mods/BPLB/DO_NOT_SHARE.scary"), content);
+        INFO("Read scary file");
+        apiKey = content.substr(0, content.find(','));
+        INFO("Substring 1");
+        userID = content.substr(content.find(",") + 1, content.length());
         DEBUG("apiKey, {} \nuserID: {}", apiKey, userID);
     }
 
@@ -49,9 +56,7 @@ namespace BedroomPartyLB::UI
     void PanelViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
     {
         if (!firstActivation) return;
-        //if (apiKey.empty())
-        //    ReadScary();
-
+        ReadScary();
         BSML::parse_and_construct(IncludedAssets::PanelView_bsml, this->get_transform(), this);
     }
 
