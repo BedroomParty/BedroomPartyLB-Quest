@@ -73,6 +73,8 @@ LevelCompletionResults * levelCompletionResults, IReadonlyBeatmapData * transfor
     LevelCompletionResultsHelper_ProcessScore(playerData, playerLevelStats, levelCompletionResults, transformedBeatmapData, difficultyBeatmap, platformLeaderboardsModel);
     if (levelCompletionResults->levelEndStateType == LevelCompletionResults::LevelEndStateType::Failed || levelCompletionResults->modifiedScore == 0 || levelCompletionResults->multipliedScore == 0)
         return;
+    if (!difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Contains("custom"))
+            return;
 
     float maxScore = ScoreModel::ComputeMaxMultipliedScoreForBeatmap(transformedBeatmapData);
     float accuracy = levelCompletionResults->modifiedScore / maxScore * 100;
