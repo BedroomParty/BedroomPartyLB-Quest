@@ -12,6 +12,7 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, PanelViewController, HMUI::ViewControl
     DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::FindMethodUnsafe("HMUI", "ViewController", "DidActivate", 3), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
     DECLARE_INSTANCE_METHOD(void, OpenUserProfile);
     DECLARE_INSTANCE_METHOD(void, PostParse);
+    DECLARE_INSTANCE_METHOD(void, SetBannerInfo);
 
 
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, prompt_loader);

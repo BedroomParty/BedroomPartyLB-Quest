@@ -3,13 +3,15 @@
 #include "UnityEngine/Color.hpp"
 #include <string>
 #include "beatsaber-hook/shared/utils/utils-functions.h"
+#include <sstream>
 
 namespace BedroomPartyLB::StringUtils{
-    inline const std::string rgbaToHex(UnityEngine::Color colour) {
-        return string_format("#%02x%02x%02x%02x", 
-            std::clamp<int>(colour.a * 255, 0, 255), 
-            std::clamp<int>(colour.r * 255, 0, 255), 
-            std::clamp<int>(colour.g * 255, 0, 255), 
-            std::clamp<int>(colour.b * 255, 0, 255));
+    inline const std::vector<std::string> split(const std::string& s, char delim)
+    {
+        std::stringstream ss(s);
+        std::string item;
+        std::vector<std::string> elems;
+        while (std::getline(ss, item, delim)) elems.push_back(item);
+        return elems;
     }
 }

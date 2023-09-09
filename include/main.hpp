@@ -15,8 +15,4 @@
 Configuration& getConfig();
 Logger& getLogger();
 
-extern std::string apiKey;
-extern std::string sessionKey;
-extern std::string userID;
-
 const std::string BASE_URL = "https://api.thebedroom.party/";

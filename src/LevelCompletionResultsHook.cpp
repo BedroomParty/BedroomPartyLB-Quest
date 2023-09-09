@@ -21,11 +21,11 @@
 #include <string>
 #include "Models/CustomLeaderboard.hpp"
 #include "Models/RequestBody.hpp"
+#include "Models/LocalPlayerInfo.hpp"
 
 using namespace GlobalNamespace;
 using namespace BedroomPartyLB;
 
-std::string sessionKey;
 extern Models::CustomLeaderboard leaderboard;
 
 std::string GetModifiers(LevelCompletionResults *levelCompletionResults)
@@ -84,7 +84,7 @@ LevelCompletionResults * levelCompletionResults, IReadonlyBeatmapData * transfor
 
     auto modifiers = GetModifiers(levelCompletionResults);
 
-    Models::RequestBody requestClass(difficultyBeatmap->get_difficultyRank(), characteristic, userID,
+    Models::RequestBody requestClass(difficultyBeatmap->get_difficultyRank(), characteristic, localPlayerInfo.userID,
                             levelCompletionResults->multipliedScore, levelCompletionResults->modifiedScore,
                             accuracy, levelCompletionResults->missedCount, levelCompletionResults->badCutsCount,
                             levelCompletionResults->fullCombo, modifiers);

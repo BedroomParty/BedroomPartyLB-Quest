@@ -42,7 +42,6 @@ extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
 
 namespace BedroomPartyLB::UI
 {
-    int page = 0;
     int scope = 0;
     std::string currentRefreshId;
 
@@ -54,8 +53,6 @@ namespace BedroomPartyLB::UI
             ->GetComponentsInChildren<ImageView*>()->copy_to(playerAvatars);
         ArrayUtil::Where(GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
             ->GetComponentsInChildren<ImageView*>(true), [](ImageView* img){return img != nullptr && !img->get_gameObject()->get_active();})->copy_to(avatarLoadings);
-        getLogger().info("pfp size: %lu", playerAvatars.size());
-        getLogger().info("load size: %lu", avatarLoadings.size());
         }
         CheckPage();
         RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
@@ -74,12 +71,11 @@ namespace BedroomPartyLB::UI
             IconSegmentedControl::DataItem::New_ctor(BSML::Utilities::LoadSpriteRaw(IncludedAssets::Globe_png), "Bedroom Party"),
             IconSegmentedControl::DataItem::New_ctor(BSML::Utilities::LoadSpriteRaw(IncludedAssets::Player_png), "Around You")
         }));
-
-        
     }
 
     void LeaderboardViewController::CheckPage()
     {
+        if (!this->isActivated) return;
         up_button->set_interactable(page > 0);
         down_button->set_interactable(scope == 0);
     }
@@ -127,7 +123,7 @@ namespace BedroomPartyLB::UI
         }
     }
 
-    List<ScoreData*>* CreateLeaderboardData(std::vector<Models::BPLeaderboardEntry> leaderboard){
+    List<ScoreData*>* LeaderboardViewController::CreateLeaderboardData(std::vector<Models::BPLeaderboardEntry> leaderboard){
         auto tableData = List<ScoreData*>::New_ctor();
         int rank = 0;
         for (auto& entry : leaderboard) tableData->Add(entry.CreateLeaderboardEntryData(((page + 1) * 10) - (10 - (++rank))));
@@ -141,11 +137,11 @@ namespace BedroomPartyLB::UI
         if (AuthUtils::authState == AuthUtils::ERROR) return SetLoading(false, "Auth Failed");
         if (AuthUtils::authState != AuthUtils::AUTHED) return SetLoading(false, "Authenticating...");
 
-        page = 0;
         std::string refreshId = std::string(System::Guid::NewGuid().ToString());
         currentRefreshId = refreshId;
         BPLeaderboard->tableView->SetDataSource(nullptr, true);
         for (auto image : playerAvatars) image->get_gameObject()->set_active(false);
+        for (auto image : avatarLoadings) image->get_gameObject()->set_active(false);
         AnnihilatePlayerSprites();
         SetLoading(true);
         std::thread t([difficultyBeatmap, refreshId, this] {
@@ -164,7 +160,7 @@ namespace BedroomPartyLB::UI
                         SetPlayerSprites(scores, refreshId);
                         return;
                     }
-                    std::string failedText = scope == 0 ? "No Scores on this map!" : "Set a score on this map!";
+                    std::string failedText = scope == 0 ? page > 0 ? "No scores on this page!" : "No scores on this map!" : "Set a score on this map!";
                     SetLoading(false, failedText);
                 });
             });

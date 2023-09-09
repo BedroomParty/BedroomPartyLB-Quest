@@ -25,7 +25,7 @@ namespace BedroomPartyLB::Models{
             std::string acc = string_format(" - (<color=#ffd42a>%.2f%%</color>)", this->accuracy);
             std::string missCount = std::to_string(this->misses + this->badCuts);
             std::string combo = this->fullCombo ? "<color=green> FC </color>" : " - <color=red>x" + missCount + "</color>" ;
-            std::string mods = "<size=60%>" + modifiers + "</size>";
+            std::string mods = " <size=60%>" + modifiers + "</size>";
             
             std::string result = "<size=90%>" + name + acc + combo + mods + "</size>";
 

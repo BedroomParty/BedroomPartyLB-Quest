@@ -9,9 +9,11 @@
 #include "custom-types/shared/register.hpp"
 #include "leaderboardcore/shared/LeaderboardCore.hpp"
 #include "bsml/shared/BSMLDataCache.hpp"
+#include "Models/LocalPlayerInfo.hpp"
 
 static ModInfo modInfo;
 BedroomPartyLB::Models::CustomLeaderboard leaderboard;
+BedroomPartyLB::Models::LocalPlayerInfo localPlayerInfo;
 
 Configuration& getConfig() {
     static Configuration config(modInfo);
@@ -34,6 +36,8 @@ extern "C" void setup(ModInfo& info) {
 
 void LeaderboardSet(GlobalNamespace::IDifficultyBeatmap *difficultyBeatmap)
 {
+    leaderboard.get_leaderboardViewController()->page = 0;
+    leaderboard.get_leaderboardViewController()->CheckPage();
     leaderboard.currentDifficultyBeatmap = difficultyBeatmap;
     leaderboard.get_leaderboardViewController()->RefreshLeaderboard(difficultyBeatmap);
 }

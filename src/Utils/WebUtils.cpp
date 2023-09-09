@@ -25,6 +25,7 @@
 #include <string>
 #include <optional>
 #include <functional>
+#include "Models/LocalPlayerInfo.hpp"
 
 using namespace UnityEngine::Networking;
 using namespace std;
@@ -39,10 +40,10 @@ namespace BedroomPartyLB::WebUtils
         auto request = UnityWebRequest::New_ctor(url, "POST", DownloadHandlerBuffer::New_ctor(), UploadHandlerRaw::New_ctor(System::Text::Encoding::get_UTF8()->GetBytes(body)));
         request->SetRequestHeader("Content-Type", "application/json");
         if (isLogin)
-            request->SetRequestHeader("Authorization", apiKey);
+            request->SetRequestHeader("Authorization", localPlayerInfo.apiKey);
         else
-            request->SetRequestHeader("Authorization", sessionKey);
-        DEBUG("{}", sessionKey);
+            request->SetRequestHeader("Authorization", localPlayerInfo.sessionKey);
+        DEBUG("{}", localPlayerInfo.sessionKey);
 
         co_yield reinterpret_cast<System::Collections::IEnumerator*>(CRASH_UNLESS(request->SendWebRequest()));
 

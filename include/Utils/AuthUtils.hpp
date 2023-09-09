@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <string>
 
 namespace BedroomPartyLB::AuthUtils{
     enum AuthState {
@@ -10,5 +11,5 @@ namespace BedroomPartyLB::AuthUtils{
         ERROR
     };
     extern AuthState authState;
-    void AuthenticateUserAsync(std::function<void(AuthState)> callback);
+    void AuthenticateUserAsync(std::function<void(AuthState, std::string)> callback);
 }
