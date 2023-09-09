@@ -4,6 +4,7 @@
 #include "PluginUI/LeaderboardViewController.hpp"
 #include "PluginUI/PanelViewController.hpp"
 #include "leaderboardcore/shared/Models/CustomLeaderboard.hpp"
+#include "GlobalNamespace/IDifficultyBeatmap.hpp"
 
 namespace BedroomPartyLB::Models
 {
@@ -12,6 +13,7 @@ namespace BedroomPartyLB::Models
         public:
         BedroomPartyLB::UI::PanelViewController *get_panelViewController() final override;
         BedroomPartyLB::UI::LeaderboardViewController *get_leaderboardViewController() final override;
+        GlobalNamespace::IDifficultyBeatmap* currentDifficultyBeatmap;
 
         private:
         SafePtrUnity<BedroomPartyLB::UI::PanelViewController> panelViewController;

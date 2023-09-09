@@ -1,14 +1,12 @@
 #include "PluginUI/PanelViewController.hpp"
 #include "HMUI/ImageView.hpp"
 #include "UnityEngine/Material.hpp"
-#include "beatsaber-hook/shared/rapidjson/include/rapidjson/rapidjson.h"
-#include "beatsaber-hook/shared/rapidjson/include/rapidjson/document.h"
 #include "bsml/shared/Helpers/utilities.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "UnityEngine/Application.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "assets.hpp"
-#include "WebUtils.hpp"
+#include "Utils/WebUtils.hpp"
 #include "logging.hpp"
 #include <functional>
 #include "main.hpp"
@@ -18,12 +16,14 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include "Utils/AuthUtils.hpp"
+#include "Models/CustomLeaderboard.hpp"
 
 DEFINE_TYPE(BedroomPartyLB::UI, PanelViewController);
 
 std::string apiKey;
 std::string userID;
-
+extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
 namespace BedroomPartyLB::UI
 {
     void ReadScary()
@@ -87,19 +87,11 @@ namespace BedroomPartyLB::UI
             }
         });
 
-        WebUtils::PostAsync(BASE_URL + "user/login", "{ \"id\": \"" + userID +"\" }", true, [this](std::string value, bool success) {
-            if (success)
-            {
-                rapidjson::Document doc;
-                doc.Parse(value.c_str());
-                if (doc.HasMember("sessionKey"))
-                {
-                    sessionKey = doc["sessionKey"].GetString();
-                    isAuthed = true;
-                    prompt_text->SetText("");
-                    prompt_loader->SetActive(false);
-                }
-            }
+        AuthUtils::AuthenticateUserAsync([this](AuthUtils::AuthState state){
+            AuthUtils::authState = state;
+            prompt_text->SetText("");
+            prompt_loader->SetActive(false);
+            leaderboard.get_leaderboardViewController()->RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
         });
     }
 }

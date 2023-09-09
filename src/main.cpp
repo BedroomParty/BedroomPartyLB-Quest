@@ -34,6 +34,7 @@ extern "C" void setup(ModInfo& info) {
 
 void LeaderboardSet(GlobalNamespace::IDifficultyBeatmap *difficultyBeatmap)
 {
+    leaderboard.currentDifficultyBeatmap = difficultyBeatmap;
     leaderboard.get_leaderboardViewController()->RefreshLeaderboard(difficultyBeatmap);
 }
 

@@ -6,12 +6,9 @@
 #include "GlobalNamespace/IBeatmapLevelData.hpp"
 #include "GlobalNamespace/LeaderboardTableView.hpp"
 #include "System/Collections/Generic/List_1.hpp"
-#include "beatsaber-hook/shared/rapidjson/include/rapidjson/rapidjson.h"
-#include "beatsaber-hook/shared/rapidjson/include/rapidjson/document.h"
 #include "beatsaber-hook/shared/utils/typedefs.h"
 #include "bsml/shared/BSML.hpp"
 #include "assets.hpp"
-#include "WebUtils.hpp"
 #include "GlobalNamespace/LeaderboardTableView_ScoreData.hpp"
 #include "GlobalNamespace/LeaderboardTableCell.hpp"
 #include "logging.hpp"
@@ -21,23 +18,105 @@
 #include <sstream>
 #include "bsml/shared/Helpers/utilities.hpp"
 #include "lapiz/shared/utilities/MainThreadScheduler.hpp"
+#include "Downloaders/LeaderboardDownloader.hpp"
+#include "Models/CustomLeaderboard.hpp"
+#include "Utils/StringUtils.hpp"
+#include "Utils/Constants.hpp"
+#include "bsml/shared/Helpers/getters.hpp"
+#include "bsml/shared/Helpers/utilities.hpp"
+#include "System/Guid.hpp"
+#include "Utils/AuthUtils.hpp"
+#include "UnityEngine/UI/VerticalLayoutGroup.hpp"
+#include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
+#include "Utils/ArrayUtil.hpp"
+#include "Utils/WebUtils.hpp"
+
 using ScoreData = GlobalNamespace::LeaderboardTableView::ScoreData;
 using List_1 = System::Collections::Generic::List_1<ScoreData>;
+using namespace HMUI;
+using namespace UnityEngine::UI;
 
 DEFINE_TYPE(BedroomPartyLB::UI, LeaderboardViewController);
+
+extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
 
 namespace BedroomPartyLB::UI
 {
     int page = 0;
+    int scope = 0;
+    std::string currentRefreshId;
+
     void LeaderboardViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
     {
-        if (!firstActivation) return;
-        BSML::parse_and_construct(IncludedAssets::LeaderboardView_bsml, this->get_transform(), this);
+        if (firstActivation) {
+            BSML::parse_and_construct(IncludedAssets::LeaderboardView_bsml, this->get_transform(), this);
+        GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
+            ->GetComponentsInChildren<ImageView*>()->copy_to(playerAvatars);
+        ArrayUtil::Where(GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
+            ->GetComponentsInChildren<ImageView*>(true), [](ImageView* img){return img != nullptr && !img->get_gameObject()->get_active();})->copy_to(avatarLoadings);
+        getLogger().info("pfp size: %lu", playerAvatars.size());
+        getLogger().info("load size: %lu", avatarLoadings.size());
+        }
+        CheckPage();
+        RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
     }
 
     void LeaderboardViewController::PostParse()
     {
+        myHeader->background->set_material(BSML::Helpers::GetUINoGlowMat());
+        myHeader->background->skew = 0.18f;
+        myHeader->background->gradient = true;
+        myHeader->background->set_color(Constants::BP_COLOR);
+        myHeader->background->set_color0(Constants::BP_COLOR);
+        myHeader->background->set_color1(Constants::BP_COLOR);
 
+        scopeControl->SetData(ArrayW<IconSegmentedControl::DataItem*>({
+            IconSegmentedControl::DataItem::New_ctor(BSML::Utilities::LoadSpriteRaw(IncludedAssets::Globe_png), "Bedroom Party"),
+            IconSegmentedControl::DataItem::New_ctor(BSML::Utilities::LoadSpriteRaw(IncludedAssets::Player_png), "Around You")
+        }));
+
+        
+    }
+
+    void LeaderboardViewController::CheckPage()
+    {
+        up_button->set_interactable(page > 0);
+        down_button->set_interactable(scope == 0);
+    }
+
+    void LeaderboardViewController::ChangeScope()
+    {
+        page = 0;
+        RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
+        CheckPage();
+    }
+
+    void LeaderboardViewController::OnIconSelected(IconSegmentedControl* segmentedControl, int index)
+    {
+        scope = index;
+        ChangeScope();
+    }
+
+    void LeaderboardViewController::OnPageUp()
+    {
+        page--;
+        RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
+        CheckPage();
+    }
+
+    void LeaderboardViewController::OnPageDown()
+    {
+        page++;
+        RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
+        CheckPage();
+    }
+
+    void LeaderboardViewController::SetLoading(bool value, std::string error){
+        leaderboard_loading->set_active(value);
+        errorText->get_gameObject()->set_active(!value && error != "");
+        if (error == "") return;
+        errorText->SetText("blah");
+        errorText->SetText(error);
     }
 
     void RichMyText(GlobalNamespace::LeaderboardTableView *tableView)
@@ -48,57 +127,79 @@ namespace BedroomPartyLB::UI
         }
     }
 
+    List<ScoreData*>* CreateLeaderboardData(std::vector<Models::BPLeaderboardEntry> leaderboard){
+        auto tableData = List<ScoreData*>::New_ctor();
+        int rank = 0;
+        for (auto& entry : leaderboard) tableData->Add(entry.CreateLeaderboardEntryData(((page + 1) * 10) - (10 - (++rank))));
+        return tableData;
+    }
+
     void LeaderboardViewController::RefreshLeaderboard(GlobalNamespace::IDifficultyBeatmap *difficultyBeatmap) 
     {
-        Lapiz::Utilities::MainThreadScheduler::Schedule([&]() {
-            std::string beatmapID = difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Substring(13);
-            std::string difficulty = std::to_string(difficultyBeatmap->get_difficultyRank());
-            std::string characteristic = difficultyBeatmap->get_parentDifficultyBeatmapSet()->get_beatmapCharacteristic()->serializedName;
+        if (!this->isActivated) return;
+        if (difficultyBeatmap == nullptr) return;
+        if (AuthUtils::authState == AuthUtils::ERROR) return SetLoading(false, "Auth Failed");
+        if (AuthUtils::authState != AuthUtils::AUTHED) return SetLoading(false, "Authenticating...");
 
-            std::string url = BASE_URL + "leaderboard/"+beatmapID+"?char="+characteristic+"&diff="+difficulty+"&sort=top&limit=10&page="+std::to_string(page)+"&id="+userID.c_str();
-           
-            WebUtils::GetAsync(url, [this](std::string value, bool success) {
-                if (success)
-                {
-                    rapidjson::Document doc;
-                    doc.Parse(value.c_str());
-                    if (doc.HasMember("scores"))
-                    {
-                        auto scoreArray = doc["scores"].GetArray();
-
-                        List<ScoreData*> *scores = List<ScoreData*>::New_ctor();
-                        for (int i = 0; i < scoreArray.Size(); i++)
-                        {
-                            int score = scoreArray[i]["modifiedScore"].GetInt();
-                            std::string username = "<color=blue>" + std::string(scoreArray[i]["username"].GetString()) + "</color>";
-                            std::stringstream ss;
-                            ss << std::fixed << std::setprecision(2) << scoreArray[i]["accuracy"].GetFloat();
-                            std::string accuracy = " - (<color=#ffd42a>" + ss.str() + "%</color>)";
-                            std::string misses = std::to_string((scoreArray[i]["misses"].GetInt() + scoreArray[i]["badCuts"].GetInt()));
-                            std::string combo = scoreArray[i]["fullCombo"].GetBool() ? "<color=green> FC </color>" : " - <color=red>x" + misses + "</color>" ;
-                            std::string modifiers = "<size=60%>" + std::string(scoreArray[i]["modifiers"].GetString()) + "</size>";
-                            
-                            std::string result = "<size=90%>" + username + accuracy + combo + modifiers + "</size>";
-                            ScoreData *scoreData = ScoreData::New_ctor(score, result, i + 1, false);
-                            scores->Add(scoreData);
-                        }
-                        if (scores->size > 0)
-                        {
-                            errorText->get_gameObject()->SetActive(false);
-                            BPLeaderboard->SetScores(scores, -1);
-                            RichMyText(BPLeaderboard);
-                        }
-                        else 
-                        {
-                            errorText->get_gameObject()->SetActive(true);
-                            BPLeaderboard->SetScores(nullptr, -1);
-                        }
+        std::string refreshId = std::string(System::Guid::NewGuid().ToString());
+        currentRefreshId = refreshId;
+        BPLeaderboard->tableView->SetDataSource(nullptr, true);
+        for (auto image : playerAvatars) image->get_gameObject()->set_active(false);
+        AnnihilatePlayerSprites();
+        SetLoading(true);
+        std::thread t([difficultyBeatmap, refreshId, this] {
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            if (currentRefreshId != refreshId) return;
+            Lapiz::Utilities::MainThreadScheduler::Schedule([difficultyBeatmap, refreshId, this]() {
+                Downloaders::DownloadLeaderboardAsync(difficultyBeatmap, page, scope, [this, refreshId](std::optional<Models::BPLeaderboard> pageLeaderboard){
+                    if (currentRefreshId != refreshId) return;
+                    if (pageLeaderboard.has_value() && pageLeaderboard.value().scores.size() > 0){
+                        std::vector<Models::BPLeaderboardEntry> scores = pageLeaderboard.value().scores;
+                        auto scoreData = CreateLeaderboardData(scores);
+                        errorText->get_gameObject()->SetActive(false);
+                        BPLeaderboard->SetScores(scoreData, -1);
+                        RichMyText(BPLeaderboard);
+                        SetLoading(false);
+                        SetPlayerSprites(scores, refreshId);
+                        return;
                     }
-
-                    //BPLeaderboard->SetScores(scores, -1)
-                }
+                    std::string failedText = scope == 0 ? "No Scores on this map!" : "Set a score on this map!";
+                    SetLoading(false, failedText);
+                });
             });
         });
-        
+        t.detach();
+    }
+
+    void LeaderboardViewController::SetPlayerSprites(std::vector<BedroomPartyLB::Models::BPLeaderboardEntry> players, std::string refreshId){
+        for (auto image : playerAvatars) image->get_gameObject()->set_active(false);
+        for (int i=0; i<players.size(); i++){
+            if (players[i].userID.has_value()){
+                avatarLoadings[i]->get_gameObject()->set_active(true);
+                std::string url = string_format("https://api.thebedroom.party/user/%s/avatar", players[i].userID.value().c_str());
+                WebUtils::GetImageAsync(url, [i, refreshId, this](UnityEngine::Sprite* sprite){
+                    Lapiz::Utilities::MainThreadScheduler::Schedule([i, refreshId, sprite, this](){
+                        if (currentRefreshId != refreshId){
+                            if (sprite) Object::Destroy(sprite->get_texture());
+                            Object::Destroy(sprite);
+                            avatarLoadings[i]->get_gameObject()->set_active(false);
+                            return;
+                        }
+                        playerAvatars[i]->set_sprite(sprite);
+                        playerAvatars[i]->get_gameObject()->set_active(true);
+                        avatarLoadings[i]->get_gameObject()->set_active(false);
+                    });
+                });
+            }
+            else avatarLoadings[i]->get_gameObject()->set_active(false);
+        }
+    }
+
+    void LeaderboardViewController::AnnihilatePlayerSprites(){
+        for (auto image : playerAvatars){
+            if (image->get_sprite() && image->get_sprite()->m_CachedPtr.m_value) Object::Destroy(image->get_sprite()->get_texture());
+            Object::Destroy(image->get_sprite());
+            image->get_gameObject()->set_active(false);
+        }
     }
 }

@@ -4,7 +4,9 @@
 #include "GlobalNamespace/PlatformLeaderboardsModel.hpp"
 #include "PluginUI/LeaderboardViewController.hpp"
 #include "UnityEngine/Resources.hpp"
-#include "WebUtils.hpp"
+#include "Utils/WebUtils.hpp"
+
+#include "rapidjson-macros/shared/serialization.hpp"
 #include "main.hpp"
 #include "Hooks.hpp"
 #include "GlobalNamespace/IBeatmapLevel.hpp"
@@ -17,9 +19,14 @@
 #include "GlobalNamespace/IReadonlyBeatmapData.hpp"
 #include "GlobalNamespace/ScoreModel.hpp"
 #include <string>
+#include "Models/CustomLeaderboard.hpp"
+#include "Models/RequestBody.hpp"
+
 using namespace GlobalNamespace;
+using namespace BedroomPartyLB;
 
 std::string sessionKey;
+extern Models::CustomLeaderboard leaderboard;
 
 std::string GetModifiers(LevelCompletionResults *levelCompletionResults)
 {
@@ -71,36 +78,20 @@ LevelCompletionResults * levelCompletionResults, IReadonlyBeatmapData * transfor
     float accuracy = levelCompletionResults->modifiedScore / maxScore * 100;
 
     std::string beatmapID = difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Substring(13);
-    std::string difficulty = std::to_string(difficultyBeatmap->get_difficultyRank());
     std::string characteristic = playerLevelStats->beatmapCharacteristic->serializedName;
 
-    auto fc = levelCompletionResults->fullCombo;
-    std::string fcBool; // When converting bools to strings C++ likes to turn it into an integer (0, 1), API doesn't like that
-    if (fc)
-        fcBool = "true";
-    else
-        fcBool = "false";
     auto modifiers = GetModifiers(levelCompletionResults);
 
-    auto requestBody = "{"
-    "\"difficulty\": " + difficulty + "," +
-    "\"characteristic\": \"" + characteristic +"\"," +
-    "\"id\": \"" + userID + "\"," +
-    "\"multipliedScore\": " + std::to_string(levelCompletionResults->multipliedScore) + "," +
-    "\"modifiedScore\": " + std::to_string(levelCompletionResults->modifiedScore) + "," +
-    "\"accuracy\": " + std::to_string(accuracy) + "," +
-    "\"misses\": " + std::to_string(levelCompletionResults->missedCount) + "," +
-    "\"badCuts\": " + std::to_string(levelCompletionResults->badCutsCount) + "," +
-    "\"fullCombo\": " + fcBool + "," +
-    "\"modifiers\": \"" + modifiers + "\"" +
-    "}";
+    Models::RequestBody requestClass(difficultyBeatmap->get_difficultyRank(), characteristic, userID,
+                            levelCompletionResults->multipliedScore, levelCompletionResults->modifiedScore,
+                            accuracy, levelCompletionResults->missedCount, levelCompletionResults->badCutsCount,
+                            levelCompletionResults->fullCombo, modifiers);
+    std::string requestBody = WriteToString(requestClass);
 
     BedroomPartyLB::WebUtils::PostAsync(BASE_URL + "leaderboard/"+beatmapID+"/upload", requestBody, false, [difficultyBeatmap](std::string value, bool success) {
         if (success)
         {
-            //DEBUG("{}", sessionKey);
-            auto leaderboardView = UnityEngine::Resources::FindObjectsOfTypeAll<BedroomPartyLB::UI::LeaderboardViewController*>().FirstOrDefault();
-            leaderboardView->RefreshLeaderboard(difficultyBeatmap);
+            leaderboard.get_leaderboardViewController()->RefreshLeaderboard(difficultyBeatmap);
         }
         else {
             DEBUG("Failed to send request!");

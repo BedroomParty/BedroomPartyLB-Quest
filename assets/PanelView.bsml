@@ -1,4 +1,4 @@
-<bg id='root' xmlns:xsi='http://www.w3.org/1501/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'> 
     <horizontal pref-width="87" pref-height="7" anchor-pos-y="10.3" horizontal-fit="PreferredSize" child-align="UpperLeft" child-expand-width="false" spacing="1">
         <loading-indicator id="prompt_loader" active="false" preserve-aspect="true" pref-width="4" pref-height="4"/>
         <clickable-text rich-text="true" id="prompt_text" text="" active="false" anchor-pos-x="0" anchor-pos-y="10" align="BottomLeft" italics="true" on-click="OpenUserProfile"/>

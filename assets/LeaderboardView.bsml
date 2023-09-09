@@ -1,9 +1,30 @@
-<bg id='root' xmlns:xsi='http://www.w3.org/1501/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'> 
     
-    
-    <vertical pref-width="76" pref-height="60" anchor-pos-x="7" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
-        <leaderboard id="BPLeaderboard" cell-size="6.05" >
-            <text id="errorText" text="No scores on this leaderboard!" active="false" />
+    <horizontal id="myHeader" pref-width="91" pref-height="8" anchor-pos-y="41.5" horizontal-fit="PreferredSize" background="round-rect-panel">
+        <text text="BEDROOM PARTY" font-size="6" align="Midline" italics="true" rich-text="true"/>
+    </horizontal>
+
+    <bg anchor-pos-x="-40" anchor-pos-y="-15">
+        <page-button icon="BedroomParty-LB_Arrow_png" on-click="OnPageUp" id="up_button" dir="Up" anchor-pos-y="12" pref-width="10" pref-height="10"/>
+        <vertical-icon-segments id="scopeControl" select-cell='OnIconSelected' anchor-pos-y="20" size-delta-x="10" size-delta-y="16.5"/>
+        <page-button icon="BedroomParty-LB_Arrow_png" on-click="OnPageDown" id="down_button" dir="Down" anchor-pos-y="-12" pref-width="10" pref-height="10"/>
+      </bg>
+
+    <vertical horizontal-fit='PreferredSize' vertical-fit='PreferredSize' pref-width='76' pref-height='60' anchor-pos-x="7" anchor-pos-y="5.5">
+        <leaderboard id='BPLeaderboard' cell-size='6.05'>
+            <loading-indicator id="leaderboard_loading" active="false" preserve-aspect="true" pref-width="15" pref-height="15" anchor-pos-x="-5"/>
+            <text id="errorText" anchor-pos-x="-5" align="Center" text="No scores on this map!" active="false" font-size="8" color="red"/>
         </leaderboard>
+      </vertical>
+
+    <vertical anchor-pos-x="-23.5" anchor-pos-y="5.3" spacing="-19.4">
+        <macro.repeat count="10">
+            <horizontal min-height="8" child-expand-height="true" child-align="MiddleCenter">
+                <stack>
+                    <image pref-width="5.5" pref-height="5.5" preserve-aspect="true" active="true"/>
+                    <loading-indicator pref-width="4" pref-height="4" active="false" preserve-aspect="true"/>
+                </stack>
+        </horizontal>
+        </macro.repeat>
     </vertical>
 </bg>
