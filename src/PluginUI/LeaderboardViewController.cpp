@@ -141,6 +141,7 @@ namespace BedroomPartyLB::UI
         if (AuthUtils::authState == AuthUtils::ERROR) return SetLoading(false, "Auth Failed");
         if (AuthUtils::authState != AuthUtils::AUTHED) return SetLoading(false, "Authenticating...");
 
+        page = 0;
         std::string refreshId = std::string(System::Guid::NewGuid().ToString());
         currentRefreshId = refreshId;
         BPLeaderboard->tableView->SetDataSource(nullptr, true);
