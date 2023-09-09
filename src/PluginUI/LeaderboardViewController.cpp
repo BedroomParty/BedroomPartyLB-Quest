@@ -49,10 +49,11 @@ namespace BedroomPartyLB::UI
     {
         if (firstActivation) {
             BSML::parse_and_construct(IncludedAssets::LeaderboardView_bsml, this->get_transform(), this);
-        GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
-            ->GetComponentsInChildren<ImageView*>()->copy_to(playerAvatars);
-        ArrayUtil::Where(GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
-            ->GetComponentsInChildren<ImageView*>(true), [](ImageView* img){return img != nullptr && !img->get_gameObject()->get_active();})->copy_to(avatarLoadings);
+            GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
+                ->GetComponentsInChildren<ImageView*>()->copy_to(playerAvatars);
+            ArrayUtil::Where(GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
+                ->GetComponentsInChildren<ImageView*>(true), [](ImageView* img){return img != nullptr && !img->get_gameObject()->get_active();})->copy_to(avatarLoadings);
+            for (auto img : playerAvatars) img->set_sprite(nullptr);
         }
         CheckPage();
         RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
