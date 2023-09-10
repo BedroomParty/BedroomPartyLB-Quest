@@ -6,7 +6,7 @@
     <horizontal anchor-pos-x="-2" anchor-pos-y="0" ignore-layout="true" pref-height="20" horizontal-fit="Unconstrained">
         <vertical pref-width="20" child-align="MiddleLeft">
             <horizontal pref-height="14">
-                <clickable-image src="BedroomParty-LB_Logo_png" preserve-aspect="true" pref-width="7" pref-height="7" on-click="bpLogoClick"/>
+                <clickable-image src="BedroomParty-LB_Logo_png" preserve-aspect="true" pref-width="7" pref-height="7" on-click="BPLogoClick"/>
             </horizontal>
         </vertical>
 
@@ -27,4 +27,24 @@
 			</horizontal>
 		</vertical>
     </horizontal>
+
+    <modal id='infoModal' size-delta-x='80' size-delta-y='55' clickerino-offerino-closerino='true' move-to-center='true'>
+        <vertical spacing='1'
+            vertical-fit='PreferredSize' pad='6'>
+            <horizontal spacing='4'>
+                <image id="brLogo" src="BedroomParty-LB_Logo_png" preserve-aspect="true" pref-width="15" pref-height="15"/>
+                <text font-size="10" text='BP Leaderboard' align='Right'/>
+            </horizontal>
+            <text font-size='5' align='Center' text='Bedroom Party Leaderboard by the BP Team'/>
+            <vertical>
+                <text text='Speecil and definitely no one else (Mods)' font-size='3' align='Center'/>
+                <text text='Syl (Website)' font-size='3' align='Center'/>
+                <text text='Nuggo (Backend)' font-size='3' align='Center'/>
+            </vertical>
+            <horizontal>
+                <action-button text="Website" pref-width="25" pref-height="10"  id='websiteButton' on-click='OpenWebsite'/>
+            </horizontal>
+        </vertical>
+    </modal>
+
 </bg>

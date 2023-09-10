@@ -19,6 +19,7 @@
 #include "Utils/AuthUtils.hpp"
 #include "Models/CustomLeaderboard.hpp"
 #include "Models/LocalPlayerInfo.hpp"
+#include "Utils/Constants.hpp"
 
 DEFINE_TYPE(BedroomPartyLB::UI, PanelViewController);
 
@@ -44,10 +45,19 @@ namespace BedroomPartyLB::UI
     {
         if (!firstActivation) return;
         BSML::parse_and_construct(IncludedAssets::PanelView_bsml, this->get_transform(), this);
+        infoModal->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
     }
 
     void PanelViewController::OpenUserProfile() {
-        UnityEngine::Application::OpenURL("https://thebedroom.party/?user=" + localPlayerInfo.userID);
+        UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + localPlayerInfo.userID);
+    }
+
+    void PanelViewController::BPLogoClick(){
+        infoModal->Show(true, true, nullptr);
+    }
+
+    void PanelViewController::OpenWebsite() {
+        UnityEngine::Application::OpenURL("https://thebedroom.party");
     }
 
     void PanelViewController::PostParse() 

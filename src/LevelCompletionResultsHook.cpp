@@ -22,6 +22,7 @@
 #include "Models/CustomLeaderboard.hpp"
 #include "Models/RequestBody.hpp"
 #include "Models/LocalPlayerInfo.hpp"
+#include "Utils/Constants.hpp"
 
 using namespace GlobalNamespace;
 using namespace BedroomPartyLB;
@@ -90,7 +91,7 @@ LevelCompletionResults * levelCompletionResults, IReadonlyBeatmapData * transfor
                             levelCompletionResults->fullCombo, modifiers);
     std::string requestBody = WriteToString(requestClass);
 
-    BedroomPartyLB::WebUtils::PostAsync(BASE_URL + "leaderboard/"+beatmapID+"/upload", requestBody, false, [difficultyBeatmap](std::string value, bool success) {
+    BedroomPartyLB::WebUtils::PostAsync(Constants::BASE_URL + "leaderboard/"+beatmapID+"/upload", requestBody, false, [difficultyBeatmap](std::string value, bool success) {
         if (success)
         {
             leaderboard.get_leaderboardViewController()->RefreshLeaderboard(difficultyBeatmap);

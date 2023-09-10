@@ -16,6 +16,7 @@
 #include "HMUI/ImageView.hpp"
 #include "Models/LeaderboardData.hpp"
 #include "GlobalNamespace/LeaderboardTableView_ScoreData.hpp"
+#include "PluginUI/ScoreInfoModal.hpp"
 
 DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, LeaderboardViewController, HMUI::ViewController, 
     DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::FindMethodUnsafe("HMUI", "ViewController", "DidActivate", 3), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
@@ -32,16 +33,18 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, LeaderboardViewController, HMUI::ViewC
     DECLARE_INSTANCE_FIELD(UnityEngine::UI::Button*, up_button);
     DECLARE_INSTANCE_FIELD(UnityEngine::UI::Button*, down_button);
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, leaderboard_loading);
+    DECLARE_INSTANCE_FIELD(BedroomPartyLB::UI::ScoreInfoModal*, scoreInfoModal);
 
     public:
     void ChangeScope();
     void CheckPage();
     int page;
+    std::vector<HMUI::ImageView*> playerAvatars;
+    std::vector<HMUI::ImageView*> avatarLoadings;
     private:
     void SetLoading(bool value, std::string error = "");
     void SetPlayerSprites(std::vector<BedroomPartyLB::Models::BPLeaderboardEntry> players, std::string refreshId);
     void AnnihilatePlayerSprites();
+    void RichMyText(GlobalNamespace::LeaderboardTableView *tableView, std::vector<BedroomPartyLB::Models::BPLeaderboardEntry> entries);
     List<GlobalNamespace::LeaderboardTableView::ScoreData*>* CreateLeaderboardData(std::vector<Models::BPLeaderboardEntry> leaderboard);
-    std::vector<HMUI::ImageView*> playerAvatars;
-    std::vector<HMUI::ImageView*> avatarLoadings;
 )

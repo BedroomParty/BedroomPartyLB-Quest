@@ -19,7 +19,7 @@ extern Models::CustomLeaderboard leaderboard;
 bool ReadScary()
     {
         INFO("Reading scary file");
-        std::string fileText = readfile("/sdcard/ModData/com.beatgames.beatsaber/Mods/BPLB/DO_NOT_SHARE.scary");
+        std::string fileText = readfile(Constants::SCARY_FILE);
         if (fileText.empty()) return false;
         std::string content;
         macaron::Base64::Decode(fileText, content);
@@ -38,7 +38,7 @@ MAKE_AUTO_HOOK_MATCH(PlatformLeaderboardViewController_DidActivate, &PlatformLea
         AuthUtils::authState = AuthUtils::ERROR;
         return leaderboard.get_panelViewController()->SetBannerInfo();
     }
-    WebUtils::GetAsync(BASE_URL + "user/" + localPlayerInfo.userID, [](std::string value, bool success) {
+    WebUtils::GetAsync(Constants::BASE_URL + "user/" + localPlayerInfo.userID, [](std::string value, bool success) {
             if (success)
             {
                 rapidjson::Document doc;
@@ -59,5 +59,4 @@ MAKE_AUTO_HOOK_MATCH(PlatformLeaderboardViewController_DidActivate, &PlatformLea
             leaderboard.get_leaderboardViewController()->RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
             leaderboard.get_panelViewController()->SetBannerInfo();
         });
-    
 }

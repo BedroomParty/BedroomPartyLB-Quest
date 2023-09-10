@@ -17,6 +17,7 @@ namespace BedroomPartyLB::Models{
         NAMED_VALUE(bool, fullCombo, "fullCombo");
         NAMED_VALUE(std::string, modifiers, "modifiers");
         NAMED_VALUE_DEFAULT(std::string, username, "null", "username");
+        NAMED_VALUE_DEFAULT(long, timeSet, 0, "timeSet");
 
         public:
         GlobalNamespace::LeaderboardTableView::ScoreData* CreateLeaderboardEntryData(int rank) const {

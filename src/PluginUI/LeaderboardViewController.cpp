@@ -30,6 +30,9 @@
 #include "UnityEngine/UI/HorizontalLayoutGroup.hpp"
 #include "Utils/ArrayUtil.hpp"
 #include "Utils/WebUtils.hpp"
+#include "PluginUI/ScoreInfoModal.hpp"
+#include "PluginUI/CellClicker.hpp"
+#include "Models/LocalPlayerInfo.hpp"
 
 using ScoreData = GlobalNamespace::LeaderboardTableView::ScoreData;
 using List_1 = System::Collections::Generic::List_1<ScoreData>;
@@ -48,6 +51,7 @@ namespace BedroomPartyLB::UI
     void LeaderboardViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
     {
         if (firstActivation) {
+            scoreInfoModal = ScoreInfoModal::New_ctor();
             BSML::parse_and_construct(IncludedAssets::LeaderboardView_bsml, this->get_transform(), this);
             GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
                 ->GetComponentsInChildren<ImageView*>()->copy_to(playerAvatars);
@@ -116,11 +120,23 @@ namespace BedroomPartyLB::UI
         errorText->SetText(error);
     }
 
-    void RichMyText(GlobalNamespace::LeaderboardTableView *tableView)
+    void LeaderboardViewController::RichMyText(GlobalNamespace::LeaderboardTableView *tableView, std::vector<Models::BPLeaderboardEntry> entries)
     {
         for (auto &cell : tableView->GetComponentsInChildren<GlobalNamespace::LeaderboardTableCell*>())
         {
+            cell->set_showSeparator(true);
             cell->playerNameText->set_richText(true);
+            cell->rankText->set_richText(true);
+            cell->scoreText->set_richText(true);
+            cell->rankText->SetText(string_format("<size=120%%><u>%s</u></size>", std::string(cell->rankText->get_text()).c_str()));
+            CellClicker* clicker = cell->get_gameObject()->GetComponent<CellClicker*>();
+            if (!clicker) clicker = cell->get_gameObject()->AddComponent<CellClicker*>();
+
+            clicker->onClick = std::bind(&ScoreInfoModal::setScoreModalText, this->scoreInfoModal, entries[cell->idx], cell->idx);
+            clicker->separator = reinterpret_cast<HMUI::ImageView*>(cell->separatorImage);
+            clicker->separator->set_color(Constants::BP_COLOR2);
+            clicker->separator->set_color0(UnityEngine::Color::get_white());
+            clicker->separator->set_color1(UnityEngine::Color(1, 1, 1, 0));
         }
     }
 
@@ -129,6 +145,15 @@ namespace BedroomPartyLB::UI
         int rank = 0;
         for (auto& entry : leaderboard) tableData->Add(entry.CreateLeaderboardEntryData(((page + 1) * 10) - (10 - (++rank))));
         return tableData;
+    }
+
+    int GetPlayerScoreIndex(std::vector<Models::BPLeaderboardEntry> scores)
+    {
+        for (int i = 0; i < scores.size(); i++)
+        {
+            if (scores[i].userID.value_or("knob") == localPlayerInfo.userID) return i;
+        }
+        return -1;
     }
 
     void LeaderboardViewController::RefreshLeaderboard(GlobalNamespace::IDifficultyBeatmap *difficultyBeatmap) 
@@ -155,8 +180,8 @@ namespace BedroomPartyLB::UI
                         std::vector<Models::BPLeaderboardEntry> scores = pageLeaderboard.value().scores;
                         auto scoreData = CreateLeaderboardData(scores);
                         errorText->get_gameObject()->SetActive(false);
-                        BPLeaderboard->SetScores(scoreData, -1);
-                        RichMyText(BPLeaderboard);
+                        BPLeaderboard->SetScores(scoreData, GetPlayerScoreIndex(scores));
+                        RichMyText(BPLeaderboard, pageLeaderboard.value().scores);
                         SetLoading(false);
                         SetPlayerSprites(scores, refreshId);
                         return;
