@@ -57,5 +57,8 @@ namespace IncludedAssets {
 	DECLARE_FILE(PanelView_bsml)
 	DECLARE_FILE(Pixel_png)
 	DECLARE_FILE(Player_png)
+	DECLARE_FILE(SeasonListCell_bsml)
+	DECLARE_FILE(infoModal_bsml)
+	DECLARE_FILE(seasonSelectModal_bsml)
 
 }

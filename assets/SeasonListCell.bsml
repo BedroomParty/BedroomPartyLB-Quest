@@ -1,0 +1,16 @@
+<horizontal xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'
+            id="backgroundImage" background="panel-top" preferred-height="9" vertical-fit="PreferredSize" preferred-width="45" horizontal-fit="PreferredSize">
+    <stack pref-width="8.8125" preferred-height="8.8125" horizontal-fit="PreferredSize" vertical-fit="PreferredSize" ignore-layout="true" anchor-pos-x="-19.125">
+        <image id="seasonImage" src="BedroomPartyLeaderboard.Images.blank.png" preserve-aspect="true"/>
+    </stack>
+    <vertical preferred-width="22.5" preferred-height="7.5" horizontal-fit="PreferredSize" vertical-fit="PreferredSize" ignore-layout="true" anchor-pos-x="-2.5">
+        <text id="seasonNumberText" text="~seasonNumber" font-size="4"/>
+        <text id="seasonDescriptionText" text="~seasonDescription" font-size="3"/>
+    </vertical>
+    <stack vertical-fit="PreferredSize" ignore-layout="true" anchor-pos-x="17.5">
+        <button id="plButton" preferred-height="6.75" size-delta-x="8.25" font-size="2.0625" size-delta-y="4.5" text="Playlist" preferred-width="8.25" on-click="SeasonPlaylistClicked"/>
+    </stack>
+    <stack vertical-fit="PreferredSize" ignore-layout="true" anchor-pos-x="6.5" anchor-pos-y="-0.15">
+        <button id="lbButton" size-delta-x="9.75" pref-height="6.75" font-size="2.0625" size-delta-y="4.5" text="Leaderboard" preferred-width="11.25" on-click="SeasonLeaderboardClicked"/>
+    </stack>
+</horizontal>

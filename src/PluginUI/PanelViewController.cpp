@@ -20,32 +20,50 @@
 #include "Models/CustomLeaderboard.hpp"
 #include "Models/LocalPlayerInfo.hpp"
 #include "Utils/Constants.hpp"
+#include "lapiz/shared/utilities/MainThreadScheduler.hpp"
+#include "HMUI/ScrollView.hpp"
+#include "HMUI/VerticalScrollIndicator.hpp"
 
 DEFINE_TYPE(BedroomPartyLB::UI, PanelViewController);
 
 extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
 namespace BedroomPartyLB::UI
 {
-    UnityEngine::Material *GetRoundEdgeMaterial()
+    void PanelViewController::HandleShittyListBollocksCunt(){
+        // for (auto scrollView : placeholderList->tableView->get_transform()->GetComponentsInChildren<HMUI::ScrollView*>()){
+        //     scrollView->verticalScrollIndicator->get_gameObject()->SetActive(false);
+        //     scrollView->pageUpButton->get_gameObject()->SetActive(false);
+        //     scrollView->pageDownButton->get_gameObject()->SetActive(false);
+        // }
+        auto placeholderTableView = placeholderList->tableView;
+        auto searchGo = placeholderList->get_gameObject();
+        Object::DestroyImmediate(placeholderList);
+        seasonList = nullptr;
+        seasonList = searchGo->AddComponent<SeasonListData*>();
+        seasonList->tableView = placeholderTableView;
+        placeholderTableView->SetDataSource(seasonList->i_IDataSource(), false);
+        seasonList->set_name("SeasonList");
+    }
+
+    UnityEngine::Material* PanelViewController::GetRoundEdgeMaterial()
     {
-        UnityEngine::Material *roundEdgeMaterial = nullptr;
-        auto materials = UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material*>();
-        for (auto material : materials)
-        {
-            if (material->get_name()->Contains("UINoGlowRoundEdge"))
-            {
-                roundEdgeMaterial = material;
-                break;
-            }
-        }
-        return roundEdgeMaterial;
+        static SafePtrUnity<UnityEngine::Material> roundEdgeMaterial;
+        if(roundEdgeMaterial) return roundEdgeMaterial.ptr();
+        getLogger().info("so we made it here...");
+        roundEdgeMaterial = UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material*>().First([](auto& v){return v->get_name() == "UINoGlowRoundEdge";});
+        return roundEdgeMaterial.ptr();
     }
 
     void PanelViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
     {
         if (!firstActivation) return;
         BSML::parse_and_construct(IncludedAssets::PanelView_bsml, this->get_transform(), this);
-        infoModal->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
+        BSML::parse_and_construct(IncludedAssets::infoModal_bsml, leaderboard.get_leaderboardViewController()->get_transform(), this);
+        BSML::parse_and_construct(IncludedAssets::seasonSelectModal_bsml, leaderboard.get_leaderboardViewController()->get_transform(), this);
+        HandleShittyListBollocksCunt();
+        if (AuthUtils::authState == AuthUtils::AUTHED && playerAvatarLoading->get_gameObject()->get_activeSelf()) SetBannerInfo();
+        infoModal->get_gameObject()->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
+        seasonSelectModal->get_gameObject()->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
     }
 
     void PanelViewController::OpenUserProfile() {
@@ -65,7 +83,28 @@ namespace BedroomPartyLB::UI
         prompt_loader->SetActive(true);
         prompt_text->get_gameObject()->SetActive(true);
         prompt_text->SetText("Authenticating...");
-        SetBannerInfo();
+    }
+
+    void PanelViewController::SetSeasons(int currentSeason){
+        this->currentSeason = currentSeason;
+        UnityEngine::Sprite* placeholderSprite = BSML::Utilities::LoadSpriteRaw(IncludedAssets::Logo_png);
+        seasonList->seasonList.reserve(currentSeason+5);
+        for (int i=0; i<currentSeason; i++){
+            getLogger().info("if there are destructor calls between these logs i am going to hurt a child");
+            if (currentSeason - i == currentSeason)
+                seasonList->seasonList.emplace_back(currentSeason, "Speed Tech", placeholderSprite);
+            else seasonList->seasonList.emplace_back(currentSeason - i, "No Pauses", placeholderSprite);
+        }
+        seasonList->tableView->ReloadData();
+    }
+
+    void PanelViewController::OnPlayerUsernameClick(){
+        if (localPlayerInfo.userID.empty()) return;
+        UnityEngine::Application::OpenURL("https://thebedroom.party/?user=" + localPlayerInfo.userID);
+    }
+
+    void PanelViewController::OnSeasonTextClick(){
+        seasonSelectModal->Show(true, true, nullptr);
     }
 
     void PanelViewController::SetBannerInfo(){
@@ -77,5 +116,10 @@ namespace BedroomPartyLB::UI
         BSML::Utilities::SetImage(playerAvatar, localPlayerInfo.avatarLink);
         playerAvatar->set_material(GetRoundEdgeMaterial());
         playerAvatarLoading->SetActive(false);
+        Lapiz::Utilities::MainThreadScheduler::Schedule([this](){
+            seasonText->set_richText(true);
+            seasonText->SetText("<size=70%>Season 1</size>\n<size=60%>Speed Tech</size>");
+            SetSeasons(15);
+        });
     }
 }

@@ -11,9 +11,14 @@
         </vertical>
 
         <vertical child-align="MiddleCenter">
-            <horizontal pref-height="10">
-                <vertical pref-height="6" pad="1" spacing="1" horizontal-fit="PreferredSize">
-                    <clickable-text id="playerUsername" font-size="6" text="loading..." rich-text="false" align="Center" on-click="playerUsernameClick" word-wrapping="false"/>
+			<horizontal pref-height="10">
+				<vertical spacing="6" child-expand-width="false" child-control-width="false" child-align="MiddleCenter">
+                    <horizontal pref-height="6" pad="1" spacing="1" horizontal-fit="PreferredSize">
+                        <clickable-text id="playerUsername" font-size="6" text="loading..." rich-text="false" align="Center" on-click="OnPlayerUsernameClick" word-wrapping="false"/>
+                    </horizontal>
+                    <horizontal pref-height="6" pad="1" spacing="2" horizontal-fit="PreferredSize">
+                        <clickable-text id="seasonText" font-size="6" text="Season 0" rich-text="true" align="Center" on-click="OnSeasonTextClick" word-wrapping="false"/>
+                    </horizontal>
                 </vertical>
             </horizontal>
         </vertical>
@@ -27,24 +32,4 @@
 			</horizontal>
 		</vertical>
     </horizontal>
-
-    <modal id='infoModal' size-delta-x='80' size-delta-y='55' clickerino-offerino-closerino='true' move-to-center='true'>
-        <vertical spacing='1'
-            vertical-fit='PreferredSize' pad='6'>
-            <horizontal spacing='4'>
-                <image id="brLogo" src="BedroomParty-LB_Logo_png" preserve-aspect="true" pref-width="15" pref-height="15"/>
-                <text font-size="10" text='BP Leaderboard' align='Right'/>
-            </horizontal>
-            <text font-size='5' align='Center' text='Bedroom Party Leaderboard by the BP Team'/>
-            <vertical>
-                <text text='Speecil and definitely no one else (Mods)' font-size='3' align='Center'/>
-                <text text='Syl (Website)' font-size='3' align='Center'/>
-                <text text='Nuggo (Backend)' font-size='3' align='Center'/>
-            </vertical>
-            <horizontal>
-                <action-button text="Website" pref-width="25" pref-height="10"  id='websiteButton' on-click='OpenWebsite'/>
-            </horizontal>
-        </vertical>
-    </modal>
-
 </bg>
