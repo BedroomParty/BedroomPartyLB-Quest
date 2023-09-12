@@ -30,11 +30,6 @@ extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
 namespace BedroomPartyLB::UI
 {
     void PanelViewController::HandleShittyListBollocksCunt(){
-        // for (auto scrollView : placeholderList->tableView->get_transform()->GetComponentsInChildren<HMUI::ScrollView*>()){
-        //     scrollView->verticalScrollIndicator->get_gameObject()->SetActive(false);
-        //     scrollView->pageUpButton->get_gameObject()->SetActive(false);
-        //     scrollView->pageDownButton->get_gameObject()->SetActive(false);
-        // }
         auto placeholderTableView = placeholderList->tableView;
         auto searchGo = placeholderList->get_gameObject();
         Object::DestroyImmediate(placeholderList);
@@ -95,6 +90,8 @@ namespace BedroomPartyLB::UI
                 seasonList->seasonList.emplace_back(currentSeason, "Speed Tech", placeholderSprite);
             else seasonList->seasonList.emplace_back(currentSeason - i, "No Pauses", placeholderSprite);
         }
+        seasonText->SetText("Season " + std::to_string(seasonList->seasonList[0].seasonNumber));
+        seasonDescription->SetText(seasonList->seasonList[0].seasonDescription);
         seasonList->tableView->ReloadData();
     }
 
@@ -118,7 +115,6 @@ namespace BedroomPartyLB::UI
         playerAvatarLoading->SetActive(false);
         Lapiz::Utilities::MainThreadScheduler::Schedule([this](){
             seasonText->set_richText(true);
-            seasonText->SetText("<size=70%>Season 1</size>\n<size=60%>Speed Tech</size>");
             SetSeasons(15);
         });
     }

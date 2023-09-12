@@ -35,5 +35,6 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, PanelViewController, HMUI::ViewControl
     DECLARE_INSTANCE_FIELD(BSML::CustomListTableData*, placeholderList);
     DECLARE_INSTANCE_FIELD(BedroomPartyLB::UI::SeasonListData*, seasonList);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, seasonText);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, seasonDescription);
     DECLARE_INSTANCE_FIELD(int, currentSeason);
 )

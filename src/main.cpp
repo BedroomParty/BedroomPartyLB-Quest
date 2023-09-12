@@ -88,3 +88,6 @@ BSML_DATACACHE(Pixel_png) {
 BSML_DATACACHE(Player_png) {
     return IncludedAssets::Player_png;
 }
+BSML_DATACACHE(pp_png) {
+    return IncludedAssets::pp_png;
+}

@@ -209,7 +209,7 @@ namespace BedroomPartyLB::UI
                             return;
                         }
                         playerAvatars[i]->set_sprite(sprite);
-                        playerAvatars[i]->get_gameObject()->set_active(true);
+                        playerAvatars[i]->get_gameObject()->set_active(sprite);
                         avatarLoadings[i]->get_gameObject()->set_active(false);
                     });
                 });

@@ -1,15 +1,10 @@
 #pragma once
 
-#include "HMUI/HoverHint.hpp"
 #include "HMUI/ImageView.hpp"
 #include "HMUI/TableCell.hpp"
 #include "PluginUI/SeasonList/SeasonListData.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
-#include "UnityEngine/EventSystems/BaseEventData.hpp"
-#include "UnityEngine/EventSystems/PointerEventData.hpp"
-#include "custom-types/shared/coroutine.hpp"
 #include "custom-types/shared/macros.hpp"
-#include <functional>
 
 #include "bsml/shared/BSML/Components/Backgroundable.hpp"
 #include "UnityEngine/UI/Button.hpp"
@@ -26,8 +21,6 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, SeasonListCell, HMUI::TableCell,
                       DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, seasonDescriptionText);
                       DECLARE_INSTANCE_FIELD(HMUI::ImageView*, seasonImage);
                       DECLARE_INSTANCE_FIELD(BSML::Backgroundable*, backgroundImage);
-                      DECLARE_INSTANCE_FIELD(UnityEngine::UI::Button*, lbButton);
-                      DECLARE_INSTANCE_FIELD(UnityEngine::UI::Button*, plButton);
 
                       DECLARE_INSTANCE_FIELD(BedroomPartyLB::UI::SeasonListData*, tableData);
 

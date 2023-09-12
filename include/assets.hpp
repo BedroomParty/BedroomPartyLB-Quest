@@ -59,6 +59,7 @@ namespace IncludedAssets {
 	DECLARE_FILE(Player_png)
 	DECLARE_FILE(SeasonListCell_bsml)
 	DECLARE_FILE(infoModal_bsml)
+	DECLARE_FILE(pp_png)
 	DECLARE_FILE(seasonSelectModal_bsml)
 
 }
