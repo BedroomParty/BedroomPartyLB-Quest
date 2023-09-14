@@ -8,5 +8,5 @@ namespace BedroomPartyLB::Constants{
     static const UnityEngine::Color BP_COLOR2 = UnityEngine::Color(0.839215686f, 0.705882353f, 0.988235294f, 1.0f);
     static const std::string USER_PROFILE_LINK = "https://thebedroom.party?user=";
     static const std::string SCARY_FILE = "/sdcard/ModData/com.beatgames.beatsaber/Mods/BPLB/DO_NOT_SHARE.scary";
-    static const std::string BASE_URL = "https://api.thebedroom.party/";
+    static const std::string BASE_URL = "https://dev.thebedroom.party/";
 }

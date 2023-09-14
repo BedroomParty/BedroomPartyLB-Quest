@@ -20,9 +20,11 @@
 #include "GlobalNamespace/ScoreModel.hpp"
 #include <string>
 #include "Models/CustomLeaderboard.hpp"
-#include "Models/RequestBody.hpp"
+#include "Models/ScoreUploadBody.hpp"
 #include "Models/LocalPlayerInfo.hpp"
 #include "Utils/Constants.hpp"
+#include "Utils/UploadUtils.hpp"
+#include "Models/ExtraSongData.hpp"
 
 using namespace GlobalNamespace;
 using namespace BedroomPartyLB;
@@ -84,20 +86,20 @@ LevelCompletionResults * levelCompletionResults, IReadonlyBeatmapData * transfor
     std::string characteristic = playerLevelStats->beatmapCharacteristic->serializedName;
 
     auto modifiers = GetModifiers(levelCompletionResults);
+    int pauses = extraSongData.pauses;
+    float accL = extraSongData.GetAverageFromList(extraSongData.avgHandAccLeft);
+    float accR = extraSongData.GetAverageFromList(extraSongData.avgHandAccRight);
+    float tdL = extraSongData.GetAverageFromList(extraSongData.avgHandTDLeft);
+    float tdR = extraSongData.GetAverageFromList(extraSongData.avgHandTDRight);
+    int streak = extraSongData.perfectStreak;
 
-    Models::RequestBody requestClass(difficultyBeatmap->get_difficultyRank(), characteristic, localPlayerInfo.userID,
-                            levelCompletionResults->multipliedScore, levelCompletionResults->modifiedScore,
-                            accuracy, levelCompletionResults->missedCount, levelCompletionResults->badCutsCount,
-                            levelCompletionResults->fullCombo, modifiers);
-    std::string requestBody = WriteToString(requestClass);
+    
+    std::string requestBody = Models::ScoreUploadBody(difficultyBeatmap->get_difficultyRank(), characteristic, localPlayerInfo.userID,
+                                                levelCompletionResults->multipliedScore, levelCompletionResults->modifiedScore,
+                                                accuracy, levelCompletionResults->missedCount, levelCompletionResults->badCutsCount,
+                                                levelCompletionResults->fullCombo, modifiers, pauses, accL, accR, tdL, tdR, streak).toString();
 
-    BedroomPartyLB::WebUtils::PostAsync(Constants::BASE_URL + "leaderboard/"+beatmapID+"/upload", requestBody, false, [difficultyBeatmap](std::string value, bool success) {
-        if (success)
-        {
-            leaderboard.get_leaderboardViewController()->RefreshLeaderboard(difficultyBeatmap);
-        }
-        else {
-            DEBUG("Failed to send request!");
-        }
-    });
+    std::string url = Constants::BASE_URL + "leaderboard/"+beatmapID+"/upload";
+
+    std::thread(&UploadUtils::TryUploadScore, url, requestBody).detach();
 }

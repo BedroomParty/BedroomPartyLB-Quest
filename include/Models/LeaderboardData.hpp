@@ -18,6 +18,7 @@ namespace BedroomPartyLB::Models{
         NAMED_VALUE(std::string, modifiers, "modifiers");
         NAMED_VALUE_DEFAULT(std::string, username, "null", "username");
         NAMED_VALUE_DEFAULT(long, timeSet, 0, "timeSet");
+        NAMED_VALUE_DEFAULT(int, rank, 0, "position");
 
         public:
         GlobalNamespace::LeaderboardTableView::ScoreData* CreateLeaderboardEntryData(int rank) const {

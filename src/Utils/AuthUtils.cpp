@@ -6,17 +6,23 @@
 
 namespace BedroomPartyLB::AuthUtils{
     AuthState authState = AuthState::NOT_AUTHED;
-    void AuthenticateUserAsync(std::function<void(AuthState, std::string)> callback){
+    void AuthenticateUserAsync(std::function<void(AuthState)> callback){
         authState = AuthState::AUTHING;
         WebUtils::PostAsync(Constants::BASE_URL + "user/login", "{ \"id\": \"" + localPlayerInfo.userID +"\" }", true, [callback](std::string value, bool success) {
             if (success)
             {
-                rapidjson::Document doc;
-                doc.Parse(value.c_str());
-                if (doc.HasMember("sessionKey")) return callback(AuthState::AUTHED, doc["sessionKey"].GetString());
-                else return callback(AuthState::ERROR, "");
+                ReadFromString(value, localPlayerInfo);
+                return callback(AuthState::AUTHED);     
             }
-            callback(AuthState::ERROR, "");
+            callback(AuthState::ERROR);
+        });
+    }
+
+    void RequestNewSessionKey(std::function<void(bool)> callback){
+        getLogger().info("requesting new key innit");
+        AuthenticateUserAsync([callback](AuthState state){
+            authState = state;
+            callback(state == AuthState::AUTHED);
         });
     }
 }

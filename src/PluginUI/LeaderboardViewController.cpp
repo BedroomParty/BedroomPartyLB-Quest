@@ -142,8 +142,7 @@ namespace BedroomPartyLB::UI
 
     List<ScoreData*>* LeaderboardViewController::CreateLeaderboardData(std::vector<Models::BPLeaderboardEntry> leaderboard){
         auto tableData = List<ScoreData*>::New_ctor();
-        int rank = 0;
-        for (auto& entry : leaderboard) tableData->Add(entry.CreateLeaderboardEntryData(((page + 1) * 10) - (10 - (++rank))));
+        for (auto& entry : leaderboard) tableData->Add(entry.CreateLeaderboardEntryData(entry.rank));
         return tableData;
     }
 
