@@ -89,8 +89,8 @@ namespace BedroomPartyLB::UI
         for (int i=0; i<currentSeason; i++){
             getLogger().info("if there are destructor calls between these logs i am going to hurt a child");
             if (currentSeason - i == currentSeason)
-                seasonList->seasonList.emplace_back(currentSeason, "Speed Tech", placeholderSprite);
-            else seasonList->seasonList.emplace_back(currentSeason - i, "No Pauses", placeholderSprite);
+                seasonList->seasonList.emplace_back(currentSeason, "Speed Tech", 1, 1234, placeholderSprite);
+            else seasonList->seasonList.emplace_back(currentSeason - i, "No Pauses", 14, 43, placeholderSprite);
         }
         seasonText->SetText("Season " + std::to_string(seasonList->seasonList[0].seasonNumber));
         seasonDescription->SetText(seasonList->seasonList[0].seasonDescription);

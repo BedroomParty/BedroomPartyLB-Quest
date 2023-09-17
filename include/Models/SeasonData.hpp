@@ -13,13 +13,15 @@ namespace BedroomPartyLB::Models{
         NAMED_VALUE_DEFAULT(int, seasonNumber, 0, "seasonNumber");
         NAMED_VALUE_DEFAULT(std::string, seasonDescription, "", "seasonDescription");
         NAMED_VALUE_DEFAULT(std::string, seasonImageLink, "", "seasonImage");
+        NAMED_VALUE_DEFAULT(int, seasonRank, -1, "seasonRank");
+        NAMED_VALUE_DEFAULT(float, seasonPP, -1, "seasonPP");
 
         public:
         UnityEngine::Sprite* seasonImageSprite;
 
         SeasonData() = default;
-        SeasonData(int num, std::string desc, std::string link) : seasonNumber(num), seasonDescription(desc), seasonImageLink(link){}
-        SeasonData(int num, std::string desc, UnityEngine::Sprite* sprite) : seasonNumber(num), seasonDescription(desc), seasonImageSprite(sprite){}
+        SeasonData(int num, std::string desc, int rank, int pp, std::string link) : seasonNumber(num), seasonDescription(desc), seasonRank(rank), seasonPP(pp), seasonImageLink(link){}
+        SeasonData(int num, std::string desc, int rank, int pp, UnityEngine::Sprite* sprite) : seasonNumber(num), seasonDescription(desc), seasonRank(rank), seasonPP(pp), seasonImageSprite(sprite){}
         
         ~SeasonData(){
             getLogger().info("destroying season data");

@@ -47,8 +47,10 @@ namespace BedroomPartyLB::UI
 
     void SeasonListCell::Populate(Models::SeasonData& data){
         _data = &data;
-        set_name(string_format("Season: %i", _data->seasonNumber));
-        set_sub(string_format("%s", _data->seasonDescription.c_str()));
+        set_seasonNumber(_data->seasonNumber);
+        set_seasonDescription(_data->seasonDescription);
+        set_seasonRank(_data->seasonRank);
+        set_seasonPP(_data->seasonPP);
 
         if (_data->seasonImageSprite != nullptr && _data->seasonImageSprite->m_CachedPtr.m_value != nullptr
             && _data->seasonImageSprite->get_texture() != nullptr && _data->seasonImageSprite->get_texture()->m_CachedPtr.m_value != nullptr) return set_sprite(_data->seasonImageSprite);
@@ -90,14 +92,24 @@ namespace BedroomPartyLB::UI
         });
     }
 
-    void SeasonListCell::set_name(std::string_view nameText)
+    void SeasonListCell::set_seasonNumber(int num)
     {
-        seasonNumberText->SetText(nameText);
+        seasonNumberText->SetText(string_format("Season: %i", num));
     }
 
-    void SeasonListCell::set_sub(std::string_view subText)
+    void SeasonListCell::set_seasonDescription(std::string_view desc)
     {
-        seasonDescriptionText->SetText(subText);
+        seasonDescriptionText->SetText(desc);
+    }
+
+    void SeasonListCell::set_seasonRank(int rank)
+    {
+        rankText->SetText(string_format("Rank: %i", rank));
+    }
+
+    void SeasonListCell::set_seasonPP(float pp)
+    {
+        ppText->SetText(string_format("PP: %i", (int)pp));
     }
 
     void SeasonListCell::set_sprite(UnityEngine::Sprite* sprite)

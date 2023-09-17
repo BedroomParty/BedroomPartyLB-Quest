@@ -18,7 +18,7 @@ namespace BedroomPartyLB::UI
     {
         INVOKE_CTOR();
         reuseIdentifier = StringW("SeasonListCell");
-        cellSize = 9.0f;
+        cellSize = 11.0f;
     }
 
     float SeasonListData::CellSize()

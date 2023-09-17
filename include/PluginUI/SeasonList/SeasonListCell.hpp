@@ -19,6 +19,8 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, SeasonListCell, HMUI::TableCell,
 
                       DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, seasonNumberText);
                       DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, seasonDescriptionText);
+                      DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, rankText);
+                      DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, ppText);
                       DECLARE_INSTANCE_FIELD(HMUI::ImageView*, seasonImage);
                       DECLARE_INSTANCE_FIELD(BSML::Backgroundable*, backgroundImage);
 
@@ -35,8 +37,10 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, SeasonListCell, HMUI::TableCell,
 
                       static BedroomPartyLB::UI::SeasonListCell* CreateNewCell();
 
-                      void set_name(std::string_view name);
-                      void set_sub(std::string_view sub);
+                      void set_seasonNumber(int num);
+                      void set_seasonDescription(std::string_view desc);
+                      void set_seasonRank(int rank);
+                      void set_seasonPP(float pp);
                       void set_sprite(UnityEngine::Sprite* preview);
                       void Populate(BedroomPartyLB::Models::SeasonData& user);
                       bool downloadInProgress;

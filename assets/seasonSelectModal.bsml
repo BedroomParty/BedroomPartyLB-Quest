@@ -1,8 +1,8 @@
 <modal xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'
-    id='seasonSelectModal' size-delta-x='67' size-delta-y='67' clickerino-offerino-closerino='true' move-to-center='true'>
+    id='seasonSelectModal' size-delta-x='70' size-delta-y='70' clickerino-offerino-closerino='true' move-to-center='true'>
     <vertical pad="2" preferred-width='50' preferred-height='60' anchor-pos-y='0'>
         <horizontal pref-width="65" pref-height="60" anchor-pos-x="0">
-            <list id="placeholderList" show-scrollbar="true" size-delta-y="58" expand-cell="false" cell-size="9" list-width="50" stick-scrolling="true"/>
+            <list id="placeholderList" show-scrollbar="true" size-delta-y="58" expand-cell="false" cell-size="11" list-width="54" visible-cells="6" stick-scrolling="true"/>
         </horizontal>
     </vertical>
 </modal>
