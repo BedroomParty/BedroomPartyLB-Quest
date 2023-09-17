@@ -13,6 +13,7 @@ namespace BedroomPartyLB::Models
         public:
         BedroomPartyLB::UI::PanelViewController *get_panelViewController() final override;
         BedroomPartyLB::UI::LeaderboardViewController *get_leaderboardViewController() final override;
+        void get_bedroomPartyStaffAsync(std::function<void(std::vector<std::string>)> callback);
         GlobalNamespace::IDifficultyBeatmap* currentDifficultyBeatmap;
 
         private:
@@ -20,3 +21,4 @@ namespace BedroomPartyLB::Models
         SafePtrUnity<BedroomPartyLB::UI::LeaderboardViewController> leaderboardViewController;
     };
 }
+extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;

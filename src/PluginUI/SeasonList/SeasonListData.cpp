@@ -35,10 +35,7 @@ namespace BedroomPartyLB::UI
     {
         auto tableCell = reinterpret_cast<SeasonListCell*>(tableView->DequeueReusableCellForIdentifier(reuseIdentifier));
 
-        if (!tableCell)
-        {
-            tableCell = SeasonListCell::CreateNewCell();
-        }
+        if (!tableCell) tableCell = SeasonListCell::CreateNewCell();
 
         tableCell->tableData = this;
         tableCell->Populate(seasonList[idx]);

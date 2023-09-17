@@ -21,8 +21,6 @@ DEFINE_TYPE(BedroomPartyLB::UI, SeasonListCell);
 using namespace UnityEngine;
 using namespace UnityEngine::UI;
 
-extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
-
 UnityEngine::Color highlightedColor = UnityEngine::Color(0.0f, 0.71f, 0.82f, 0.8f);
 UnityEngine::Color idleColor = UnityEngine::Color(0.0f, 0.0f, 0.0f, 0.7f);
 

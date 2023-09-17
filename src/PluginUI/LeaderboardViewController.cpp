@@ -33,6 +33,7 @@
 #include "PluginUI/ScoreInfoModal.hpp"
 #include "PluginUI/CellClicker.hpp"
 #include "Models/LocalPlayerInfo.hpp"
+#include "Utils/TweeningUtils.hpp"
 
 using ScoreData = GlobalNamespace::LeaderboardTableView::ScoreData;
 using List_1 = System::Collections::Generic::List_1<ScoreData>;
@@ -40,8 +41,6 @@ using namespace HMUI;
 using namespace UnityEngine::UI;
 
 DEFINE_TYPE(BedroomPartyLB::UI, LeaderboardViewController);
-
-extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
 
 namespace BedroomPartyLB::UI
 {
@@ -57,7 +56,10 @@ namespace BedroomPartyLB::UI
                 ->GetComponentsInChildren<ImageView*>()->copy_to(playerAvatars);
             ArrayUtil::Where(GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
                 ->GetComponentsInChildren<ImageView*>(true), [](ImageView* img){return img != nullptr && !img->get_gameObject()->get_active();})->copy_to(avatarLoadings);
-            for (auto img : playerAvatars) img->set_sprite(nullptr);
+            for (auto img : playerAvatars) {
+                img->set_sprite(nullptr);
+                img->get_gameObject()->set_active(false);
+            }
         }
         CheckPage();
         RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
@@ -118,6 +120,7 @@ namespace BedroomPartyLB::UI
         if (error == "") return;
         errorText->SetText("blah");
         errorText->SetText(error);
+        TweeningUtils::FadeText(errorText, true, 0.3f);
     }
 
     void LeaderboardViewController::RichMyText(GlobalNamespace::LeaderboardTableView *tableView, std::vector<Models::BPLeaderboardEntry> entries)
@@ -129,6 +132,7 @@ namespace BedroomPartyLB::UI
             cell->rankText->set_richText(true);
             cell->scoreText->set_richText(true);
             cell->rankText->SetText(string_format("<size=120%%><u>%s</u></size>", std::string(cell->rankText->get_text()).c_str()));
+            cell->set_interactable(true);
             CellClicker* clicker = cell->get_gameObject()->GetComponent<CellClicker*>();
             if (!clicker) clicker = cell->get_gameObject()->AddComponent<CellClicker*>();
 
@@ -137,6 +141,13 @@ namespace BedroomPartyLB::UI
             clicker->separator->set_color(Constants::BP_COLOR2);
             clicker->separator->set_color0(UnityEngine::Color::get_white());
             clicker->separator->set_color1(UnityEngine::Color(1, 1, 1, 0));
+
+            if (cell->get_gameObject()->get_activeSelf() && BPLeaderboard->get_gameObject()->get_activeSelf())
+            {
+                TweeningUtils::FadeText(cell->playerNameText, true, 0.2f);
+                TweeningUtils::FadeText(cell->rankText, true, 0.2f);
+                TweeningUtils::FadeText(cell->scoreText, true, 0.2f);
+            }
         }
     }
 
@@ -198,7 +209,7 @@ namespace BedroomPartyLB::UI
         for (int i=0; i<players.size(); i++){
             if (players[i].userID.has_value()){
                 avatarLoadings[i]->get_gameObject()->set_active(true);
-                std::string url = string_format("https://api.thebedroom.party/user/%s/avatar", players[i].userID.value().c_str());
+                std::string url = string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), players[i].userID.value().c_str());
                 WebUtils::GetImageAsync(url, [i, refreshId, this](UnityEngine::Sprite* sprite){
                     Lapiz::Utilities::MainThreadScheduler::Schedule([i, refreshId, sprite, this](){
                         if (currentRefreshId != refreshId){

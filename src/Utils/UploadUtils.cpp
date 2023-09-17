@@ -10,8 +10,6 @@
 template<typename T>
 using AwaitableFunc = std::function<void(std::function<void(T)>)>;
 
-extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
-
 namespace BedroomPartyLB::UploadUtils{
 
     auto getSessionKey(std::function<void(bool)> callback){
@@ -39,14 +37,14 @@ namespace BedroomPartyLB::UploadUtils{
 
     void HandleScoreUploadResult(bool success){
         Lapiz::Utilities::MainThreadScheduler::Schedule([success](){
-            if (!success) return leaderboard.get_panelViewController()->prompt_text->SetText("no uploady :(");
-            leaderboard.get_panelViewController()->prompt_text->SetText("yay uploady!");
+            if (!success) return leaderboard.get_panelViewController()->SetPrompt("<color=red>Failed to upload...</color>", 7);
+            leaderboard.get_panelViewController()->SetPrompt("<color=green>Successfully uploaded score!</color>", 5);
             leaderboard.get_leaderboardViewController()->RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
         });
     }
     
     void TryUploadScore(std::string url, std::string body){
-        leaderboard.get_panelViewController()->prompt_text->SetText("uploading...");
+        leaderboard.get_panelViewController()->SetPrompt("Uploading Score...", -1);
 
         long time = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
@@ -71,9 +69,7 @@ namespace BedroomPartyLB::UploadUtils{
     }
 
     void UploadScore(std::string url, std::string requestBody, std::function<void(bool)> callback){
-        getLogger().info("SCORE SHITE: %s", requestBody.c_str());
         BedroomPartyLB::WebUtils::PostAsync(url, requestBody, false, [callback](std::string value, bool success) {
-            getLogger().info("upload result: %s", value.c_str());
             callback(success);
         });
     }

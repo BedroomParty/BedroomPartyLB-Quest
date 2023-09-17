@@ -23,6 +23,7 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, PanelViewController, HMUI::ViewControl
     DECLARE_INSTANCE_METHOD(void, OnPlayerUsernameClick);
     DECLARE_INSTANCE_METHOD(void, OnSeasonTextClick);
     DECLARE_INSTANCE_METHOD(void, HandleShittyListBollocksCunt);
+    DECLARE_INSTANCE_METHOD(void, SetPrompt, StringW text, int time);
 
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, prompt_loader);
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, playerAvatarLoading);

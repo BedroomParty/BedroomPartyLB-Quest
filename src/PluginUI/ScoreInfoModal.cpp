@@ -6,15 +6,20 @@
 #include "Utils/TimeUtils.hpp"
 #include "UnityEngine/Application.hpp"
 #include "Utils/Constants.hpp"
+#include "PluginUI/TextHoverEffect.hpp"
+#include "PluginUI/RainbowAnimation.hpp"
 
 DEFINE_TYPE(BedroomPartyLB::UI, ScoreInfoModal);
 
-extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
-
 namespace BedroomPartyLB::UI {
+    void ScoreInfoModal::PostParse(){
+        TextHoverEffect::AddEffect(usernameScoreText, TMPro::FontStyles::Underline, TMPro::FontStyles::Normal);
+    }
+
     void ScoreInfoModal::OnUserNameTextClick(){
         UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + currentEntry.userID.value_or(""));
     }
+
     void ScoreInfoModal::setScoreModalText(Models::BPLeaderboardEntry entry, int index){
         getLogger().info("index: %i", index);
         currentEntry = entry;
@@ -37,7 +42,12 @@ namespace BedroomPartyLB::UI {
 
         modifiersScoreText->get_gameObject()->set_active(!entry.modifiers.empty());
 
-        
+        UnityEngine::Object::Destroy(usernameScoreText->get_gameObject()->GetComponent<RainbowAnimation*>());
+        leaderboard.get_bedroomPartyStaffAsync([entry, this](std::vector<std::string> staff){
+            if (std::find(staff.begin(), staff.end(), entry.userID) != staff.end()){
+                usernameScoreText->get_gameObject()->AddComponent<RainbowAnimation*>();
+            }
+        });
 
         fcScoreText->SetText(entry.fullCombo
             ? "<size=4><color=green>Full Combo!</color></size>"

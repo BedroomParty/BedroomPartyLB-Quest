@@ -23,10 +23,11 @@
 #include "lapiz/shared/utilities/MainThreadScheduler.hpp"
 #include "HMUI/ScrollView.hpp"
 #include "HMUI/VerticalScrollIndicator.hpp"
+#include "Utils/TweeningUtils.hpp"
+#include "PluginUI/TextHoverEffect.hpp"
+#include "PluginUI/RainbowAnimation.hpp"
 
 DEFINE_TYPE(BedroomPartyLB::UI, PanelViewController);
-
-extern BedroomPartyLB::Models::CustomLeaderboard leaderboard;
 namespace BedroomPartyLB::UI
 {
     void PanelViewController::HandleShittyListBollocksCunt(){
@@ -59,6 +60,7 @@ namespace BedroomPartyLB::UI
         if (AuthUtils::authState == AuthUtils::AUTHED && playerAvatarLoading->get_gameObject()->get_activeSelf()) SetBannerInfo();
         infoModal->get_gameObject()->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
         seasonSelectModal->get_gameObject()->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
+        TextHoverEffect::AddEffect(playerUsername, TMPro::FontStyles::Underline, TMPro::FontStyles::Normal);
     }
 
     void PanelViewController::OpenUserProfile() {
@@ -77,7 +79,7 @@ namespace BedroomPartyLB::UI
     {
         prompt_loader->SetActive(true);
         prompt_text->get_gameObject()->SetActive(true);
-        prompt_text->SetText("Authenticating...");
+        SetPrompt("Authenticating...", -1);
     }
 
     void PanelViewController::SetSeasons(int currentSeason){
@@ -105,17 +107,37 @@ namespace BedroomPartyLB::UI
     }
 
     void PanelViewController::SetBannerInfo(){
-        if (!this->isActivated) return;
+        if (!this->isActivated || !this->wasActivatedBefore) return;
         if (AuthUtils::authState != AuthUtils::AUTHED && AuthUtils::authState != AuthUtils::ERROR) return;
-        prompt_text->SetText("");
-        prompt_loader->SetActive(false);
+        SetPrompt("<color=green>Successfully Authenticated!</color>", 5);
+        prompt_loader->set_active(false);
         playerUsername->SetText(localPlayerInfo.username);
-        BSML::Utilities::SetImage(playerAvatar, localPlayerInfo.avatarLink);
+        BSML::Utilities::SetImage(playerAvatar, string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), localPlayerInfo.userID.c_str()));
         playerAvatar->set_material(GetRoundEdgeMaterial());
         playerAvatarLoading->SetActive(false);
         Lapiz::Utilities::MainThreadScheduler::Schedule([this](){
             seasonText->set_richText(true);
             SetSeasons(15);
         });
+        leaderboard.get_bedroomPartyStaffAsync([this](std::vector<std::string> staff){
+            if (std::find(staff.begin(), staff.end(), localPlayerInfo.userID) != staff.end()){
+                playerUsername->get_gameObject()->AddComponent<RainbowAnimation*>();
+            }
+        });
+    }
+
+    void PanelViewController::SetPrompt(StringW text, int time){
+        if (!prompt_text) return;
+        prompt_text->SetText(text);
+        TweeningUtils::FadeText(prompt_text, true, 0.2f);
+        text = prompt_text->get_text();
+        if (time < 0) return;
+        std::thread([this, text, time](){
+            std::this_thread::sleep_for(std::chrono::seconds(time));
+            Lapiz::Utilities::MainThreadScheduler::Schedule([this, text](){
+                if (prompt_text->get_text() != text) return;
+                TweeningUtils::FadeText(prompt_text, false, 0.15f);
+            });
+        }).detach();
     }
 }
