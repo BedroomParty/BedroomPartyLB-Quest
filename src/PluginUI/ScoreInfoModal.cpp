@@ -56,8 +56,8 @@ namespace BedroomPartyLB::UI
         });
 
         fcScoreText->SetText(entry.fullCombo
-                                 ? "<size=4><color=green>Full Combo!</color></size>"
-                                 : string_format("Mistakes: <size=4><color=red>%i</color></size>", entry.badCuts + entry.misses));
+            ? "<size=4><color=green>Full Combo!</color></size>"
+            : string_format("Mistakes: <size=4><color=red>%i</color></size>", entry.badCuts + entry.misses));
 
         auto img = leaderboard.get_leaderboardViewController()->playerAvatars[index];
         auto load = leaderboard.get_leaderboardViewController()->avatarLoadings[index];
