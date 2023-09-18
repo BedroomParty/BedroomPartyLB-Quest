@@ -211,12 +211,14 @@ namespace BedroomPartyLB::UI
                 Downloaders::DownloadLeaderboardAsync(difficultyBeatmap, page, scope, [this, refreshId](std::optional<Models::BPLeaderboard> pageLeaderboard)
                 {
                     if (currentRefreshId != refreshId) return;
-                    if (pageLeaderboard.has_value() && pageLeaderboard.value().scores.size() > 0){
+                    if (pageLeaderboard.has_value() && pageLeaderboard.value().scores.size() > 0)
+                    {
                         std::vector<Models::BPLeaderboardEntry> scores = pageLeaderboard.value().scores;
+                        while(scores.size() < 10) scores.push_back(scores[0]);
                         auto scoreData = CreateLeaderboardData(scores);
                         errorText->get_gameObject()->SetActive(false);
                         BPLeaderboard->SetScores(scoreData, GetPlayerScoreIndex(scores));
-                        RichMyText(BPLeaderboard, pageLeaderboard.value().scores);
+                        RichMyText(BPLeaderboard, scores);
                         SetLoading(false);
                         SetPlayerSprites(scores, refreshId);
                         return;

@@ -25,7 +25,7 @@
         </macro.repeat>
     </vertical>
 
-    <vertical horizontal-fit='PreferredSize' vertical-fit='PreferredSize' pref-width='76' pref-height='60' anchor-pos-x="7" anchor-pos-y="5.5">
+    <vertical horizontal-fit='PreferredSize' vertical-fit='PreferredSize' pref-width='76' pref-height='60.5' anchor-pos-x="7" anchor-pos-y="5.2">
         <leaderboard id='BPLeaderboard' cell-size='6.05'>
             <loading-indicator id="leaderboard_loading" active="false" preserve-aspect="true" pref-width="15" pref-height="15" anchor-pos-x="-5"/>
             <text id="errorText" anchor-pos-x="-5" align="Center" text="No scores on this map!" active="false" font-size="8" color="red"/>

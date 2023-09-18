@@ -50,7 +50,7 @@ namespace BedroomPartyLB::WebUtils
 
         co_yield reinterpret_cast<System::Collections::IEnumerator*>(CRASH_UNLESS(request->SendWebRequest()));
 
-        if (!request->get_isNetworkError() || !request->get_isHttpError())
+        if (!request->get_isNetworkError() && !request->get_isHttpError())
             callback(request->get_downloadHandler()->GetText(), true);
         else
             callback("", false);
