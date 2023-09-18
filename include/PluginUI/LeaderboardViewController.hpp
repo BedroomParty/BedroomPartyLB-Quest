@@ -25,6 +25,8 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, LeaderboardViewController, HMUI::ViewC
     DECLARE_INSTANCE_METHOD(void, OnIconSelected, HMUI::IconSegmentedControl* segmentedControl, int index);
     DECLARE_INSTANCE_METHOD(void, OnPageUp);
     DECLARE_INSTANCE_METHOD(void, OnPageDown);
+    DECLARE_INSTANCE_METHOD(void, OnBugClick);
+    DECLARE_INSTANCE_METHOD(void, OnLBClick);
 
     DECLARE_INSTANCE_FIELD(HMUI::IconSegmentedControl*, scopeControl);
     DECLARE_INSTANCE_FIELD(GlobalNamespace::LeaderboardTableView*, BPLeaderboard);

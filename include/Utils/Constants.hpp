@@ -9,4 +9,7 @@ namespace BedroomPartyLB::Constants{
     static const std::string USER_PROFILE_LINK = "https://thebedroom.party?user=";
     static const std::string SCARY_FILE = "/sdcard/ModData/com.beatgames.beatsaber/Mods/BPLB/DO_NOT_SHARE.scary";
     static const std::string BASE_URL = "https://dev.thebedroom.party/";
+    static const std::string BASE_WEB_URL = "https://thebedroom.party";
+    static const std::string BUG_REPORT = "/bug-report";
+    static const std::string LEADERBOARD = "/leaderboard/";
 }

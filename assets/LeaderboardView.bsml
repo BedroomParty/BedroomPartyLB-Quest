@@ -5,12 +5,16 @@
     </horizontal>
 
     <bg anchor-pos-x="-40" anchor-pos-y="-15">
+        <clickable-image size-delta-x="6" size-delta-y="6"  anchor-pos-y="48" anchor-pos-x="0" id='bugIcon' src="BedroomParty-LB_Bug_png" on-click='OnBugClick' hover-hint='Report a bug'/>
+
         <page-button icon="BedroomParty-LB_Arrow_png" on-click="OnPageUp" id="up_button" dir="Up" anchor-pos-y="12" pref-width="10" pref-height="10" interactable="false"/>
         <vertical-icon-segments id="scopeControl" select-cell='OnIconSelected' anchor-pos-y="20" size-delta-x="10" size-delta-y="16.5"/>
         <page-button icon="BedroomParty-LB_Arrow_png" on-click="OnPageDown" id="down_button" dir="Down" anchor-pos-y="-12" pref-width="10" pref-height="10"/>
+
+        <clickable-image size-delta-x="6" size-delta-y="6" anchor-pos-y="-5.5" anchor-pos-x="0" id='linkIcon' src="BedroomParty-LB_Link_png" on-click='OnLBClick' hover-hint='Open the leaderboard in the web view'/>
     </bg>
 
-    <vertical anchor-pos-x="-23.5" anchor-pos-y="5.3" spacing="-19.4">
+    <vertical anchor-pos-x="-21" anchor-pos-y="5.3" spacing="-19.4">
         <macro.repeat count="10">
             <horizontal min-height="8" child-expand-height="true" child-align="MiddleCenter">
                 <stack>

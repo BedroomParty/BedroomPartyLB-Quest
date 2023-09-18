@@ -34,6 +34,7 @@
 #include "PluginUI/CellClicker.hpp"
 #include "Models/LocalPlayerInfo.hpp"
 #include "Utils/TweeningUtils.hpp"
+#include "UnityEngine/Application.hpp"
 
 using ScoreData = GlobalNamespace::LeaderboardTableView::ScoreData;
 using List_1 = System::Collections::Generic::List_1<ScoreData>;
@@ -114,6 +115,17 @@ namespace BedroomPartyLB::UI
         CheckPage();
     }
 
+    void LeaderboardViewController::OnBugClick()
+    {
+        UnityEngine::Application::OpenURL(Constants::BASE_WEB_URL + Constants::BUG_REPORT);
+    }
+
+    void LeaderboardViewController::OnLBClick()
+    {
+        auto id = std::string(leaderboard.currentDifficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Substring(13));
+        UnityEngine::Application::OpenURL(Constants::BASE_WEB_URL + Constants::LEADERBOARD + id);
+    }
+
     void LeaderboardViewController::SetLoading(bool value, std::string error){
         leaderboard_loading->set_active(value);
         errorText->get_gameObject()->set_active(!value && error != "");
@@ -125,14 +137,17 @@ namespace BedroomPartyLB::UI
 
     void LeaderboardViewController::RichMyText(GlobalNamespace::LeaderboardTableView *tableView, std::vector<Models::BPLeaderboardEntry> entries)
     {
+        static float cellPosX;
         for (auto &cell : tableView->GetComponentsInChildren<GlobalNamespace::LeaderboardTableCell*>())
         {
+            if (cellPosX == 0.0f) cellPosX = cell->playerNameText->get_rectTransform()->get_anchoredPosition().x;
             cell->set_showSeparator(true);
             cell->playerNameText->set_richText(true);
             cell->rankText->set_richText(true);
             cell->scoreText->set_richText(true);
             cell->rankText->SetText(string_format("<size=120%%><u>%s</u></size>", std::string(cell->rankText->get_text()).c_str()));
             cell->set_interactable(true);
+            cell->playerNameText->get_rectTransform()->set_anchoredPosition({cellPosX + 2.5f, 0.0f});
             CellClicker* clicker = cell->get_gameObject()->GetComponent<CellClicker*>();
             if (!clicker) clicker = cell->get_gameObject()->AddComponent<CellClicker*>();
 
