@@ -50,14 +50,16 @@ namespace BedroomPartyLB::UI
 
     void LeaderboardViewController::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
     {
-        if (firstActivation) {
+        if (firstActivation)
+        {
             scoreInfoModal = ScoreInfoModal::New_ctor();
             BSML::parse_and_construct(IncludedAssets::LeaderboardView_bsml, this->get_transform(), this);
             GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
                 ->GetComponentsInChildren<ImageView*>()->copy_to(playerAvatars);
             ArrayUtil::Where(GetComponentsInChildren<VerticalLayoutGroup*>().First([](auto& v){return v->get_spacing()==-19.4f;})
                 ->GetComponentsInChildren<ImageView*>(true), [](ImageView* img){return img != nullptr && !img->get_gameObject()->get_active();})->copy_to(avatarLoadings);
-            for (auto img : playerAvatars) {
+            for (auto img : playerAvatars) 
+            {
                 img->set_sprite(nullptr);
                 img->get_gameObject()->set_active(false);
             }
@@ -83,7 +85,8 @@ namespace BedroomPartyLB::UI
 
     void LeaderboardViewController::CheckPage()
     {
-        if (!this->isActivated) return;
+        if (!this->isActivated)
+            return;
         up_button->set_interactable(page > 0);
         down_button->set_interactable(scope == 0);
     }
@@ -126,7 +129,8 @@ namespace BedroomPartyLB::UI
         UnityEngine::Application::OpenURL(Constants::BASE_WEB_URL + Constants::LEADERBOARD + id);
     }
 
-    void LeaderboardViewController::SetLoading(bool value, std::string error){
+    void LeaderboardViewController::SetLoading(bool value, std::string error)
+    {
         leaderboard_loading->set_active(value);
         errorText->get_gameObject()->set_active(!value && error != "");
         if (error == "") return;
@@ -138,7 +142,7 @@ namespace BedroomPartyLB::UI
     void LeaderboardViewController::RichMyText(GlobalNamespace::LeaderboardTableView *tableView, std::vector<Models::BPLeaderboardEntry> entries)
     {
         static float cellPosX;
-        for (auto &cell : tableView->GetComponentsInChildren<GlobalNamespace::LeaderboardTableCell*>())
+        for (auto &cell : tableView->GetComponentsInChildren<GlobalNamespace::LeaderboardTableCell *>())
         {
             if (cellPosX == 0.0f) cellPosX = cell->playerNameText->get_rectTransform()->get_anchoredPosition().x;
             cell->set_showSeparator(true);
@@ -166,9 +170,11 @@ namespace BedroomPartyLB::UI
         }
     }
 
-    List<ScoreData*>* LeaderboardViewController::CreateLeaderboardData(std::vector<Models::BPLeaderboardEntry> leaderboard){
+    List<ScoreData*>* LeaderboardViewController::CreateLeaderboardData(std::vector<Models::BPLeaderboardEntry> leaderboard)
+    {
         auto tableData = List<ScoreData*>::New_ctor();
-        for (auto& entry : leaderboard) tableData->Add(entry.CreateLeaderboardEntryData(entry.rank));
+        for (auto &entry : leaderboard)
+            tableData->Add(entry.CreateLeaderboardEntryData(entry.rank));
         return tableData;
     }
 
@@ -176,12 +182,13 @@ namespace BedroomPartyLB::UI
     {
         for (int i = 0; i < scores.size(); i++)
         {
-            if (scores[i].userID.value_or("knob") == localPlayerInfo.userID) return i;
+            if (scores[i].userID.value_or("knob") == localPlayerInfo.userID)
+                return i;
         }
         return -1;
     }
 
-    void LeaderboardViewController::RefreshLeaderboard(GlobalNamespace::IDifficultyBeatmap *difficultyBeatmap) 
+    void LeaderboardViewController::RefreshLeaderboard(GlobalNamespace::IDifficultyBeatmap* difficultyBeatmap)
     {
         if (!this->isActivated) return;
         if (difficultyBeatmap == nullptr) return;
@@ -195,11 +202,14 @@ namespace BedroomPartyLB::UI
         for (auto image : avatarLoadings) image->get_gameObject()->set_active(false);
         AnnihilatePlayerSprites();
         SetLoading(true);
-        std::thread t([difficultyBeatmap, refreshId, this] {
+        std::thread t([difficultyBeatmap, refreshId, this]
+        {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             if (currentRefreshId != refreshId) return;
-            Lapiz::Utilities::MainThreadScheduler::Schedule([difficultyBeatmap, refreshId, this]() {
-                Downloaders::DownloadLeaderboardAsync(difficultyBeatmap, page, scope, [this, refreshId](std::optional<Models::BPLeaderboard> pageLeaderboard){
+            Lapiz::Utilities::MainThreadScheduler::Schedule([difficultyBeatmap, refreshId, this]() 
+            {
+                Downloaders::DownloadLeaderboardAsync(difficultyBeatmap, page, scope, [this, refreshId](std::optional<Models::BPLeaderboard> pageLeaderboard)
+                {
                     if (currentRefreshId != refreshId) return;
                     if (pageLeaderboard.has_value() && pageLeaderboard.value().scores.size() > 0){
                         std::vector<Models::BPLeaderboardEntry> scores = pageLeaderboard.value().scores;
@@ -214,19 +224,25 @@ namespace BedroomPartyLB::UI
                     std::string failedText = scope == 0 ? page > 0 ? "No scores on this page!" : "No scores on this map!" : "Set a score on this map!";
                     SetLoading(false, failedText);
                 });
-            });
+            }); 
         });
         t.detach();
     }
 
-    void LeaderboardViewController::SetPlayerSprites(std::vector<BedroomPartyLB::Models::BPLeaderboardEntry> players, std::string refreshId){
-        for (auto image : playerAvatars) image->get_gameObject()->set_active(false);
-        for (int i=0; i<players.size(); i++){
-            if (players[i].userID.has_value()){
+    void LeaderboardViewController::SetPlayerSprites(std::vector<BedroomPartyLB::Models::BPLeaderboardEntry> players, std::string refreshId)
+    {
+        for (auto image : playerAvatars)
+            image->get_gameObject()->set_active(false);
+        for (int i = 0; i < players.size(); i++)
+        {
+            if (players[i].userID.has_value())
+            {
                 avatarLoadings[i]->get_gameObject()->set_active(true);
                 std::string url = string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), players[i].userID.value().c_str());
-                WebUtils::GetImageAsync(url, [i, refreshId, this](UnityEngine::Sprite* sprite){
-                    Lapiz::Utilities::MainThreadScheduler::Schedule([i, refreshId, sprite, this](){
+                WebUtils::GetImageAsync(url, [i, refreshId, this](UnityEngine::Sprite* sprite)
+                { 
+                    Lapiz::Utilities::MainThreadScheduler::Schedule([i, refreshId, sprite, this]()
+                    {
                         if (currentRefreshId != refreshId){
                             if (sprite) Object::Destroy(sprite->get_texture());
                             Object::Destroy(sprite);
@@ -235,16 +251,18 @@ namespace BedroomPartyLB::UI
                         }
                         playerAvatars[i]->set_sprite(sprite);
                         playerAvatars[i]->get_gameObject()->set_active(sprite);
-                        avatarLoadings[i]->get_gameObject()->set_active(false);
-                    });
+                        avatarLoadings[i]->get_gameObject()->set_active(false); 
+                    }); 
                 });
             }
             else avatarLoadings[i]->get_gameObject()->set_active(false);
         }
     }
 
-    void LeaderboardViewController::AnnihilatePlayerSprites(){
-        for (auto image : playerAvatars){
+    void LeaderboardViewController::AnnihilatePlayerSprites()
+    {
+        for (auto image : playerAvatars)
+        {
             if (image->get_sprite() && image->get_sprite()->m_CachedPtr.m_value) Object::Destroy(image->get_sprite()->get_texture());
             Object::Destroy(image->get_sprite());
             image->get_gameObject()->set_active(false);

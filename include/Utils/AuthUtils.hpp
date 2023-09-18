@@ -2,8 +2,10 @@
 
 #include <functional>
 
-namespace BedroomPartyLB::AuthUtils{
-    enum AuthState {
+namespace BedroomPartyLB::AuthUtils
+{
+    enum AuthState
+    {
         NOT_AUTHED,
         AUTHING,
         AUTHED,

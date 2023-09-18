@@ -30,7 +30,8 @@
 DEFINE_TYPE(BedroomPartyLB::UI, PanelViewController);
 namespace BedroomPartyLB::UI
 {
-    void PanelViewController::HandleShittyListBollocksCunt(){
+    void PanelViewController::HandleShittyListBollocksCunt()
+    {
         auto placeholderTableView = placeholderList->tableView;
         auto searchGo = placeholderList->get_gameObject();
         Object::DestroyImmediate(placeholderList);
@@ -44,9 +45,9 @@ namespace BedroomPartyLB::UI
     UnityEngine::Material* PanelViewController::GetRoundEdgeMaterial()
     {
         static SafePtrUnity<UnityEngine::Material> roundEdgeMaterial;
-        if(roundEdgeMaterial) return roundEdgeMaterial.ptr();
+        if (roundEdgeMaterial) return roundEdgeMaterial.ptr();
         getLogger().info("so we made it here...");
-        roundEdgeMaterial = UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material*>().First([](auto& v){return v->get_name() == "UINoGlowRoundEdge";});
+        roundEdgeMaterial = UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material *>().First([](auto &v){ return v->get_name() == "UINoGlowRoundEdge"; });
         return roundEdgeMaterial.ptr();
     }
 
@@ -63,50 +64,58 @@ namespace BedroomPartyLB::UI
         TextHoverEffect::AddEffect(playerUsername, TMPro::FontStyles::Underline, TMPro::FontStyles::Normal);
     }
 
-    void PanelViewController::OpenUserProfile() {
+    void PanelViewController::OpenUserProfile()
+    {
         UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + localPlayerInfo.userID);
     }
 
-    void PanelViewController::BPLogoClick(){
+    void PanelViewController::BPLogoClick()
+    {
         infoModal->Show(true, true, nullptr);
     }
 
-    void PanelViewController::OpenWebsite() {
+    void PanelViewController::OpenWebsite()
+    {
         UnityEngine::Application::OpenURL("https://thebedroom.party");
     }
 
-    void PanelViewController::PostParse() 
+    void PanelViewController::PostParse()
     {
         prompt_loader->SetActive(true);
         prompt_text->get_gameObject()->SetActive(true);
         SetPrompt("Authenticating...", -1);
     }
 
-    void PanelViewController::SetSeasons(int currentSeason){
+    void PanelViewController::SetSeasons(int currentSeason)
+    {
         this->currentSeason = currentSeason;
         UnityEngine::Sprite* placeholderSprite = BSML::Utilities::LoadSpriteRaw(IncludedAssets::Logo_png);
-        seasonList->seasonList.reserve(currentSeason+5);
-        for (int i=0; i<currentSeason; i++){
-            getLogger().info("if there are destructor calls between these logs i am going to hurt a child");
+        seasonList->seasonList.reserve(currentSeason + 5);
+        for (int i = 0; i < currentSeason; i++)
+        {
             if (currentSeason - i == currentSeason)
                 seasonList->seasonList.emplace_back(currentSeason, "Speed Tech", 1, 1234, placeholderSprite);
-            else seasonList->seasonList.emplace_back(currentSeason - i, "No Pauses", 14, 43, placeholderSprite);
+            else
+                seasonList->seasonList.emplace_back(currentSeason - i, "No Pauses", 14, 43, placeholderSprite);
         }
         seasonText->SetText("Season " + std::to_string(seasonList->seasonList[0].seasonNumber));
         seasonDescription->SetText(seasonList->seasonList[0].seasonDescription);
         seasonList->tableView->ReloadData();
     }
 
-    void PanelViewController::OnPlayerUsernameClick(){
+    void PanelViewController::OnPlayerUsernameClick()
+    {
         if (localPlayerInfo.userID.empty()) return;
         UnityEngine::Application::OpenURL("https://thebedroom.party/?user=" + localPlayerInfo.userID);
     }
 
-    void PanelViewController::OnSeasonTextClick(){
+    void PanelViewController::OnSeasonTextClick()
+    {
         seasonSelectModal->Show(true, true, nullptr);
     }
 
-    void PanelViewController::SetBannerInfo(){
+    void PanelViewController::SetBannerInfo()
+    {
         if (!this->isActivated || !this->wasActivatedBefore) return;
         if (AuthUtils::authState != AuthUtils::AUTHED && AuthUtils::authState != AuthUtils::ERROR) return;
         SetPrompt("<color=green>Successfully Authenticated!</color>", 5);
@@ -115,29 +124,35 @@ namespace BedroomPartyLB::UI
         BSML::Utilities::SetImage(playerAvatar, string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), localPlayerInfo.userID.c_str()));
         playerAvatar->set_material(GetRoundEdgeMaterial());
         playerAvatarLoading->SetActive(false);
-        Lapiz::Utilities::MainThreadScheduler::Schedule([this](){
+        Lapiz::Utilities::MainThreadScheduler::Schedule([this]()
+        {
             seasonText->set_richText(true);
-            SetSeasons(15);
+            SetSeasons(15); 
         });
-        leaderboard.get_bedroomPartyStaffAsync([this](std::vector<std::string> staff){
-            if (std::find(staff.begin(), staff.end(), localPlayerInfo.userID) != staff.end()){
+        leaderboard.get_bedroomPartyStaffAsync([this](std::vector<std::string> staff)
+        {
+            if (std::find(staff.begin(), staff.end(), localPlayerInfo.userID) != staff.end())
+            {
                 playerUsername->get_gameObject()->AddComponent<RainbowAnimation*>();
-            }
+            } 
         });
     }
 
-    void PanelViewController::SetPrompt(StringW text, int time){
-        if (!prompt_text) return;
+    void PanelViewController::SetPrompt(StringW text, int time)
+    {
+        if (!prompt_text)return;
         prompt_text->SetText(text);
         TweeningUtils::FadeText(prompt_text, true, 0.2f);
         text = prompt_text->get_text();
-        if (time < 0) return;
-        std::thread([this, text, time](){
+        if (time < 0)return;
+        std::thread([this, text, time]()
+        {
             std::this_thread::sleep_for(std::chrono::seconds(time));
-            Lapiz::Utilities::MainThreadScheduler::Schedule([this, text](){
+            Lapiz::Utilities::MainThreadScheduler::Schedule([this, text]()
+            {
                 if (prompt_text->get_text() != text) return;
                 TweeningUtils::FadeText(prompt_text, false, 0.15f);
-            });
+            }); 
         }).detach();
     }
 }

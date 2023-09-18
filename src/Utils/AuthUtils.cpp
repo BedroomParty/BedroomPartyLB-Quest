@@ -4,9 +4,11 @@
 #include "Models/LocalPlayerInfo.hpp"
 #include "Utils/Constants.hpp"
 
-namespace BedroomPartyLB::AuthUtils{
+namespace BedroomPartyLB::AuthUtils
+{
     AuthState authState = AuthState::NOT_AUTHED;
-    void AuthenticateUserAsync(std::function<void(AuthState)> callback){
+    void AuthenticateUserAsync(std::function<void(AuthState)> callback)
+    {
         authState = AuthState::AUTHING;
         WebUtils::PostAsync(Constants::BASE_URL + "user/login", "{ \"id\": \"" + localPlayerInfo.userID +"\" }", true, [callback](std::string value, bool success) {
             if (success)
@@ -18,9 +20,11 @@ namespace BedroomPartyLB::AuthUtils{
         });
     }
 
-    void RequestNewSessionKey(std::function<void(bool)> callback){
+    void RequestNewSessionKey(std::function<void(bool)> callback)
+    {
         getLogger().info("requesting new key innit");
-        AuthenticateUserAsync([callback](AuthState state){
+        AuthenticateUserAsync([callback](AuthState state)
+        {
             authState = state;
             callback(state == AuthState::AUTHED);
         });

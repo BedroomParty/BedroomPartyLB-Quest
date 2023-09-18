@@ -31,7 +31,8 @@ MAKE_AUTO_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "
     currentPerfectHits = 0;
 }
 
-MAKE_AUTO_HOOK_MATCH(HandleCutFinish, &CutScoreBuffer::HandleSaberSwingRatingCounterDidFinish, void, CutScoreBuffer* self, ISaberSwingRatingCounter* counter){
+MAKE_AUTO_HOOK_MATCH(HandleCutFinish, &CutScoreBuffer::HandleSaberSwingRatingCounterDidFinish, void, CutScoreBuffer* self, ISaberSwingRatingCounter* counter)
+{
     HandleCutFinish(self, counter);
     if (self->noteCutInfo.noteData->colorType == ColorType::ColorA)
     {
@@ -43,14 +44,16 @@ MAKE_AUTO_HOOK_MATCH(HandleCutFinish, &CutScoreBuffer::HandleSaberSwingRatingCou
         extraSongData.avgHandAccRight.push_back(self->get_cutScore());
         extraSongData.avgHandTDRight.push_back(std::abs(self->noteCutInfo.cutNormal.z));
     }
-    if (self->get_cutScore() == 115){
+    if (self->get_cutScore() == 115)
+    {
         currentPerfectHits++;
         if (currentPerfectHits > extraSongData.perfectStreak) extraSongData.perfectStreak = currentPerfectHits;
         else currentPerfectHits = 0;       
     }
 }
 
-MAKE_AUTO_HOOK_MATCH(Pause, &PauseController::Pause, void, PauseController* self){
+MAKE_AUTO_HOOK_MATCH(Pause, &PauseController::Pause, void, PauseController* self)
+{
     Pause(self);
     extraSongData.pauses++;
 }

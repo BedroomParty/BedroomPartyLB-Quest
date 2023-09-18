@@ -8,7 +8,8 @@
 #include "System/Action_1.hpp"
 #include "System/Action.hpp"
 
-namespace BedroomPartyLB::TweeningUtils{
+namespace BedroomPartyLB::TweeningUtils
+{
     using namespace Tweening;
     using namespace UnityEngine;
     using namespace TMPro;
@@ -18,7 +19,8 @@ namespace BedroomPartyLB::TweeningUtils{
 
     using Colour = UnityEngine::Color;
 
-    TimeTweeningManager* getTweeningManager(){
+    TimeTweeningManager* getTweeningManager()
+    {
         static SafePtrUnity<TimeTweeningManager> tweeningManager;
         if (tweeningManager) return tweeningManager.ptr();
         tweeningManager = Resources::FindObjectsOfTypeAll<TimeTweeningManager*>().FirstOrDefault();

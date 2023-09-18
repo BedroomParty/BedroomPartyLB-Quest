@@ -3,7 +3,8 @@
 #include <chrono>
 
 //yoinked from beatleader
-namespace BedroomPartyLB::TimeUtils{
+namespace BedroomPartyLB::TimeUtils
+{
     const int Second = 1;
     const int Minute = 60 * Second;
     const int Hour = 60 * Minute;
@@ -11,7 +12,8 @@ namespace BedroomPartyLB::TimeUtils{
     const int Month = 30 * Day;
     const int Year = 365 * Day;
 
-    inline std::string GetRelativeTimeString(long timeSet) {
+    inline std::string GetRelativeTimeString(long timeSet) 
+    {
         int timeSetSeconds = (int)timeSet;
         int nowSeconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         int delta = nowSeconds - timeSetSeconds;
@@ -22,7 +24,8 @@ namespace BedroomPartyLB::TimeUtils{
         if (delta < 24 * Hour) return std::to_string(delta / Hour) + " hours ago";
         if (delta < 48 * Hour) return "yesterday";
         if (delta < 30 * Day) return std::to_string(delta / Day) + " days ago";
-        if (delta < 12 * Month) {
+        if (delta < 12 * Month) 
+        {
             int months = delta / Month;
             return months <= 1 ? "one month ago" : std::to_string(months) + " months ago";
         }

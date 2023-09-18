@@ -11,16 +11,20 @@
 
 DEFINE_TYPE(BedroomPartyLB::UI, ScoreInfoModal);
 
-namespace BedroomPartyLB::UI {
-    void ScoreInfoModal::PostParse(){
+namespace BedroomPartyLB::UI
+{
+    void ScoreInfoModal::PostParse()
+    {
         TextHoverEffect::AddEffect(usernameScoreText, TMPro::FontStyles::Underline, TMPro::FontStyles::Normal);
     }
 
-    void ScoreInfoModal::OnUserNameTextClick(){
+    void ScoreInfoModal::OnUserNameTextClick()
+    {
         UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + currentEntry.userID.value_or(""));
     }
 
-    void ScoreInfoModal::setScoreModalText(Models::BPLeaderboardEntry entry, int index){
+    void ScoreInfoModal::setScoreModalText(Models::BPLeaderboardEntry entry, int index)
+    {
         getLogger().info("index: %i", index);
         currentEntry = entry;
         profileImageLoading->get_gameObject()->set_active(true);
@@ -43,30 +47,33 @@ namespace BedroomPartyLB::UI {
         modifiersScoreText->get_gameObject()->set_active(!entry.modifiers.empty());
 
         UnityEngine::Object::Destroy(usernameScoreText->get_gameObject()->GetComponent<RainbowAnimation*>());
-        leaderboard.get_bedroomPartyStaffAsync([entry, this](std::vector<std::string> staff){
-            if (std::find(staff.begin(), staff.end(), entry.userID) != staff.end()){
+        leaderboard.get_bedroomPartyStaffAsync([entry, this](std::vector<std::string> staff)
+        {
+            if (std::find(staff.begin(), staff.end(), entry.userID) != staff.end())
+            {
                 usernameScoreText->get_gameObject()->AddComponent<RainbowAnimation*>();
-            }
+            } 
         });
 
         fcScoreText->SetText(entry.fullCombo
-            ? "<size=4><color=green>Full Combo!</color></size>"
-            : string_format("Mistakes: <size=4><color=red>%i</color></size>", entry.badCuts + entry.misses));
+                                 ? "<size=4><color=green>Full Combo!</color></size>"
+                                 : string_format("Mistakes: <size=4><color=red>%i</color></size>", entry.badCuts + entry.misses));
 
         auto img = leaderboard.get_leaderboardViewController()->playerAvatars[index];
         auto load = leaderboard.get_leaderboardViewController()->avatarLoadings[index];
         profileImageLoading->set_active(true);
         profileImage->get_gameObject()->set_active(false);
-        std::thread([this, img, load](){
-            using namespace std::chrono_literals;
-            while(load->get_gameObject()->get_activeSelf()) std::this_thread::sleep_for(300ms);
-            Lapiz::Utilities::MainThreadScheduler::Schedule([this, img](){
+        std::thread([this, img, load]()
+        {
+            while(load->get_gameObject()->get_activeSelf()) std::this_thread::sleep_for(std::chrono::milliseconds(300));
+            Lapiz::Utilities::MainThreadScheduler::Schedule([this, img]()
+            {
                 profileImage->set_sprite(img->get_sprite());
                 profileImageLoading->set_active(false);
                 profileImage->get_gameObject()->set_active(img->get_sprite() && img->get_sprite()->m_CachedPtr.m_value);
-            });
+            }); 
         }).detach();
-        
+
         scoreInfo->Show(true, true, nullptr);
     }
 }

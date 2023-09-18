@@ -5,8 +5,9 @@
 #include "beatsaber-hook/shared/utils/utils-functions.h"
 #include <sstream>
 
-namespace BedroomPartyLB::StringUtils{
-    inline const std::vector<std::string> split(const std::string& s, char delim)
+namespace BedroomPartyLB::StringUtils
+{
+    inline const std::vector<std::string> split(const std::string &s, char delim)
     {
         std::stringstream ss(s);
         std::string item;

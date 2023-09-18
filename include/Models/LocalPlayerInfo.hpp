@@ -3,7 +3,8 @@
 #include <string>
 #include "rapidjson-macros/shared/macros.hpp"
 
-namespace BedroomPartyLB::Models{
+namespace BedroomPartyLB::Models
+{
     DECLARE_JSON_CLASS(LocalPlayerInfo,
         NAMED_VALUE_DEFAULT(std::string, userID, "", "game_id");
         NAMED_VALUE_DEFAULT(std::string, discordID, "", "discord_id");

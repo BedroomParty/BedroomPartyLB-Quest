@@ -3,8 +3,8 @@
 #include "rapidjson-macros/shared/macros.hpp"
 #include <string>
 
-namespace BedroomPartyLB::Models{
-    
+namespace BedroomPartyLB::Models
+{
     DECLARE_JSON_CLASS(ScoreUploadBody,
         NAMED_VALUE(int, difficulty, "difficulty");
         NAMED_VALUE(std::string, characteristic, "characteristic");
@@ -31,7 +31,8 @@ namespace BedroomPartyLB::Models{
                     accuracy(acc), misses(misses), badCuts(badcuts), fullCombo(fc), modifiers(modifiers), 
                     pauses(pause), accLeft(accL), accRight(accR), tdLeft(tdL), tdRight(tdR), perfStreak(streak){}  
         public:
-        std::string toString() const{
+        std::string toString() const
+        {
             return WriteToString(*this);
         }  
     )

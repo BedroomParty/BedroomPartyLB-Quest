@@ -3,13 +3,16 @@
 
 DEFINE_TYPE(BedroomPartyLB::UI, CellClicker);
 
-namespace BedroomPartyLB::UI {
+namespace BedroomPartyLB::UI
+{
 
-    void CellClicker::Start(){
+    void CellClicker::Start()
+    {
         originalScale = separator->get_transform()->get_localScale();
     }
 
-    void CellClicker::OnPointerEnter(){
+    void CellClicker::OnPointerEnter()
+    {
         if (!isScaled)
         {
             separator->get_transform()->set_localScale(originalScale * 1.8f);
@@ -20,11 +23,13 @@ namespace BedroomPartyLB::UI {
         separator->set_color1(UnityEngine::Color(1, 1, 1, 0));
     }
 
-    void CellClicker::OnPointerClick(){
+    void CellClicker::OnPointerClick()
+    {
         onClick();
     }
 
-    void CellClicker::OnPointerExit(){
+    void CellClicker::OnPointerExit()
+    {
         if (isScaled)
         {
             separator->get_transform()->set_localScale(originalScale);

@@ -45,30 +45,35 @@ namespace BedroomPartyLB::UI
         seasonImage->set_material(leaderboard.get_panelViewController()->GetRoundEdgeMaterial());
     }
 
-    void SeasonListCell::Populate(Models::SeasonData& data){
+    void SeasonListCell::Populate(Models::SeasonData &data)
+    {
         _data = &data;
         set_seasonNumber(_data->seasonNumber);
         set_seasonDescription(_data->seasonDescription);
         set_seasonRank(_data->seasonRank);
         set_seasonPP(_data->seasonPP);
 
-        if (_data->seasonImageSprite != nullptr && _data->seasonImageSprite->m_CachedPtr.m_value != nullptr
-            && _data->seasonImageSprite->get_texture() != nullptr && _data->seasonImageSprite->get_texture()->m_CachedPtr.m_value != nullptr) return set_sprite(_data->seasonImageSprite);
-        
-        if (_data->seasonImageLink.empty()) return;
+        if (_data->seasonImageSprite != nullptr && _data->seasonImageSprite->m_CachedPtr.m_value != nullptr && _data->seasonImageSprite->get_texture() != nullptr && _data->seasonImageSprite->get_texture()->m_CachedPtr.m_value != nullptr)
+            return set_sprite(_data->seasonImageSprite);
+
+        if (_data->seasonImageLink.empty())
+            return;
         downloadInProgress = true;
-        WebUtils::GetImageAsync(_data->seasonImageLink, [this](UnityEngine::Sprite* profilePicture){
+        WebUtils::GetImageAsync(_data->seasonImageLink, [this](UnityEngine::Sprite* profilePicture)
+        {
             _data->seasonImageSprite = profilePicture;
             set_sprite(profilePicture);
-            downloadInProgress = false;
+            downloadInProgress = false; 
         });
     }
 
-    void SeasonListCell::SeasonLeaderboardClicked(){
+    void SeasonListCell::SeasonLeaderboardClicked()
+    {
         UnityEngine::Application::OpenURL("https://thebedroom.party/season/" + std::to_string(_data->seasonNumber));
     }
 
-    void SeasonListCell::SeasonPlaylistClicked(){
+    void SeasonListCell::SeasonPlaylistClicked()
+    {
         UnityEngine::Application::OpenURL("https://thebedroom.party/playlist/" + std::to_string(_data->seasonNumber));
     }
 
@@ -78,17 +83,21 @@ namespace BedroomPartyLB::UI
         backgroundImage->background->set_color(get_highlighted() ? highlightedColor : idleColor);
     }
 
-    void SeasonListCell::FixedUpdate(){
-        if (!get_gameObject()->get_activeInHierarchy() || downloadInProgress) return;
+    void SeasonListCell::FixedUpdate()
+    {
+        if (!get_gameObject()->get_activeInHierarchy() || downloadInProgress)
+            return;
 
-        if (_data->seasonImageSprite != nullptr && _data->seasonImageSprite->m_CachedPtr.m_value != nullptr
-            && _data->seasonImageSprite->get_texture() != nullptr && _data->seasonImageSprite->get_texture()->m_CachedPtr.m_value != nullptr) return;
-        if (_data->seasonImageLink.empty()) return;
+        if (_data->seasonImageSprite != nullptr && _data->seasonImageSprite->m_CachedPtr.m_value != nullptr && _data->seasonImageSprite->get_texture() != nullptr && _data->seasonImageSprite->get_texture()->m_CachedPtr.m_value != nullptr)
+            return;
+        if (_data->seasonImageLink.empty())
+            return;
         downloadInProgress = true;
-        WebUtils::GetImageAsync(_data->seasonImageLink, [this](UnityEngine::Sprite* seasonImageSprite){
+        WebUtils::GetImageAsync(_data->seasonImageLink, [this](UnityEngine::Sprite* seasonImageSprite)
+        {
             _data->seasonImageSprite = seasonImageSprite;
             set_sprite(seasonImageSprite);
-            downloadInProgress = false;
+            downloadInProgress = false; 
         });
     }
 
@@ -112,7 +121,7 @@ namespace BedroomPartyLB::UI
         ppText->SetText(string_format("PP: %i", (int)pp));
     }
 
-    void SeasonListCell::set_sprite(UnityEngine::Sprite* sprite)
+    void SeasonListCell::set_sprite(UnityEngine::Sprite *sprite)
     {
         seasonImage->set_sprite(sprite);
     }

@@ -8,7 +8,8 @@
 #include "main.hpp"
 
 // making this a rapidjson-macros class for when it'll eventually be data pulled from the api
-namespace BedroomPartyLB::Models{
+namespace BedroomPartyLB::Models
+{
     DECLARE_JSON_CLASS(SeasonData, 
         NAMED_VALUE_DEFAULT(int, seasonNumber, 0, "seasonNumber");
         NAMED_VALUE_DEFAULT(std::string, seasonDescription, "", "seasonDescription");
@@ -23,10 +24,12 @@ namespace BedroomPartyLB::Models{
         SeasonData(int num, std::string desc, int rank, int pp, std::string link) : seasonNumber(num), seasonDescription(desc), seasonRank(rank), seasonPP(pp), seasonImageLink(link){}
         SeasonData(int num, std::string desc, int rank, int pp, UnityEngine::Sprite* sprite) : seasonNumber(num), seasonDescription(desc), seasonRank(rank), seasonPP(pp), seasonImageSprite(sprite){}
         
-        ~SeasonData(){
+        ~SeasonData()
+        {
             getLogger().info("destroying season data");
             if (seasonImageSprite == nullptr || seasonImageSprite->m_CachedPtr.m_value == nullptr) return;
-            if (seasonImageSprite->get_texture() == nullptr || seasonImageSprite->get_texture()->m_CachedPtr.m_value == nullptr) {
+            if (seasonImageSprite->get_texture() == nullptr || seasonImageSprite->get_texture()->m_CachedPtr.m_value == nullptr) 
+            {
                 UnityEngine::Object::Destroy(seasonImageSprite); return;
             }
             UnityEngine::Object::Destroy(seasonImageSprite->get_texture());

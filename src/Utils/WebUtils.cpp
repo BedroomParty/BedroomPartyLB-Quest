@@ -3,6 +3,8 @@
 #include "lapiz/shared/utilities/MainThreadScheduler.hpp"
 #include "main.hpp"
 #include "Utils/WebUtils.hpp"
+#include "EasyDelegate.hpp"
+#include "bsml/shared/Helpers/utilities.hpp"
 
 #include "GlobalNamespace/IDifficultyBeatmap.hpp"
 #include "GlobalNamespace/SharedCoroutineStarter.hpp"
@@ -30,6 +32,7 @@
 using namespace UnityEngine::Networking;
 using namespace std;
 using namespace UnityEngine;
+using namespace EasyDelegate;
 
 #define coro(coroutine) GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(coroutine))
 
@@ -81,25 +84,20 @@ namespace BedroomPartyLB::WebUtils
         GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::new_coro(GetAsyncCoroutine(url, callback)));
     }
 
-    void GetImageAsync(std::string URL, std::function<void(Sprite*)> callback){
-        Lapiz::Utilities::MainThreadScheduler::Schedule([=](){
+    void GetImageAsync(std::string URL, std::function<void(Sprite*)> callback)
+    {
+        using DLFinish = System::Action_1<AsyncOperation*>;
+        Lapiz::Utilities::MainThreadScheduler::Schedule([=]()
+        {
             auto request = UnityWebRequestTexture::GetTexture(URL);
             request->SetRequestHeader("User-Agent", std::string(MOD_ID) + " " + VERSION);
-            request->SendWebRequest()->add_completed(DLCompletedDeleg([=](auto* value){
+            request->SendWebRequest()->add_completed(MakeDelegate<DLFinish*>([=](AsyncOperation* value)
+            {
                 if (request->get_isHttpError() || request->get_isNetworkError()) return callback(nullptr);
                 auto downloadHandlerTexture = reinterpret_cast<DownloadHandlerTexture*>(request->get_downloadHandler());
                 auto texture = downloadHandlerTexture->get_texture();
                 if (texture == nullptr) return callback(nullptr);
-                auto sprite = Sprite::Create(texture, 
-                                            Rect(0.0f, 0.0f, 
-                                            (float)texture->get_width(), 
-                                            (float)texture->get_height()), 
-                                            Vector2(0.5f, 0.5f), 
-                                            1024.0f, 
-                                            1u, 
-                                            SpriteMeshType::FullRect, 
-                                            Vector4(0.0f, 0.0f, 0.0f, 0.0f), 
-                                            false);
+                auto sprite = BSML::Utilities::LoadSpriteFromTexture(texture);
                 callback(sprite);
             }));
         });

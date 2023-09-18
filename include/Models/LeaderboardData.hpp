@@ -5,7 +5,8 @@
 #include "GlobalNamespace/LeaderboardTableView_ScoreData.hpp"
 #include "beatsaber-hook/shared/utils/utils-functions.h"
 
-namespace BedroomPartyLB::Models{
+namespace BedroomPartyLB::Models
+{
     
     DECLARE_JSON_CLASS(BPLeaderboardEntry,
         NAMED_VALUE_OPTIONAL(std::string, userID, "id");
@@ -21,7 +22,8 @@ namespace BedroomPartyLB::Models{
         NAMED_VALUE_DEFAULT(int, rank, 0, "position");
 
         public:
-        GlobalNamespace::LeaderboardTableView::ScoreData* CreateLeaderboardEntryData(int rank) const {
+        GlobalNamespace::LeaderboardTableView::ScoreData* CreateLeaderboardEntryData(int rank) const 
+        {
 
             std::string name = this->username;
             std::string acc = string_format(" - (<color=#ffd42a>%.2f%%</color>)", this->accuracy);

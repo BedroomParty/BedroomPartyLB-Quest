@@ -31,7 +31,7 @@ using namespace BedroomPartyLB;
 
 extern Models::CustomLeaderboard leaderboard;
 
-std::string GetModifiers(LevelCompletionResults *levelCompletionResults)
+std::string GetModifiers(LevelCompletionResults* levelCompletionResults)
 {
     std::string modifiers = "";
     auto levelModifiers = levelCompletionResults->gameplayModifiers;
@@ -70,14 +70,13 @@ std::string GetModifiers(LevelCompletionResults *levelCompletionResults)
     return modifiers;
 }
 
-MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletionResultsHelper::ProcessScore, void, PlayerData * playerData, PlayerLevelStatsData * playerLevelStats,
-LevelCompletionResults * levelCompletionResults, IReadonlyBeatmapData * transformedBeatmapData, IDifficultyBeatmap * difficultyBeatmap, PlatformLeaderboardsModel * platformLeaderboardsModel)
+MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletionResultsHelper::ProcessScore, void, PlayerData* playerData, PlayerLevelStatsData* playerLevelStats, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, PlatformLeaderboardsModel* platformLeaderboardsModel)
 {
     LevelCompletionResultsHelper_ProcessScore(playerData, playerLevelStats, levelCompletionResults, transformedBeatmapData, difficultyBeatmap, platformLeaderboardsModel);
     if (levelCompletionResults->levelEndStateType == LevelCompletionResults::LevelEndStateType::Failed || levelCompletionResults->modifiedScore == 0 || levelCompletionResults->multipliedScore == 0)
         return;
     if (!difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Contains("custom"))
-            return;
+        return;
 
     float maxScore = ScoreModel::ComputeMaxMultipliedScoreForBeatmap(transformedBeatmapData);
     float accuracy = levelCompletionResults->modifiedScore / maxScore * 100;
@@ -93,13 +92,12 @@ LevelCompletionResults * levelCompletionResults, IReadonlyBeatmapData * transfor
     float tdR = extraSongData.GetAverageFromList(extraSongData.avgHandTDRight);
     int streak = extraSongData.perfectStreak;
 
-    
     std::string requestBody = Models::ScoreUploadBody(difficultyBeatmap->get_difficultyRank(), characteristic, localPlayerInfo.userID,
-                                                levelCompletionResults->multipliedScore, levelCompletionResults->modifiedScore,
-                                                accuracy, levelCompletionResults->missedCount, levelCompletionResults->badCutsCount,
-                                                levelCompletionResults->fullCombo, modifiers, pauses, accL, accR, tdL, tdR, streak).toString();
+                                                      levelCompletionResults->multipliedScore, levelCompletionResults->modifiedScore,
+                                                      accuracy, levelCompletionResults->missedCount, levelCompletionResults->badCutsCount,
+                                                      levelCompletionResults->fullCombo, modifiers, pauses, accL, accR, tdL, tdR, streak).toString();
 
-    std::string url = Constants::BASE_URL + "leaderboard/"+beatmapID+"/upload";
+    std::string url = Constants::BASE_URL + "leaderboard/" + beatmapID + "/upload";
 
     std::thread(&UploadUtils::TryUploadScore, url, requestBody).detach();
 }
