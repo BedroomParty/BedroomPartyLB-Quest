@@ -22,6 +22,7 @@ namespace BedroomPartyLB::Models{
         }
 
         float GetAverageFromList(std::vector<float> list) const{
+            if (list.size() == 0) return 0;
             float sum = 0;
             for (const float& f : list) sum += f;
             return sum / (float)list.size();
