@@ -214,7 +214,6 @@ namespace BedroomPartyLB::UI
                     if (pageLeaderboard.has_value() && pageLeaderboard.value().scores.size() > 0)
                     {
                         std::vector<Models::BPLeaderboardEntry> scores = pageLeaderboard.value().scores;
-                        while(scores.size() < 10) scores.push_back(scores[0]);
                         auto scoreData = CreateLeaderboardData(scores);
                         errorText->get_gameObject()->SetActive(false);
                         BPLeaderboard->SetScores(scoreData, GetPlayerScoreIndex(scores));
