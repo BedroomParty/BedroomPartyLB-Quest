@@ -10,6 +10,7 @@
 #include "HMUI/ModalView.hpp"
 #include "bsml/shared/BSML/Components/CustomListTableData.hpp"
 #include "PluginUI/SeasonList/SeasonListData.hpp"
+#include "System/Guid.hpp"
 
 DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, PanelViewController, HMUI::ViewController, 
     DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::FindMethodUnsafe("HMUI", "ViewController", "DidActivate", 3), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
@@ -23,7 +24,7 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, PanelViewController, HMUI::ViewControl
     DECLARE_INSTANCE_METHOD(void, OnPlayerUsernameClick);
     DECLARE_INSTANCE_METHOD(void, OnSeasonTextClick);
     DECLARE_INSTANCE_METHOD(void, HandleShittyListBollocksCunt);
-    DECLARE_INSTANCE_METHOD(void, SetPrompt, StringW text, int time);
+    DECLARE_INSTANCE_METHOD(void, SetPrompt, StringW text, int time, bool loader = false);
 
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, prompt_loader);
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, playerAvatarLoading);
@@ -38,4 +39,5 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, PanelViewController, HMUI::ViewControl
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, seasonText);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, seasonDescription);
     DECLARE_INSTANCE_FIELD(int, currentSeason);
+    DECLARE_INSTANCE_FIELD(System::Guid, currentPrompt);
 )

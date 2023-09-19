@@ -83,7 +83,7 @@ namespace BedroomPartyLB::UI
     {
         prompt_loader->SetActive(true);
         prompt_text->get_gameObject()->SetActive(true);
-        SetPrompt("Authenticating...", -1);
+        SetPrompt("Authenticating...", -1, true);
     }
 
     void PanelViewController::SetSeasons(int currentSeason)
@@ -98,7 +98,7 @@ namespace BedroomPartyLB::UI
             else
                 seasonList->seasonList.emplace_back(currentSeason - i, "No Pauses", 14, 43, placeholderSprite);
         }
-        seasonText->SetText("Season " + std::to_string(seasonList->seasonList[0].seasonNumber));
+        // seasonText->SetText("Season " + std::to_string(seasonList->seasonList[0].seasonNumber));
         seasonDescription->SetText(seasonList->seasonList[0].seasonDescription);
         seasonList->tableView->ReloadData();
     }
@@ -106,7 +106,7 @@ namespace BedroomPartyLB::UI
     void PanelViewController::OnPlayerUsernameClick()
     {
         if (localPlayerInfo.userID.empty()) return;
-        UnityEngine::Application::OpenURL("https://thebedroom.party/?user=" + localPlayerInfo.userID);
+        UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + localPlayerInfo.userID);
     }
 
     void PanelViewController::OnSeasonTextClick()
@@ -126,7 +126,6 @@ namespace BedroomPartyLB::UI
         playerAvatarLoading->SetActive(false);
         Lapiz::Utilities::MainThreadScheduler::Schedule([this]()
         {
-            seasonText->set_richText(true);
             SetSeasons(15); 
         });
         leaderboard.get_bedroomPartyStaffAsync([this](std::vector<std::string> staff)
@@ -138,20 +137,23 @@ namespace BedroomPartyLB::UI
         });
     }
 
-    void PanelViewController::SetPrompt(StringW text, int time)
+    void PanelViewController::SetPrompt(StringW text, int time, bool loader)
     {
-        if (!prompt_text)return;
+        if (!prompt_text) return;
         prompt_text->SetText(text);
+        prompt_loader->set_active(loader);
         TweeningUtils::FadeText(prompt_text, true, 0.2f);
-        text = prompt_text->get_text();
-        if (time < 0)return;
-        std::thread([this, text, time]()
+        if (time < 0) return;
+        auto guid = System::Guid::NewGuid();
+        currentPrompt = guid;
+        std::thread([this, guid, time]()
         {
             std::this_thread::sleep_for(std::chrono::seconds(time));
-            Lapiz::Utilities::MainThreadScheduler::Schedule([this, text]()
+            Lapiz::Utilities::MainThreadScheduler::Schedule([this, guid]()
             {
-                if (prompt_text->get_text() != text) return;
+                if (currentPrompt != guid) return;
                 TweeningUtils::FadeText(prompt_text, false, 0.15f);
+                prompt_loader->set_active(false);
             }); 
         }).detach();
     }
