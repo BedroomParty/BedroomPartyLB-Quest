@@ -21,7 +21,7 @@ namespace BedroomPartyLB::Models
         NAMED_VALUE(float, accRight, "avgHandAccRight");
         NAMED_VALUE(float, tdLeft, "avgHandTDLeft");
         NAMED_VALUE(float, tdRight, "avgHandTDRight");
-        NAMED_VALUE(float, perfStreak, "perfectStreak");
+        NAMED_VALUE(int, perfStreak, "perfectStreak");
 
         ScoreUploadBody() = default;
         ScoreUploadBody(int diff, std::string charac, std::string id, int multipliedScore, int modifiedScore,
