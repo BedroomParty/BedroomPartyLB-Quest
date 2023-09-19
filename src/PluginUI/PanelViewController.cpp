@@ -46,7 +46,6 @@ namespace BedroomPartyLB::UI
     {
         static SafePtrUnity<UnityEngine::Material> roundEdgeMaterial;
         if (roundEdgeMaterial) return roundEdgeMaterial.ptr();
-        getLogger().info("so we made it here...");
         roundEdgeMaterial = UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material *>().First([](auto &v){ return v->get_name() == "UINoGlowRoundEdge"; });
         return roundEdgeMaterial.ptr();
     }
@@ -58,7 +57,8 @@ namespace BedroomPartyLB::UI
         BSML::parse_and_construct(IncludedAssets::infoModal_bsml, leaderboard.get_leaderboardViewController()->get_transform(), this);
         BSML::parse_and_construct(IncludedAssets::seasonSelectModal_bsml, leaderboard.get_leaderboardViewController()->get_transform(), this);
         HandleShittyListBollocksCunt();
-        if (AuthUtils::authState == AuthUtils::AUTHED && playerAvatarLoading->get_gameObject()->get_activeSelf()) SetBannerInfo();
+        using namespace AuthUtils;
+        if ((authState == AUTHED || authState == ERROR) && playerAvatarLoading->get_gameObject()->get_activeSelf()) SetBannerInfo();
         infoModal->get_gameObject()->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
         seasonSelectModal->get_gameObject()->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
         TextHoverEffect::AddEffect(playerUsername, TMPro::FontStyles::Underline, TMPro::FontStyles::Normal);
@@ -118,13 +118,14 @@ namespace BedroomPartyLB::UI
     {
         if (!this->isActivated || !this->wasActivatedBefore) return;
         if (AuthUtils::authState != AuthUtils::AUTHED && AuthUtils::authState != AuthUtils::ERROR) return;
-        if (AuthUtils::authState == AuthUtils::ERROR) return SetPrompt("<color=red>Authentication Failed!</color>", 5);
-        SetPrompt("<color=green>Successfully Authenticated!</color>", 5);
+        bool error = AuthUtils::authState == AuthUtils::ERROR;
+        SetPrompt((error ? "<color=red>Authentication Failed!</color>" : "<color=green>Successfully Authenticated!</color>"), 5);
         prompt_loader->set_active(false);
-        playerUsername->SetText(localPlayerInfo.username);
-        BSML::Utilities::SetImage(playerAvatar, string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), localPlayerInfo.userID.c_str()));
+        playerUsername->SetText(error ? "failed" : localPlayerInfo.username);
+        if (!error) BSML::Utilities::SetImage(playerAvatar, string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), localPlayerInfo.userID.c_str()));
         playerAvatar->set_material(GetRoundEdgeMaterial());
         playerAvatarLoading->SetActive(false);
+        if (error) return;
         Lapiz::Utilities::MainThreadScheduler::Schedule([this]()
         {
             SetSeasons(15); 

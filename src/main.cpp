@@ -23,7 +23,7 @@ Configuration& getConfig()
 
 Logger& getLogger()
 {
-    static Logger *logger = new Logger(modInfo);
+    static Logger *logger = new Logger(modInfo, {false, true});
     return *logger;
 }
 

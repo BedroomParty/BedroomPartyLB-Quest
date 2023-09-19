@@ -50,10 +50,7 @@ namespace BedroomPartyLB::WebUtils
 
         co_yield reinterpret_cast<System::Collections::IEnumerator*>(CRASH_UNLESS(request->SendWebRequest()));
 
-        if (!request->get_isNetworkError() && !request->get_isHttpError())
-            callback(request->get_downloadHandler()->GetText(), true);
-        else
-            callback("", false);
+        callback(request->get_downloadHandler()->GetText(), !request->get_isNetworkError() && !request->get_isHttpError());
 
         request->Dispose();
         co_return;
@@ -65,10 +62,8 @@ namespace BedroomPartyLB::WebUtils
         request->SetRequestHeader("Content-Type", "application/json");
 
         co_yield reinterpret_cast<System::Collections::IEnumerator*>(CRASH_UNLESS(request->SendWebRequest()));
-        if (!request->get_isNetworkError() && !request->get_isHttpError())
-            callback(request->get_downloadHandler()->GetText(), true);
-        else
-            callback("", false);
+        
+        callback(request->get_downloadHandler()->GetText(), !request->get_isNetworkError() && !request->get_isHttpError());
 
         request->Dispose();
         co_return;
