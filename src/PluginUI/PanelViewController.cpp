@@ -118,6 +118,7 @@ namespace BedroomPartyLB::UI
     {
         if (!this->isActivated || !this->wasActivatedBefore) return;
         if (AuthUtils::authState != AuthUtils::AUTHED && AuthUtils::authState != AuthUtils::ERROR) return;
+        if (AuthUtils::authState == AuthUtils::ERROR) return SetPrompt("<color=red>Authentication Failed!</color>", 5);
         SetPrompt("<color=green>Successfully Authenticated!</color>", 5);
         prompt_loader->set_active(false);
         playerUsername->SetText(localPlayerInfo.username);
