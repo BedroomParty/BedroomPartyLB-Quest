@@ -25,6 +25,8 @@
 #include "Utils/Constants.hpp"
 #include "Utils/UploadUtils.hpp"
 #include "Models/ExtraSongData.hpp"
+#include "GlobalNamespace/PracticeViewController.hpp"
+#include "UnityEngine/Resources.hpp"
 
 using namespace GlobalNamespace;
 using namespace BedroomPartyLB;
@@ -73,11 +75,9 @@ std::string GetModifiers(LevelCompletionResults* levelCompletionResults)
 MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletionResultsHelper::ProcessScore, void, PlayerData* playerData, PlayerLevelStatsData* playerLevelStats, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, PlatformLeaderboardsModel* platformLeaderboardsModel)
 {
     LevelCompletionResultsHelper_ProcessScore(playerData, playerLevelStats, levelCompletionResults, transformedBeatmapData, difficultyBeatmap, platformLeaderboardsModel);
-    if (levelCompletionResults->levelEndStateType == LevelCompletionResults::LevelEndStateType::Failed || levelCompletionResults->modifiedScore == 0 || levelCompletionResults->multipliedScore == 0)
-        return;
-    if (!difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Contains("custom"))
-        return;
-
+    if (levelCompletionResults->levelEndStateType == LevelCompletionResults::LevelEndStateType::Failed) return;
+    if (levelCompletionResults->modifiedScore == 0 || levelCompletionResults->multipliedScore == 0) return;
+    if (!difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Contains("custom")) return;
     float maxScore = ScoreModel::ComputeMaxMultipliedScoreForBeatmap(transformedBeatmapData);
     float accuracy = levelCompletionResults->modifiedScore / maxScore * 100;
 

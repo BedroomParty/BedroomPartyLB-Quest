@@ -17,7 +17,7 @@ namespace BedroomPartyLB::Models
         NAMED_VALUE(int, badCuts, "badCuts");
         NAMED_VALUE(bool, fullCombo, "fullCombo");
         NAMED_VALUE(std::string, modifiers, "modifiers");
-        NAMED_VALUE_DEFAULT(std::string, username, "null", "username");
+        NAMED_VALUE_DEFAULT(std::string, username, "", "username");
         NAMED_VALUE_DEFAULT(long, timeSet, 0, "timeSet");
         NAMED_VALUE_DEFAULT(int, rank, 0, "position");
 
@@ -31,12 +31,10 @@ namespace BedroomPartyLB::Models
             std::string combo = this->fullCombo ? "<color=green> FC </color>" : " - <color=red>x" + missCount + "</color>" ;
             std::string mods = " <size=60%>" + modifiers + "</size>";
             
-            std::string result = "<size=90%>" + name + acc + combo + mods + "</size>";
+            if (!this->userID.has_value() || username == "") name = "<color=red>Error</color>";
+            else if (this->userID.value() == "76561199077754911") name = "<color=#6488ea><rotate=180>" + std::string(name.rbegin(), name.rend()) + "</rotate></color>";
 
-            if (this->userID.has_value() && this->userID.value() == "76561199077754911")
-            {
-                name = "<color=blue>" + this->username + "</color>";
-            }
+            std::string result = "<size=90%>" + name + acc + combo + mods + "</size>";
             return GlobalNamespace::LeaderboardTableView::ScoreData::New_ctor(this->modifiedScore, result, rank, false);
         }
     )

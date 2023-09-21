@@ -32,7 +32,8 @@ namespace BedroomPartyLB::UI
         std::string time = TimeUtils::GetRelativeTimeString(entry.timeSet);
         dateScoreText->SetText(string_format("<size=4.8><color=white>%s</color></size>", time.c_str()));
 
-        usernameScoreText->SetText(string_format("<size=180%%>%s</color>", entry.username.c_str()));
+        std::string username = !entry.username.empty() ? entry.username : "<color=red>Error</color>";
+        usernameScoreText->SetText(string_format("<size=180%%>%s</color>", username.c_str()));
         usernameScoreText->set_richText(true);
         accScoreText->SetText(string_format("Accuracy: <size=%f><color=#ffd42a>%.2f%%</color></size>", infoFontSize, entry.accuracy));
 
@@ -49,7 +50,7 @@ namespace BedroomPartyLB::UI
         UnityEngine::Object::Destroy(usernameScoreText->get_gameObject()->GetComponent<RainbowAnimation*>());
         leaderboard.get_bedroomPartyStaffAsync([entry, this](std::vector<std::string> staff)
         {
-            if (std::find(staff.begin(), staff.end(), entry.userID) != staff.end())
+            if (!entry.username.empty() && entry.userID.has_value() && std::find(staff.begin(), staff.end(), entry.userID.value()) != staff.end())
             {
                 usernameScoreText->get_gameObject()->AddComponent<RainbowAnimation*>();
             } 

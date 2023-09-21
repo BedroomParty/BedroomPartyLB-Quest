@@ -195,7 +195,7 @@ namespace BedroomPartyLB::UI
         if (AuthUtils::authState == AuthUtils::ERROR) return SetLoading(false, "Auth Failed");
         if (AuthUtils::authState != AuthUtils::AUTHED) return SetLoading(false, "Authenticating...");
 
-        std::string refreshId = std::string(System::Guid::NewGuid().ToString());
+        std::string refreshId = static_cast<std::string>(System::Guid::NewGuid().ToString());
         currentRefreshId = refreshId;
         BPLeaderboard->tableView->SetDataSource(nullptr, true);
         for (auto image : playerAvatars) image->get_gameObject()->set_active(false);
@@ -250,8 +250,8 @@ namespace BedroomPartyLB::UI
                             avatarLoadings[i]->get_gameObject()->set_active(false);
                             return;
                         }
-                        playerAvatars[i]->set_sprite(sprite);
-                        playerAvatars[i]->get_gameObject()->set_active(sprite);
+                        playerAvatars[i]->set_sprite(sprite ? sprite : BSML::Utilities::LoadSpriteRaw(IncludedAssets::Player_png));
+                        playerAvatars[i]->get_gameObject()->set_active(true);
                         avatarLoadings[i]->get_gameObject()->set_active(false); 
                     }); 
                 });
