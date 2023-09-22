@@ -10,7 +10,8 @@ namespace BedroomPartyLB::AuthUtils
     void AuthenticateUserAsync(std::function<void(AuthState)> callback)
     {
         authState = AuthState::AUTHING;
-        WebUtils::PostAsync(Constants::BASE_URL + "user/login", "{ \"id\": \"" + localPlayerInfo.userID +"\" }", true, [callback](std::string value, bool success) {
+        WebUtils::PostAsync(Constants::BASE_URL + "user/login", "{ \"id\": \"" + localPlayerInfo.userID +"\" }", true, [callback](std::string value, bool success, int responseCode) 
+        {
             if (success)
             {
                 ReadFromString(value, localPlayerInfo);

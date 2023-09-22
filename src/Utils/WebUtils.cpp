@@ -28,6 +28,7 @@
 #include <optional>
 #include <functional>
 #include "Models/LocalPlayerInfo.hpp"
+#include "UnityEngine/Networking/UnityWebRequest_UnityWebRequestError.hpp"
 
 using namespace UnityEngine::Networking;
 using namespace std;
@@ -38,7 +39,7 @@ using namespace EasyDelegate;
 
 namespace BedroomPartyLB::WebUtils
 {
-    custom_types::Helpers::Coroutine PostAsyncCoroutine(string url, string body, bool isLogin, function<void(string, bool)> callback)
+    custom_types::Helpers::Coroutine PostAsyncCoroutine(string url, string body, bool isLogin, function<void(string, bool, int)> callback)
     {        
         auto request = UnityWebRequest::New_ctor(url, "POST", DownloadHandlerBuffer::New_ctor(), UploadHandlerRaw::New_ctor(System::Text::Encoding::get_UTF8()->GetBytes(body)));
         request->SetRequestHeader("Content-Type", "application/json");
@@ -49,8 +50,7 @@ namespace BedroomPartyLB::WebUtils
         DEBUG("{}", localPlayerInfo.sessionKey);
 
         co_yield reinterpret_cast<System::Collections::IEnumerator*>(CRASH_UNLESS(request->SendWebRequest()));
-
-        callback(request->get_downloadHandler()->GetText(), !request->get_isNetworkError() && !request->get_isHttpError());
+        callback(request->get_downloadHandler()->GetText(), !request->get_isNetworkError() && !request->get_isHttpError(), request->get_responseCode());
 
         request->Dispose();
         co_return;
@@ -69,7 +69,7 @@ namespace BedroomPartyLB::WebUtils
         co_return;
     }
 
-    void PostAsync(string url, string body, bool isLogin, function<void (string, bool)> callback)
+    void PostAsync(string url, string body, bool isLogin, function<void (string, bool, int)> callback)
     {
         GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::new_coro(PostAsyncCoroutine(url, body, isLogin, callback)));
     }

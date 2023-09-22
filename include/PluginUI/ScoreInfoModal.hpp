@@ -17,6 +17,7 @@
 #include "UnityEngine/GameObject.hpp"
 #include "bsml/shared/BSML/Components/ClickableText.hpp"
 #include "Models/LeaderboardData.hpp"
+#include "UnityEngine/UI/Button.hpp"
 
 DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, ScoreInfoModal, Il2CppObject,
     DECLARE_INSTANCE_FIELD(HMUI::ModalView*, scoreInfo);
@@ -30,9 +31,22 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, ScoreInfoModal, Il2CppObject,
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, modifiersScoreText);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, fcScoreText);
 
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, avgHandAccLeft);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, avgHandAccRight);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, avgHandTDLeft);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, avgHandTDRight);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, perfectStreak);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, pauses);
+
+    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, mainModalInfo);
+    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, moreModalInfo);
+
+    DECLARE_INSTANCE_FIELD(UnityEngine::UI::Button*, moreInfoButton);
+
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_METHOD(void, OnUserNameTextClick);
+    DECLARE_INSTANCE_METHOD(void, OnInfoButtonClick);
     DECLARE_INSTANCE_METHOD(void, PostParse);
 
     public:
@@ -42,4 +56,5 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, ScoreInfoModal, Il2CppObject,
     BedroomPartyLB::Models::BPLeaderboardEntry currentEntry;
     const int scoreDetails = 4;
     const float infoFontSize = 4.2f;
+    bool isMoreInfo = false;
     )

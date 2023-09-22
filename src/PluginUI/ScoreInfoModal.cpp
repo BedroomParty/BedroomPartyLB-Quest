@@ -13,9 +13,11 @@ DEFINE_TYPE(BedroomPartyLB::UI, ScoreInfoModal);
 
 namespace BedroomPartyLB::UI
 {
+    using namespace TMPro;
     void ScoreInfoModal::PostParse()
     {
         TextHoverEffect::AddEffect(usernameScoreText, TMPro::FontStyles::Underline, TMPro::FontStyles::Normal);
+        isMoreInfo = false;
     }
 
     void ScoreInfoModal::OnUserNameTextClick()
@@ -23,9 +25,16 @@ namespace BedroomPartyLB::UI
         UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + currentEntry.userID.value_or(""));
     }
 
+    void ScoreInfoModal::OnInfoButtonClick()
+    {
+        isMoreInfo = !isMoreInfo;
+        moreInfoButton->GetComponentInChildren<TextMeshProUGUI*>()->SetText(isMoreInfo ? "Back" : "More Info");
+        moreModalInfo->set_active(isMoreInfo);
+        mainModalInfo->set_active(!isMoreInfo);
+    }
+
     void ScoreInfoModal::setScoreModalText(Models::BPLeaderboardEntry entry, int index)
     {
-        getLogger().info("index: %i", index);
         currentEntry = entry;
         profileImageLoading->get_gameObject()->set_active(true);
 
@@ -35,7 +44,7 @@ namespace BedroomPartyLB::UI
         std::string username = !entry.username.empty() ? entry.username : "<color=red>Error</color>";
         usernameScoreText->SetText(string_format("<size=180%%>%s</color>", username.c_str()));
         usernameScoreText->set_richText(true);
-        accScoreText->SetText(string_format("Accuracy: <size=%f><color=#ffd42a>%.2f%%</color></size>", infoFontSize, entry.accuracy));
+        accScoreText->SetText(string_format("Accuracy: <size=%f><color=#ffd42a>%s%%</color></size>", infoFontSize, StringUtils::format_float(entry.accuracy).c_str()));
 
         std::string scoreText = string_format("Score: <size=%f>%i</size>", infoFontSize, entry.modifiedScore);
         std::replace(scoreText.begin(), scoreText.end(), ',', ' ');
@@ -57,8 +66,18 @@ namespace BedroomPartyLB::UI
         });
 
         fcScoreText->SetText(entry.fullCombo
-            ? "<size=4><color=green>Full Combo!</color></size>"
-            : string_format("Mistakes: <size=4><color=red>%i</color></size>", entry.badCuts + entry.misses));
+            ? "<size=4><color=#43e03a>Full Combo!</color></size>"
+            : string_format("Mistakes: <size=4><color=#f0584a>%i</color></size>", entry.badCuts + entry.misses));
+
+        pauses->SetText(string_format("Pauses: <size=%f>%i</size>", infoFontSize, entry.pauses));
+        perfectStreak->SetText(string_format("Perfect Streak: <size=%f><color=#ffd42a>%i</size>", infoFontSize, entry.perfectStreak));
+        // avgHandAccLeft->SetText(string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s</color> (<color=#ffd42a>%s%%</color>)</size>", infoFontSize, StringUtils::format_float(entry.accL).c_str(), StringUtils::format_float(float(entry.accL)/115*100).c_str()));
+        // avgHandAccRight->SetText(string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s</color> (<color=#ffd42a>%s%%</color>)</size>", infoFontSize, StringUtils::format_float(entry.accR).c_str(), StringUtils::format_float(float(entry.accR)/115*100).c_str()));
+        avgHandAccLeft->SetText(string_format("Left Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.accL).c_str()));
+        avgHandAccRight->SetText(string_format("Right Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.accR).c_str()));
+        
+        avgHandTDLeft->SetText(string_format("Left Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdL).c_str()));
+        avgHandTDRight->SetText(string_format("Right Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdR).c_str()));
 
         auto img = leaderboard.get_leaderboardViewController()->playerAvatars[index];
         auto load = leaderboard.get_leaderboardViewController()->avatarLoadings[index];

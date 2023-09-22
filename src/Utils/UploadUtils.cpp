@@ -12,6 +12,9 @@ using AwaitableFunc = std::function<void(std::function<void(T)>)>;
 
 namespace BedroomPartyLB::UploadUtils
 {
+    using namespace System::Net;
+
+    int tryAgain = true;
 
     auto getSessionKey(std::function<void(bool)> callback)
     {
@@ -45,8 +48,8 @@ namespace BedroomPartyLB::UploadUtils
     {
         Lapiz::Utilities::MainThreadScheduler::Schedule([success]()
         {
-            if (!success) return leaderboard.get_panelViewController()->SetPrompt("<color=red>Failed to upload...</color>", 7);
-            leaderboard.get_panelViewController()->SetPrompt("<color=green>Successfully uploaded score!</color>", 5);
+            if (!success) return leaderboard.get_panelViewController()->SetPrompt("<color=#f0584a>Failed to upload...</color>", 7);
+            leaderboard.get_panelViewController()->SetPrompt("<color=#43e03a>Successfully uploaded score!</color>", 5);
             leaderboard.get_leaderboardViewController()->RefreshLeaderboard(leaderboard.currentDifficultyBeatmap); 
         });
     }
@@ -69,13 +72,13 @@ namespace BedroomPartyLB::UploadUtils
             }
             if (!success) return HandleScoreUploadResult(false);
         }
-
+        tryAgain = true;
         bool uploadSuccess = false;
         AwaitableFunc<bool> upload = std::bind(&UploadScore, url, body, std::placeholders::_1);
         for (int i = 0; i < 3; i++)
         {
             uploadSuccess = AwaitValue(upload);
-            if (!uploadSuccess) std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+            if (!uploadSuccess && tryAgain) std::this_thread::sleep_for(std::chrono::milliseconds(2000));
             else break;
         }
         return HandleScoreUploadResult(uploadSuccess);
@@ -83,8 +86,9 @@ namespace BedroomPartyLB::UploadUtils
 
     void UploadScore(std::string url, std::string requestBody, std::function<void(bool)> callback)
     {
-        BedroomPartyLB::WebUtils::PostAsync(url, requestBody, false, [callback](std::string value, bool success)
-        { 
+        BedroomPartyLB::WebUtils::PostAsync(url, requestBody, false, [callback](std::string value, bool success, int responseCode)
+        {
+            tryAgain = responseCode != HttpStatusCode::Conflict;
             callback(success); 
         });
     }

@@ -15,4 +15,16 @@ namespace BedroomPartyLB::StringUtils
         while (std::getline(ss, item, delim)) elems.push_back(item);
         return elems;
     }
+
+    inline const std::string format_float(float num)
+    {
+        std::string stringified = string_format("%.2f", num);
+        auto found = stringified.find_last_not_of('0');
+        if (found != std::string::npos)
+        {
+            if (stringified.at(found) == '.') found--;
+            stringified.erase(found + 1);
+        }
+        return stringified;
+    }
 }

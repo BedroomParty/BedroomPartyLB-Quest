@@ -119,7 +119,7 @@ namespace BedroomPartyLB::UI
         if (!this->isActivated || !this->wasActivatedBefore) return;
         if (AuthUtils::authState != AuthUtils::AUTHED && AuthUtils::authState != AuthUtils::ERROR) return;
         bool error = AuthUtils::authState == AuthUtils::ERROR;
-        SetPrompt((error ? "<color=red>Authentication Failed!</color>" : "<color=green>Successfully Authenticated!</color>"), 5);
+        SetPrompt((error ? "<color=#f0584a>Authentication Failed!</color>" : "<color=#43e03a>Successfully Authenticated!</color>"), 5);
         prompt_loader->set_active(false);
         playerUsername->SetText(error ? "failed" : localPlayerInfo.username);
         if (!error) BSML::Utilities::SetImage(playerAvatar, string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), localPlayerInfo.userID.c_str()));

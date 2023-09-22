@@ -47,9 +47,9 @@ MAKE_AUTO_HOOK_MATCH(HandleCutFinish, &CutScoreBuffer::HandleSaberSwingRatingCou
     if (self->get_cutScore() == 115)
     {
         currentPerfectHits++;
-        if (currentPerfectHits > extraSongData.perfectStreak) extraSongData.perfectStreak = currentPerfectHits;
-        else currentPerfectHits = 0;       
+        if (currentPerfectHits > extraSongData.perfectStreak) extraSongData.perfectStreak = currentPerfectHits;     
     }
+    else currentPerfectHits = 0;
 }
 
 MAKE_AUTO_HOOK_MATCH(Pause, &PauseController::Pause, void, PauseController* self)
