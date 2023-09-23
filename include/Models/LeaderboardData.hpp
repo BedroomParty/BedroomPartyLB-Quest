@@ -33,11 +33,11 @@ namespace BedroomPartyLB::Models
         NAMED_VALUE_DEFAULT(long, timeSet, 0, "timeSet");
         NAMED_VALUE_DEFAULT(int, rank, 0, "position");
         NAMED_VALUE_DEFAULT(int, pauses, 0, "pauses");
-        NAMED_VALUE_DEFAULT(FlexibleFloat, accL, 0, "avgHandAccRight");
-        NAMED_VALUE_DEFAULT(FlexibleFloat, accR, 0, "avgHandAccLeft");
-        NAMED_VALUE_DEFAULT(FlexibleFloat, tdL, 0, "avgHandTDRight");
-        NAMED_VALUE_DEFAULT(FlexibleFloat, tdR, 0, "avgHandTDLeft");
-        NAMED_VALUE_DEFAULT(int, perfectStreak, 0, "perfectSteak");
+        NAMED_VALUE_DEFAULT(FlexibleFloat, accL, 0, "avgHandAccLeft");
+        NAMED_VALUE_DEFAULT(FlexibleFloat, accR, 0, "avgHandAccRight");
+        NAMED_VALUE_DEFAULT(FlexibleFloat, tdL, 0, "avgHandTDLeft");
+        NAMED_VALUE_DEFAULT(FlexibleFloat, tdR, 0, "avgHandTDRight");
+        NAMED_VALUE_DEFAULT(int, perfectStreak, 0, "perfectStreak");
 
         // DESERIALIZE_ACTION(0,
         //     self->accuracy = float(self->acc);

@@ -28,7 +28,7 @@
     },
     {
       "id": "leaderboardcore",
-      "versionRange": "^0.0.3",
+      "versionRange": "^0.0.4-rc1",
       "additionalData": {}
     },
     {

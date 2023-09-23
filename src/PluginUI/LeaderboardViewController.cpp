@@ -68,6 +68,17 @@ namespace BedroomPartyLB::UI
         RefreshLeaderboard(leaderboard.currentDifficultyBeatmap);
     }
 
+    void LeaderboardViewController::DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
+    {
+        if (!this->m_CachedPtr.m_value) return;
+        if (scoreInfoModal->scoreInfo)
+        {
+            scoreInfoModal->scoreInfo->Hide(true, nullptr);
+            scoreInfoModal->isMoreInfo = true;
+            scoreInfoModal->OnInfoButtonClick();
+        }
+    }
+
     void LeaderboardViewController::PostParse()
     {
         myHeader->background->set_material(BSML::Helpers::GetUINoGlowMat());

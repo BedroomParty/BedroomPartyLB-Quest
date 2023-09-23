@@ -18,6 +18,8 @@
 #include "GlobalNamespace/MainSettingsModelSO.hpp"
 #include "GlobalNamespace/BeatmapDataCache.hpp"
 #include "main.hpp"
+#include "GlobalNamespace/PauseMenuManager.hpp"
+#include "Models/CustomLeaderboard.hpp"
 
 BedroomPartyLB::Models::ExtraSongData extraSongData;
 using namespace GlobalNamespace;
@@ -27,6 +29,20 @@ int currentPerfectHits = 0;
 MAKE_AUTO_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "GameplayCoreSceneSetupData", ".ctor", void, GameplayCoreSceneSetupData* self, IDifficultyBeatmap* difficultyBeatmap, IPreviewBeatmapLevel* previewBeatmapLevel, GameplayModifiers* gameplayModifiers, PlayerSpecificSettings* playerSpecificSettings, PracticeSettings* practiceSettings, bool useTestNoteCutSoundEffects, EnvironmentInfoSO* environmentInfo, ColorScheme* colorScheme, MainSettingsModelSO* mainSettingsModel, BeatmapDataCache* beatmapDataCache)
 {
     GameplayCoreSceneSetupData_ctor(self, difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfo, colorScheme, mainSettingsModel, beatmapDataCache);
+    extraSongData.reset();
+    currentPerfectHits = 0;
+    auto vc = leaderboard.get_leaderboardViewController();
+    if (vc->isActivated && vc->scoreInfoModal->scoreInfo)
+    {
+        vc->scoreInfoModal->scoreInfo->Hide(false, nullptr);
+        vc->scoreInfoModal->isMoreInfo = true;
+        vc->scoreInfoModal->OnInfoButtonClick();
+    }
+}
+
+MAKE_AUTO_HOOK_MATCH(Restartbutton, &PauseMenuManager::RestartButtonPressed, void, PauseMenuManager* self)
+{
+    Restartbutton(self);
     extraSongData.reset();
     currentPerfectHits = 0;
 }

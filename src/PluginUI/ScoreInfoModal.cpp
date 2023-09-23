@@ -35,6 +35,9 @@ namespace BedroomPartyLB::UI
 
     void ScoreInfoModal::setScoreModalText(Models::BPLeaderboardEntry entry, int index)
     {
+        isMoreInfo = true;
+        OnInfoButtonClick();
+
         currentEntry = entry;
         profileImageLoading->get_gameObject()->set_active(true);
 
@@ -69,12 +72,12 @@ namespace BedroomPartyLB::UI
             ? "<size=4><color=#43e03a>Full Combo!</color></size>"
             : string_format("Mistakes: <size=4><color=#f0584a>%i</color></size>", entry.badCuts + entry.misses));
 
-        pauses->SetText(string_format("Pauses: <size=%f>%i</size>", infoFontSize, entry.pauses));
+        pauses->SetText(string_format("Pauses: <size=%f><color=#ffd42a>%i</size>", infoFontSize, entry.pauses));
         perfectStreak->SetText(string_format("Perfect Streak: <size=%f><color=#ffd42a>%i</size>", infoFontSize, entry.perfectStreak));
         // avgHandAccLeft->SetText(string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s</color> (<color=#ffd42a>%s%%</color>)</size>", infoFontSize, StringUtils::format_float(entry.accL).c_str(), StringUtils::format_float(float(entry.accL)/115*100).c_str()));
         // avgHandAccRight->SetText(string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s</color> (<color=#ffd42a>%s%%</color>)</size>", infoFontSize, StringUtils::format_float(entry.accR).c_str(), StringUtils::format_float(float(entry.accR)/115*100).c_str()));
-        avgHandAccLeft->SetText(string_format("Left Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.accL).c_str()));
-        avgHandAccRight->SetText(string_format("Right Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.accR).c_str()));
+        avgHandAccLeft->SetText(string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.accL).c_str()));
+        avgHandAccRight->SetText(string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.accR).c_str()));
         
         avgHandTDLeft->SetText(string_format("Left Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdL).c_str()));
         avgHandTDRight->SetText(string_format("Right Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdR).c_str()));

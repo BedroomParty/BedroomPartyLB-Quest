@@ -51,10 +51,10 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, ScoreInfoModal, Il2CppObject,
 
     public:
     void setScoreModalText(BedroomPartyLB::Models::BPLeaderboardEntry entry, int index);
+    bool isMoreInfo = false;
 
     private:
     BedroomPartyLB::Models::BPLeaderboardEntry currentEntry;
     const int scoreDetails = 4;
     const float infoFontSize = 4.2f;
-    bool isMoreInfo = false;
     )
