@@ -59,8 +59,6 @@ namespace BedroomPartyLB::UI
         HandleShittyListBollocksCunt();
         using namespace AuthUtils;
         if ((authState == AUTHED || authState == ERROR) && playerAvatarLoading->get_gameObject()->get_activeSelf()) SetBannerInfo();
-        infoModal->get_gameObject()->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
-        seasonSelectModal->get_gameObject()->get_transform()->set_parent(leaderboard.get_leaderboardViewController()->get_transform());
         TextHoverEffect::AddEffect(playerUsername, TMPro::FontStyles::Underline, TMPro::FontStyles::Normal);
     }
 

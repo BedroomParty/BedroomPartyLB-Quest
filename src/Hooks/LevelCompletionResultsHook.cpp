@@ -91,11 +91,12 @@ MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletion
     float tdL = extraSongData.GetAverageFromList(extraSongData.avgHandTDLeft);
     float tdR = extraSongData.GetAverageFromList(extraSongData.avgHandTDRight);
     int streak = extraSongData.perfectStreak;
+    float fcAcc = extraSongData.GetFcAcc();
 
     std::string requestBody = Models::ScoreUploadBody(difficultyBeatmap->get_difficultyRank(), characteristic, localPlayerInfo.userID,
                                                       levelCompletionResults->multipliedScore, levelCompletionResults->modifiedScore,
                                                       accuracy, levelCompletionResults->missedCount, levelCompletionResults->badCutsCount,
-                                                      levelCompletionResults->fullCombo, modifiers, pauses, accL, accR, tdL, tdR, streak).toString();
+                                                      levelCompletionResults->fullCombo, modifiers, pauses, accL, accR, tdL, tdR, streak, fcAcc).toString();
 
     std::string url = Constants::BASE_URL + "leaderboard/" + beatmapID + "/upload";
 

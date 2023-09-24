@@ -27,4 +27,9 @@ namespace BedroomPartyLB::StringUtils
         }
         return stringified;
     }
+
+    inline const std::string banishToOz(const std::string& name)
+    {
+        return "<rotate=180>" + std::string(name.rbegin(), name.rend()) + "</rotate>";
+    }
 }

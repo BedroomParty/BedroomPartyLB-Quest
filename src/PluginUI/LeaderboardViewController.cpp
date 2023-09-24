@@ -37,7 +37,6 @@
 #include "UnityEngine/Application.hpp"
 
 using ScoreData = GlobalNamespace::LeaderboardTableView::ScoreData;
-using List_1 = System::Collections::Generic::List_1<ScoreData>;
 using namespace HMUI;
 using namespace UnityEngine::UI;
 
@@ -70,13 +69,7 @@ namespace BedroomPartyLB::UI
 
     void LeaderboardViewController::DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
     {
-        if (!this->m_CachedPtr.m_value) return;
-        if (scoreInfoModal->scoreInfo)
-        {
-            scoreInfoModal->scoreInfo->Hide(true, nullptr);
-            scoreInfoModal->isMoreInfo = true;
-            scoreInfoModal->OnInfoButtonClick();
-        }
+        leaderboard.close_modals();
     }
 
     void LeaderboardViewController::PostParse()
@@ -193,7 +186,7 @@ namespace BedroomPartyLB::UI
     {
         for (int i = 0; i < scores.size(); i++)
         {
-            if (scores[i].userID.value_or("knob") == localPlayerInfo.userID)
+            if (scores[i].userID == localPlayerInfo.userID)
                 return i;
         }
         return -1;
@@ -247,27 +240,23 @@ namespace BedroomPartyLB::UI
             image->get_gameObject()->set_active(false);
         for (int i = 0; i < players.size(); i++)
         {
-            if (players[i].userID.has_value())
-            {
-                avatarLoadings[i]->get_gameObject()->set_active(true);
-                std::string url = string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), players[i].userID.value().c_str());
-                WebUtils::GetImageAsync(url, [i, refreshId, this](UnityEngine::Sprite* sprite)
-                { 
-                    Lapiz::Utilities::MainThreadScheduler::Schedule([i, refreshId, sprite, this]()
-                    {
-                        if (currentRefreshId != refreshId){
-                            if (sprite) Object::Destroy(sprite->get_texture());
-                            Object::Destroy(sprite);
-                            avatarLoadings[i]->get_gameObject()->set_active(false);
-                            return;
-                        }
-                        playerAvatars[i]->set_sprite(sprite ? sprite : BSML::Utilities::LoadSpriteRaw(IncludedAssets::Player_png));
-                        playerAvatars[i]->get_gameObject()->set_active(true);
-                        avatarLoadings[i]->get_gameObject()->set_active(false); 
-                    }); 
-                });
-            }
-            else avatarLoadings[i]->get_gameObject()->set_active(false);
+            avatarLoadings[i]->get_gameObject()->set_active(true);
+            std::string url = string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), players[i].userID.c_str());
+            WebUtils::GetImageAsync(url, [i, refreshId, this](UnityEngine::Sprite* sprite)
+            { 
+                Lapiz::Utilities::MainThreadScheduler::Schedule([i, refreshId, sprite, this]()
+                {
+                    if (currentRefreshId != refreshId){
+                        if (sprite) Object::Destroy(sprite->get_texture());
+                        Object::Destroy(sprite);
+                        avatarLoadings[i]->get_gameObject()->set_active(false);
+                        return;
+                    }
+                    playerAvatars[i]->set_sprite(sprite ? sprite : BSML::Utilities::LoadSpriteRaw(IncludedAssets::Player_png));
+                    playerAvatars[i]->get_gameObject()->set_active(true);
+                    avatarLoadings[i]->get_gameObject()->set_active(false); 
+                }); 
+            });
         }
     }
 

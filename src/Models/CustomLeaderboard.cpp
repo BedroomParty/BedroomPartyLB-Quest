@@ -32,4 +32,13 @@ namespace BedroomPartyLB::Models
             callback(bedroomPartyStaff);
         });
     }
+
+    void CustomLeaderboard::close_modals()
+    {
+        auto panel = get_panelViewController();
+        auto lb = get_leaderboardViewController();
+        if (panel->infoModal && panel->infoModal->m_CachedPtr.m_value) panel->infoModal->Hide(false, nullptr);
+        if (panel->seasonSelectModal && panel->seasonSelectModal->m_CachedPtr.m_value) panel->seasonSelectModal->Hide(false, nullptr);
+        if (lb->scoreInfoModal) lb->scoreInfoModal->Close();
+    }
 }

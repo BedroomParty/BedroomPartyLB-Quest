@@ -42,12 +42,14 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, ScoreInfoModal, Il2CppObject,
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, moreModalInfo);
 
     DECLARE_INSTANCE_FIELD(UnityEngine::UI::Button*, moreInfoButton);
+    DECLARE_INSTANCE_FIELD(UnityEngine::UI::Button*, backInfoButton);
 
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_METHOD(void, OnUserNameTextClick);
     DECLARE_INSTANCE_METHOD(void, OnInfoButtonClick);
     DECLARE_INSTANCE_METHOD(void, PostParse);
+    DECLARE_INSTANCE_METHOD(void, Close);
 
     public:
     void setScoreModalText(BedroomPartyLB::Models::BPLeaderboardEntry entry, int index);

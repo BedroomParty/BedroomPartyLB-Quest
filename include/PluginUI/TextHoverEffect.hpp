@@ -19,11 +19,14 @@ ___DECLARE_TYPE_WRAPPER_INHERITANCE(BedroomPartyLB::UI, TextHoverEffect, Il2CppT
 
     DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::get());
     DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::get());
-    DECLARE_STATIC_METHOD(void, AddEffect, TMPro::TextMeshProUGUI* text, TMPro::FontStyles hover, TMPro::FontStyles orig);
+    DECLARE_STATIC_METHOD(void, AddEffect, TMPro::TextMeshProUGUI* text, TMPro::FontStyles hover, TMPro::FontStyles orig, StringW normalText = "", StringW hoverText = "");
 
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, component);
     DECLARE_INSTANCE_FIELD(TMPro::FontStyles, daStyle);
     DECLARE_INSTANCE_FIELD(TMPro::FontStyles, original);
+    DECLARE_INSTANCE_FIELD(StringW, normalText);
+    DECLARE_INSTANCE_FIELD(StringW, hoverText);
+    DECLARE_INSTANCE_FIELD(bool, hasHoverText);
 )
 
 #undef INTERFACES

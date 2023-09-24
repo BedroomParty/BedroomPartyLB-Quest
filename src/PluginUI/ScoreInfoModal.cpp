@@ -22,15 +22,23 @@ namespace BedroomPartyLB::UI
 
     void ScoreInfoModal::OnUserNameTextClick()
     {
-        UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + currentEntry.userID.value_or(""));
+        UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + currentEntry.userID);
     }
 
     void ScoreInfoModal::OnInfoButtonClick()
     {
         isMoreInfo = !isMoreInfo;
-        moreInfoButton->GetComponentInChildren<TextMeshProUGUI*>()->SetText(isMoreInfo ? "Back" : "More Info");
+        moreInfoButton->get_gameObject()->set_active(!isMoreInfo);
+        backInfoButton->get_gameObject()->set_active(isMoreInfo);
         moreModalInfo->set_active(isMoreInfo);
         mainModalInfo->set_active(!isMoreInfo);
+    }
+
+    void ScoreInfoModal::Close(){
+        if (!scoreInfo || !scoreInfo->m_CachedPtr.m_value) return;
+        isMoreInfo = true;
+        OnInfoButtonClick();
+        scoreInfo->Hide(false, nullptr);
     }
 
     void ScoreInfoModal::setScoreModalText(Models::BPLeaderboardEntry entry, int index)
@@ -45,9 +53,13 @@ namespace BedroomPartyLB::UI
         dateScoreText->SetText(string_format("<size=4.8><color=white>%s</color></size>", time.c_str()));
 
         std::string username = !entry.username.empty() ? entry.username : "<color=red>Error</color>";
+        if (entry.userID == "76561199077754911") username = "<color=#6488ea>" + StringUtils::banishToOz(entry.username) + "</color>";
         usernameScoreText->SetText(string_format("<size=180%%>%s</color>", username.c_str()));
         usernameScoreText->set_richText(true);
-        accScoreText->SetText(string_format("Accuracy: <size=%f><color=#ffd42a>%s%%</color></size>", infoFontSize, StringUtils::format_float(entry.accuracy).c_str()));
+        
+        std::string normalAcc = string_format("Accuracy: <size=%f><color=#ffd42a>%s%%</color></size>", infoFontSize, StringUtils::format_float(entry.accuracy).c_str());
+        std::string fcAcc = string_format("FC Accuracy: <size=%f><color=#ffd42a>%s%%</color></size>", infoFontSize, StringUtils::format_float(entry.fcAcc).c_str());
+        TextHoverEffect::AddEffect(accScoreText, TMPro::FontStyles::Normal, TMPro::FontStyles::Normal, normalAcc, fcAcc);
 
         std::string scoreText = string_format("Score: <size=%f>%i</size>", infoFontSize, entry.modifiedScore);
         std::replace(scoreText.begin(), scoreText.end(), ',', ' ');
@@ -62,7 +74,7 @@ namespace BedroomPartyLB::UI
         UnityEngine::Object::Destroy(usernameScoreText->get_gameObject()->GetComponent<RainbowAnimation*>());
         leaderboard.get_bedroomPartyStaffAsync([entry, this](std::vector<std::string> staff)
         {
-            if (!entry.username.empty() && entry.userID.has_value() && std::find(staff.begin(), staff.end(), entry.userID.value()) != staff.end())
+            if (!entry.username.empty() && std::find(staff.begin(), staff.end(), entry.userID) != staff.end())
             {
                 usernameScoreText->get_gameObject()->AddComponent<RainbowAnimation*>();
             } 
@@ -74,10 +86,15 @@ namespace BedroomPartyLB::UI
 
         pauses->SetText(string_format("Pauses: <size=%f><color=#ffd42a>%i</size>", infoFontSize, entry.pauses));
         perfectStreak->SetText(string_format("Perfect Streak: <size=%f><color=#ffd42a>%i</size>", infoFontSize, entry.perfectStreak));
-        // avgHandAccLeft->SetText(string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s</color> (<color=#ffd42a>%s%%</color>)</size>", infoFontSize, StringUtils::format_float(entry.accL).c_str(), StringUtils::format_float(float(entry.accL)/115*100).c_str()));
-        // avgHandAccRight->SetText(string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s</color> (<color=#ffd42a>%s%%</color>)</size>", infoFontSize, StringUtils::format_float(entry.accR).c_str(), StringUtils::format_float(float(entry.accR)/115*100).c_str()));
-        avgHandAccLeft->SetText(string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.accL).c_str()));
-        avgHandAccRight->SetText(string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.accR).c_str()));
+
+
+        std::string accLeftNum = string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s", infoFontSize, StringUtils::format_float(entry.accL).c_str());
+        std::string accLeftPerc = string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s%%", infoFontSize, StringUtils::format_float(float(entry.accL)/115*100).c_str());
+        TextHoverEffect::AddEffect(avgHandAccLeft, TMPro::FontStyles::Normal, TMPro::FontStyles::Normal, accLeftNum, accLeftPerc);
+
+        std::string accRightNum = string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s", infoFontSize, StringUtils::format_float(entry.accR).c_str());
+        std::string accRightPerc = string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s%%", infoFontSize, StringUtils::format_float(float(entry.accR)/115*100).c_str());
+        TextHoverEffect::AddEffect(avgHandAccRight, TMPro::FontStyles::Normal, TMPro::FontStyles::Normal, accRightNum, accRightPerc);
         
         avgHandTDLeft->SetText(string_format("Left Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdL).c_str()));
         avgHandTDRight->SetText(string_format("Right Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdR).c_str()));

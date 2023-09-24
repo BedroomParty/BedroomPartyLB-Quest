@@ -21,7 +21,7 @@ namespace BedroomPartyLB::Models
     };
     
     DECLARE_JSON_CLASS(BPLeaderboardEntry,
-        NAMED_VALUE_OPTIONAL(std::string, userID, "id");
+        NAMED_VALUE_DEFAULT(std::string, userID, "", "id");
         NAMED_VALUE_DEFAULT(int, modifiedScore, 0, "modifiedScore");
         NAMED_VALUE_DEFAULT(int, multipliedScore, 0, "multipliedScore");
         NAMED_VALUE_DEFAULT(FlexibleFloat, accuracy, 0.0f, "accuracy");
@@ -38,14 +38,10 @@ namespace BedroomPartyLB::Models
         NAMED_VALUE_DEFAULT(FlexibleFloat, tdL, 0, "avgHandTDLeft");
         NAMED_VALUE_DEFAULT(FlexibleFloat, tdR, 0, "avgHandTDRight");
         NAMED_VALUE_DEFAULT(int, perfectStreak, 0, "perfectStreak");
-
-        // DESERIALIZE_ACTION(0,
-        //     self->accuracy = float(self->acc);
-        // )
+        NAMED_VALUE_DEFAULT(FlexibleFloat, fcAcc, 0, "fcAcc");
 
         public:
-        // float accuracy = 0.0f;
-        
+
         GlobalNamespace::LeaderboardTableView::ScoreData* CreateLeaderboardEntryData(int rank) const 
         {
 
@@ -56,8 +52,8 @@ namespace BedroomPartyLB::Models
             std::string combo = this->fullCombo ? "<color=green> FC </color>" : " - <color=red>x" + missCount + "</color>" ;
             std::string mods = " <size=60%>" + modifiers + "</size>";
             
-            if (!this->userID.has_value() || username == "") name = "<color=red>Error</color>";
-            else if (this->userID.value() == "76561199077754911") name = "<color=#6488ea><rotate=180>" + std::string(name.rbegin(), name.rend()) + "</rotate></color>";
+            if (this->userID.empty() || username == "") name = "<color=red>Error</color>";
+            else if (this->userID == "76561199077754911") name = "<color=#6488ea>" + StringUtils::banishToOz(name) + "</color>";
 
             std::string result = "<size=90%>" + name + acc + combo + mods + "</size>";
             return GlobalNamespace::LeaderboardTableView::ScoreData::New_ctor(this->modifiedScore, result, rank, false);

@@ -35,7 +35,7 @@
     <macro.as-host host="scoreInfoModal">
         <modal id="scoreInfo" size-delta-x="60" size-delta-y="42" clickerino-offerino-closerino="true" move-to-center="true">
             <macro.define name="font-size" value="3.1"/>
-            <vertical spacing="1">
+            <vertical spacing="0.5">
                 <vertical id="mainModalInfo" spacing="1" child-expand-height="true" child-expand-width="false" child-control-width="false" pad="3" child-align="MiddleCenter" pref-width="60">
                     <vertical min-height="12" min-width="60">
                         <horizontal ignore-layout="true" spacing="3" child-align="MiddleRight" min-width="60" anchor-pos-x="-3">
@@ -49,40 +49,42 @@
                         </horizontal>
                     </vertical>
                     <vertical spacing="1">
-                        <text rich-text="true" id="dateScoreText" font-size="~font-size" text="DATE" align="Center"/>
-                        <text rich-text="true" id="ppScoreText" font-size="~font-size" text="PP" align="Center"/>
+                        <text rich-text="true" id="dateScoreText" font-size="3.1" text="DATE" align="Center"/>
+                        <text rich-text="true" id="ppScoreText" font-size="3.1" text="PP" align="Center"/>
                     </vertical>
                     <horizontal spacing="4" child-align="MiddleCenter" child-control-width="true" horizontal-fit="PreferredSize">
-                        <text rich-text="true" id="accScoreText" font-size="~font-size" text="ACC"/>
-                        <text rich-text="true" id="scoreScoreText" font-size="~font-size" text="SCORE"/>
+                        <text rich-text="true" id="accScoreText" font-size="3.1" text="ACC"/>
+                        <text rich-text="true" id="scoreScoreText" font-size="3.1" text="SCORE"/>
                     </horizontal>
                     <horizontal>
-                        <text rich-text="true" id="modifiersScoreText" font-size="~font-size" text="MODS" align="Center"/>
+                        <text rich-text="true" id="modifiersScoreText" font-size="3.1" text="MODS" align="Center"/>
                     </horizontal>
                     <horizontal>
-                        <text rich-text="true" id="fcScoreText" font-size="~font-size" text="FC" align="Center"/>
+                        <text rich-text="true" id="fcScoreText" font-size="3.1" text="FC" align="Center"/>
                     </horizontal>
                 </vertical>
 
                 <vertical id="moreModalInfo" active="false" spacing="1" child-expand-height="true" child-expand-width="false" child-control-width="false" pad="3" child-align="MiddleCenter" pref-width="60">
                     <horizontal spacing="3" child-align="MiddleCenter" child-control-width="true" horizontal-fit="PreferredSize">
-                        <text rich-text="true" id="avgHandAccLeft" text="avgHandAccLeft" align="Center"/>
-                        <text rich-text="true" id="avgHandAccRight" text="avgHandAccRight" align="Center"/>
+                        <text rich-text="true" id="avgHandAccLeft" font-size="3.1" text="avgHandAccLeft" align="Center"/>
+                        <text rich-text="true" id="avgHandAccRight" font-size="3.1" text="avgHandAccRight" align="Center"/>
                     </horizontal>
                     <horizontal spacing="3" child-align="MiddleCenter" child-control-width="true" horizontal-fit="PreferredSize">
-                        <text rich-text="true" id="avgHandTDLeft" text="avgHandTDLeft" align="Center"/>
-                        <text rich-text="true" id="avgHandTDRight" text="avgHandTDRight" align="Center"/>
+                        <text rich-text="true" id="avgHandTDLeft" font-size="3.1" text="avgHandTDLeft" align="Center"/>
+                        <text rich-text="true" id="avgHandTDRight" font-size="3.1" text="avgHandTDRight" align="Center"/>
                     </horizontal>
                     <horizontal spacing="3" child-align="MiddleCenter" child-control-width="true" horizontal-fit="PreferredSize">
-                        <text rich-text="true" id="perfectStreak" text="perfectStreak" align="Center"/>
-                        <text rich-text="true" id="pauses" text="perfectStreak" align="Center"/>
+                        <text rich-text="true" id="perfectStreak" font-size="3.1" text="perfectStreak" align="Center"/>
+                        <text rich-text="true" id="pauses" font-size="3.1" text="perfectStreak" align="Center"/>
                     </horizontal>
                 </vertical>
                 <vertical min-height="8"/>
                 <horizontal ignore-layout="true" anchor-pos-y="-15">
-                    <button rich-text="true" id="moreInfoButton" font-size="~font-size" text="More Info" align="Bottom" on-click="OnInfoButtonClick" />
+                    <action-button pref-height="8" pref-width="20" rich-text="true" id="moreInfoButton" font-size="4" text="More Info" align="Bottom" on-click="OnInfoButtonClick" />
                 </horizontal>
-                
+                <horizontal ignore-layout="true" anchor-pos-y="-15">
+                    <button pref-height="8" pref-width="20" active="false" rich-text="true" id="backInfoButton" font-size="4" text="Back" align="Bottom" on-click="OnInfoButtonClick" />
+                </horizontal>
             </vertical>
         </modal>
     </macro.as-host>

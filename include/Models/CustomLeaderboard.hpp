@@ -14,6 +14,7 @@ namespace BedroomPartyLB::Models
         BedroomPartyLB::UI::PanelViewController *get_panelViewController() final override;
         BedroomPartyLB::UI::LeaderboardViewController *get_leaderboardViewController() final override;
         void get_bedroomPartyStaffAsync(std::function<void(std::vector<std::string>)> callback);
+        void close_modals();
         GlobalNamespace::IDifficultyBeatmap* currentDifficultyBeatmap;
 
         private:

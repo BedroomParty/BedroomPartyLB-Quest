@@ -22,14 +22,15 @@ namespace BedroomPartyLB::Models
         NAMED_VALUE(float, tdLeft, "avgHandTDLeft");
         NAMED_VALUE(float, tdRight, "avgHandTDRight");
         NAMED_VALUE(int, perfStreak, "perfectStreak");
+        NAMED_VALUE(float, fcAcc, "fcAcc");
 
         ScoreUploadBody() = default;
         ScoreUploadBody(int diff, std::string charac, std::string id, int multipliedScore, int modifiedScore,
                     float acc, int misses, int badcuts, bool fc, std::string modifiers, int pause, 
-                    float accL, float accR, float tdL, float tdR, int streak) :
+                    float accL, float accR, float tdL, float tdR, int streak, float fcAcc) :
                     difficulty(diff), characteristic(charac), userID(id), multipliedScore(multipliedScore), modifiedScore(modifiedScore), 
                     accuracy(acc), misses(misses), badCuts(badcuts), fullCombo(fc), modifiers(modifiers), 
-                    pauses(pause), accLeft(accL), accRight(accR), tdLeft(tdL), tdRight(tdR), perfStreak(streak){}  
+                    pauses(pause), accLeft(accL), accRight(accR), tdLeft(tdL), tdRight(tdR), perfStreak(streak), fcAcc(fcAcc){}  
         public:
         std::string toString() const
         {

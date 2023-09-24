@@ -31,13 +31,7 @@ MAKE_AUTO_HOOK_FIND_CLASS_UNSAFE_INSTANCE(GameplayCoreSceneSetupData_ctor, "", "
     GameplayCoreSceneSetupData_ctor(self, difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfo, colorScheme, mainSettingsModel, beatmapDataCache);
     extraSongData.reset();
     currentPerfectHits = 0;
-    auto vc = leaderboard.get_leaderboardViewController();
-    if (vc->isActivated && vc->scoreInfoModal->scoreInfo)
-    {
-        vc->scoreInfoModal->scoreInfo->Hide(false, nullptr);
-        vc->scoreInfoModal->isMoreInfo = true;
-        vc->scoreInfoModal->OnInfoButtonClick();
-    }
+    leaderboard.close_modals();
 }
 
 MAKE_AUTO_HOOK_MATCH(Restartbutton, &PauseMenuManager::RestartButtonPressed, void, PauseMenuManager* self)
