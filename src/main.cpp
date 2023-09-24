@@ -11,7 +11,7 @@
 #include "bsml/shared/BSMLDataCache.hpp"
 #include "Models/LocalPlayerInfo.hpp"
 
-static ModInfo modInfo;
+ModInfo modInfo;
 BedroomPartyLB::Models::CustomLeaderboard leaderboard;
 BedroomPartyLB::Models::LocalPlayerInfo localPlayerInfo;
 
