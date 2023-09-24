@@ -17,13 +17,17 @@ namespace BedroomPartyLB::UI
 
     void RainbowAnimation::Update()
     {
-        if (text == nullptr)
-            return;
+        if (text == nullptr) return;
 
         hue += speed * Time::get_deltaTime();
         if (hue > 1.0f) hue -= 1.0f;
 
         Colour rainbowColour = Colour::HSVToRGB(hue, 1.0f, 1.0f);
         text->set_color(rainbowColour);
+    }
+
+    void RainbowAnimation::OnDestroy()
+    {
+        text->set_color(Colour::get_white());
     }
 }
