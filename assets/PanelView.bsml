@@ -49,4 +49,7 @@
 			</vertical>
 		</stack>
 	</horizontal>
+	<stack active="false" ignore-layout="true" anchor-pos-x="-33" anchor-pos-y="7" preferred-width="-20" preferred-height="-20" size-delta-x="-20" size-delta-y="-20">
+		<image src="BedroomParty-LB_Noti_png" id="notiImage" preserve-aspect="true"/>
+	</stack>
 </bg>

@@ -17,7 +17,6 @@ namespace BedroomPartyLB::AuthUtils
         std::string gameVersion = "v" + StringUtils::split(UnityEngine::Application::get_version(), '_')[0];
         std::string modVersion = "Quest v" + modInfo.version;
         std::string authBody = AuthBody(id, gameVersion, modVersion).toString();
-        getLogger().info("%s", authBody.c_str());
         
         WebUtils::PostAsync(Constants::BASE_URL + "user/login", authBody, true, [callback](std::string value, bool success, int responseCode) 
         {

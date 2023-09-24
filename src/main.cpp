@@ -106,3 +106,7 @@ BSML_DATACACHE(pp_png)
 {
     return IncludedAssets::pp_png;
 }
+BSML_DATACACHE(Noti_png)
+{
+    return IncludedAssets::Noti_png;
+}

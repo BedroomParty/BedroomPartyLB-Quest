@@ -54,6 +54,7 @@ namespace IncludedAssets {
 	DECLARE_FILE(Link_png)
 	DECLARE_FILE(Lmao_png)
 	DECLARE_FILE(Logo_png)
+	DECLARE_FILE(Noti_png)
 	DECLARE_FILE(PanelView_bsml)
 	DECLARE_FILE(Pixel_png)
 	DECLARE_FILE(Player_png)

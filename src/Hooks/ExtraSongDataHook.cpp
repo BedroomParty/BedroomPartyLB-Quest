@@ -18,7 +18,7 @@
 #include "GlobalNamespace/MainSettingsModelSO.hpp"
 #include "GlobalNamespace/BeatmapDataCache.hpp"
 #include "main.hpp"
-#include "GlobalNamespace/PauseMenuManager.hpp"
+#include "GlobalNamespace/GamePause.hpp"
 #include "Models/CustomLeaderboard.hpp"
 
 BedroomPartyLB::Models::ExtraSongData extraSongData;
@@ -62,8 +62,9 @@ MAKE_AUTO_HOOK_MATCH(HandleCutFinish, &CutScoreBuffer::HandleSaberSwingRatingCou
     else currentPerfectHits = 0;
 }
 
-MAKE_AUTO_HOOK_MATCH(Pause, &PauseController::Pause, void, PauseController* self)
+MAKE_AUTO_HOOK_MATCH(Pause, &GamePause::Pause, void, GamePause* self)
 {
     Pause(self);
     extraSongData.pauses++;
+    getLogger().info("paused %i times", extraSongData.pauses);
 }
