@@ -4,7 +4,7 @@
   "info": {
     "name": "BedroomParty-LB",
     "id": "BedroomParty-LB",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "url": null,
     "additionalData": {
       "overrideSoName": "libBedroomParty-LB.so",

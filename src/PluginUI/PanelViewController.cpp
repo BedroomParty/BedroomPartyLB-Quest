@@ -157,4 +157,10 @@ namespace BedroomPartyLB::UI
             }); 
         }).detach();
     }
+
+    StringW PanelViewController::get_currentVersion()
+    {
+        std::string gameVersion = StringUtils::split(UnityEngine::Application::get_version(), '_')[0];
+        return string_format("You are running BPLB v%s on BS version v%s", modInfo.version.c_str(), gameVersion.c_str());
+    }
 }

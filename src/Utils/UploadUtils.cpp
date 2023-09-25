@@ -57,7 +57,6 @@ namespace BedroomPartyLB::UploadUtils
     void TryUploadScore(std::string url, std::string body)
     {
         if (AuthUtils::authState == AuthUtils::ERROR) return HandleScoreUploadResult(false);
-        leaderboard.get_panelViewController()->SetPrompt("Uploading Score...", -1, true);
 
         long time = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 

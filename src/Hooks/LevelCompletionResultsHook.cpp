@@ -100,5 +100,7 @@ MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletion
 
     std::string url = Constants::BASE_URL + "leaderboard/" + beatmapID + "/upload";
 
+    leaderboard.get_panelViewController()->SetPrompt("Uploading Score...", -1, true);
+
     std::thread(&UploadUtils::TryUploadScore, url, requestBody).detach();
 }
