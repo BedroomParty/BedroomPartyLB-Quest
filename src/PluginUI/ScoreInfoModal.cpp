@@ -16,7 +16,7 @@ namespace BedroomPartyLB::UI
     using namespace TMPro;
     void ScoreInfoModal::PostParse()
     {
-        TextHoverEffect::AddEffect(usernameScoreText, TMPro::FontStyles::Underline, TMPro::FontStyles::Normal);
+        TextHoverEffect::AddEffect(usernameScoreText, FontStyles::Underline, FontStyles::Normal);
         isMoreInfo = false;
     }
 
@@ -41,7 +41,7 @@ namespace BedroomPartyLB::UI
         scoreInfo->Hide(false, nullptr);
     }
 
-    void ScoreInfoModal::setScoreModalText(Models::BPLeaderboardEntry entry, int index)
+    void ScoreInfoModal::setScoreModalText(Models::BPLeaderboardEntry& entry, int index)
     {
         isMoreInfo = true;
         OnInfoButtonClick();
@@ -58,8 +58,8 @@ namespace BedroomPartyLB::UI
         usernameScoreText->set_richText(true);
         
         std::string normalAcc = string_format("Accuracy: <size=%f><color=#ffd42a>%s%%</color></size>", infoFontSize, StringUtils::format_float(entry.accuracy).c_str());
-        std::string fcAcc = string_format("FC Accuracy: <size=%f><color=#ffd42a>%s%%</color></size>", infoFontSize, StringUtils::format_float(entry.fcAcc).c_str());
-        TextHoverEffect::AddEffect(accScoreText, TMPro::FontStyles::Normal, TMPro::FontStyles::Normal, normalAcc, fcAcc);
+        std::string fcAcc = string_format("FC Accuracy: <size=%f><color=#ffd42a>%s%%</color></size>", infoFontSize, StringUtils::format_float(entry.fcAccuracy).c_str());
+        TextHoverEffect::AddEffect(accScoreText, FontStyles::Normal, FontStyles::Normal, normalAcc, fcAcc);
 
         std::string scoreText = string_format("Score: <size=%f>%i</size>", infoFontSize, entry.modifiedScore);
         std::replace(scoreText.begin(), scoreText.end(), ',', ' ');
@@ -90,11 +90,11 @@ namespace BedroomPartyLB::UI
 
         std::string accLeftNum = string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s", infoFontSize, StringUtils::format_float(entry.accL).c_str());
         std::string accLeftPerc = string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s%%", infoFontSize, StringUtils::format_float(float(entry.accL)/115*100).c_str());
-        TextHoverEffect::AddEffect(avgHandAccLeft, TMPro::FontStyles::Normal, TMPro::FontStyles::Normal, accLeftNum, accLeftPerc);
+        TextHoverEffect::AddEffect(avgHandAccLeft, FontStyles::Normal, FontStyles::Normal, accLeftNum, accLeftPerc);
 
         std::string accRightNum = string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s", infoFontSize, StringUtils::format_float(entry.accR).c_str());
         std::string accRightPerc = string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s%%", infoFontSize, StringUtils::format_float(float(entry.accR)/115*100).c_str());
-        TextHoverEffect::AddEffect(avgHandAccRight, TMPro::FontStyles::Normal, TMPro::FontStyles::Normal, accRightNum, accRightPerc);
+        TextHoverEffect::AddEffect(avgHandAccRight, FontStyles::Normal, FontStyles::Normal, accRightNum, accRightPerc);
         
         avgHandTDLeft->SetText(string_format("Left Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdL).c_str()));
         avgHandTDRight->SetText(string_format("Right Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdR).c_str()));

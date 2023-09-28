@@ -143,17 +143,17 @@ namespace BedroomPartyLB::UI
         TweeningUtils::FadeText(errorText, true, 0.3f);
     }
 
-    void LeaderboardViewController::RichMyText(GlobalNamespace::LeaderboardTableView *tableView, std::vector<Models::BPLeaderboardEntry> entries)
+    void LeaderboardViewController::RichMyText(GlobalNamespace::LeaderboardTableView* tableView, std::vector<Models::BPLeaderboardEntry>& entries)
     {
         static float cellPosX;
-        for (auto &cell : tableView->GetComponentsInChildren<GlobalNamespace::LeaderboardTableCell *>())
+        for (auto &cell : tableView->GetComponentsInChildren<GlobalNamespace::LeaderboardTableCell*>())
         {
             if (cellPosX == 0.0f) cellPosX = cell->playerNameText->get_rectTransform()->get_anchoredPosition().x;
             cell->set_showSeparator(true);
             cell->playerNameText->set_richText(true);
             cell->rankText->set_richText(true);
             cell->scoreText->set_richText(true);
-            cell->rankText->SetText(string_format("<size=120%%><u>%s</u></size>", std::string(cell->rankText->get_text()).c_str()));
+            cell->rankText->SetText(string_format("<size=120%%><u>%s</u></size>", static_cast<std::string>((cell->rankText->get_text())).c_str()));
             cell->set_interactable(true);
             cell->playerNameText->get_rectTransform()->set_anchoredPosition({cellPosX + 2.5f, 0.0f});
             CellClicker* clicker = cell->get_gameObject()->GetComponent<CellClicker*>();
@@ -165,7 +165,7 @@ namespace BedroomPartyLB::UI
             clicker->separator->set_color0(UnityEngine::Color::get_white());
             clicker->separator->set_color1(UnityEngine::Color(1, 1, 1, 0));
 
-            if (cell->get_gameObject()->get_activeSelf() && BPLeaderboard->get_gameObject()->get_activeSelf())
+            if (cell->get_gameObject()->get_activeSelf() && tableView->get_gameObject()->get_activeSelf())
             {
                 TweeningUtils::FadeText(cell->playerNameText, true, 0.2f);
                 TweeningUtils::FadeText(cell->rankText, true, 0.2f);
@@ -177,8 +177,7 @@ namespace BedroomPartyLB::UI
     List<ScoreData*>* LeaderboardViewController::CreateLeaderboardData(std::vector<Models::BPLeaderboardEntry> leaderboard)
     {
         auto tableData = List<ScoreData*>::New_ctor();
-        for (auto &entry : leaderboard)
-            tableData->Add(entry.CreateLeaderboardEntryData(entry.rank));
+        for (auto& entry : leaderboard) tableData->Add(entry.CreateLeaderboardEntryData(entry.rank));
         return tableData;
     }
 
@@ -186,8 +185,7 @@ namespace BedroomPartyLB::UI
     {
         for (int i = 0; i < scores.size(); i++)
         {
-            if (scores[i].userID == localPlayerInfo.userID)
-                return i;
+            if (scores[i].userID == localPlayerInfo.userID) return i;
         }
         return -1;
     }
@@ -249,7 +247,6 @@ namespace BedroomPartyLB::UI
                     if (currentRefreshId != refreshId){
                         if (sprite) Object::Destroy(sprite->get_texture());
                         Object::Destroy(sprite);
-                        avatarLoadings[i]->get_gameObject()->set_active(false);
                         return;
                     }
                     playerAvatars[i]->set_sprite(sprite ? sprite : BSML::Utilities::LoadSpriteRaw(IncludedAssets::Player_png));
@@ -264,8 +261,8 @@ namespace BedroomPartyLB::UI
     {
         for (auto image : playerAvatars)
         {
-            if (image->get_sprite() && image->get_sprite()->m_CachedPtr.m_value) Object::Destroy(image->get_sprite()->get_texture());
-            Object::Destroy(image->get_sprite());
+            if (image->get_sprite() && image->get_sprite()->m_CachedPtr.m_value) Destroy(image->get_sprite()->get_texture());
+            Destroy(image->get_sprite());
             image->get_gameObject()->set_active(false);
         }
     }

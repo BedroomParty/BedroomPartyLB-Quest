@@ -94,6 +94,7 @@ namespace BedroomPartyLB::WebUtils
                 if (texture == nullptr) return callback(nullptr);
                 auto sprite = BSML::Utilities::LoadSpriteFromTexture(texture);
                 callback(sprite);
+                request->Dispose();
             }));
         });
     }

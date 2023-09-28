@@ -38,7 +38,7 @@ namespace BedroomPartyLB::Models
         NAMED_VALUE_DEFAULT(FlexibleFloat, tdL, 0, "avgHandTDLeft");
         NAMED_VALUE_DEFAULT(FlexibleFloat, tdR, 0, "avgHandTDRight");
         NAMED_VALUE_DEFAULT(int, perfectStreak, 0, "perfectStreak");
-        NAMED_VALUE_DEFAULT(FlexibleFloat, fcAcc, 0, "fcAcc");
+        NAMED_VALUE_DEFAULT(FlexibleFloat, fcAccuracy, 0, "fcAccuracy");
 
         public:
 

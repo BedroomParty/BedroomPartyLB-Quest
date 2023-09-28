@@ -21,7 +21,7 @@ namespace BedroomPartyLB::Models{
             perfectStreak = 0;
         }
 
-        int GetTotalFromList(std::vector<int> list) const
+        int GetTotalFromList(const std::vector<int>& list) const
         {
             int result = 0;
             for (const auto& value : list) result += value;
@@ -29,7 +29,7 @@ namespace BedroomPartyLB::Models{
         }
 
         template<typename T>
-        float GetAverageFromList(std::vector<T> list) const
+        float GetAverageFromList(const std::vector<T>& list) const
         {
             if (list.empty()) return 0;
             T sum = 0;

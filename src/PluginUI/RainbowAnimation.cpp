@@ -17,7 +17,7 @@ namespace BedroomPartyLB::UI
 
     void RainbowAnimation::Update()
     {
-        if (text == nullptr) return;
+        if (!text) return;
 
         hue += speed * Time::get_deltaTime();
         if (hue > 1.0f) hue -= 1.0f;
@@ -28,6 +28,7 @@ namespace BedroomPartyLB::UI
 
     void RainbowAnimation::OnDestroy()
     {
+        if (!text) return;
         text->set_color(Colour::get_white());
     }
 }

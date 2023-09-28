@@ -52,7 +52,7 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, ScoreInfoModal, Il2CppObject,
     DECLARE_INSTANCE_METHOD(void, Close);
 
     public:
-    void setScoreModalText(BedroomPartyLB::Models::BPLeaderboardEntry entry, int index);
+    void setScoreModalText(BedroomPartyLB::Models::BPLeaderboardEntry& entry, int index);
     bool isMoreInfo = false;
 
     private:

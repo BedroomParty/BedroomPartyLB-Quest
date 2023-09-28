@@ -48,6 +48,6 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, LeaderboardViewController, HMUI::ViewC
     void SetLoading(bool value, std::string error = "");
     void SetPlayerSprites(std::vector<BedroomPartyLB::Models::BPLeaderboardEntry> players, std::string refreshId);
     void AnnihilatePlayerSprites();
-    void RichMyText(GlobalNamespace::LeaderboardTableView *tableView, std::vector<BedroomPartyLB::Models::BPLeaderboardEntry> entries);
+    void RichMyText(GlobalNamespace::LeaderboardTableView* tableView, std::vector<BedroomPartyLB::Models::BPLeaderboardEntry>& entries);
     List<GlobalNamespace::LeaderboardTableView::ScoreData*>* CreateLeaderboardData(std::vector<Models::BPLeaderboardEntry> leaderboard);
 )
