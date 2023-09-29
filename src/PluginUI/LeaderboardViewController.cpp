@@ -263,6 +263,7 @@ namespace BedroomPartyLB::UI
         {
             if (image->get_sprite() && image->get_sprite()->m_CachedPtr.m_value) Destroy(image->get_sprite()->get_texture());
             Destroy(image->get_sprite());
+            image->set_sprite(nullptr);
             image->get_gameObject()->set_active(false);
         }
     }

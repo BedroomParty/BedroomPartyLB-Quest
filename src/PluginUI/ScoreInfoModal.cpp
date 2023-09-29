@@ -8,6 +8,7 @@
 #include "Utils/Constants.hpp"
 #include "PluginUI/TextHoverEffect.hpp"
 #include "PluginUI/RainbowAnimation.hpp"
+#include "Utils/CoroUtils.hpp"
 
 DEFINE_TYPE(BedroomPartyLB::UI, ScoreInfoModal);
 
@@ -71,14 +72,13 @@ namespace BedroomPartyLB::UI
 
         modifiersScoreText->get_gameObject()->set_active(!entry.modifiers.empty());
 
-        UnityEngine::Object::Destroy(usernameScoreText->get_gameObject()->GetComponent<RainbowAnimation*>());
-        leaderboard.get_bedroomPartyStaffAsync([entry, this](std::vector<std::string> staff)
+        auto* rainbow = usernameScoreText->get_gameObject()->GetComponent<RainbowAnimation*>();
+        leaderboard.get_bedroomPartyStaffAsync([entry, rainbow, this](std::vector<std::string> staff)
         {
-            if (!entry.username.empty() && std::find(staff.begin(), staff.end(), entry.userID) != staff.end())
-            {
-                usernameScoreText->get_gameObject()->AddComponent<RainbowAnimation*>();
-            } 
-        });
+            bool isStaff = !entry.username.empty() && std::find(staff.begin(), staff.end(), entry.userID) != staff.end();
+            if (isStaff && !rainbow) usernameScoreText->get_gameObject()->AddComponent<RainbowAnimation*>();
+            else if (!isStaff && rainbow) UnityEngine::Object::Destroy(rainbow);
+        });    
 
         fcScoreText->SetText(entry.fullCombo
             ? "<size=4><color=#43e03a>Full Combo!</color></size>"
@@ -99,20 +99,18 @@ namespace BedroomPartyLB::UI
         avgHandTDLeft->SetText(string_format("Left Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdL).c_str()));
         avgHandTDRight->SetText(string_format("Right Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdR).c_str()));
 
-        auto img = leaderboard.get_leaderboardViewController()->playerAvatars[index];
-        auto load = leaderboard.get_leaderboardViewController()->avatarLoadings[index];
         profileImageLoading->set_active(true);
         profileImage->get_gameObject()->set_active(false);
-        std::thread([this, img, load]()
+
+        CoroUtils::RunCoroutine(leaderboard.get_leaderboardViewController(), [this, index]() -> custom_types::Helpers::Coroutine
         {
-            while(load->get_gameObject()->get_activeSelf()) std::this_thread::sleep_for(std::chrono::milliseconds(300));
-            Lapiz::Utilities::MainThreadScheduler::Schedule([this, img]()
-            {
-                profileImage->set_sprite(img->get_sprite());
-                profileImageLoading->set_active(false);
-                profileImage->get_gameObject()->set_active(img->get_sprite() && img->get_sprite()->m_CachedPtr.m_value);
-            }); 
-        }).detach();
+            auto img = leaderboard.get_leaderboardViewController()->playerAvatars[index];
+            while(!img->get_sprite()) co_yield nullptr;
+            profileImage->set_sprite(img->get_sprite());
+            profileImageLoading->set_active(false);
+            profileImage->get_gameObject()->set_active(true);
+            co_return;
+        });
 
         scoreInfo->Show(true, true, nullptr);
     }
