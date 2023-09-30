@@ -40,5 +40,5 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, PanelViewController, HMUI::ViewControl
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, seasonText);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, seasonDescription);
     DECLARE_INSTANCE_FIELD(int, currentSeason);
-    DECLARE_INSTANCE_FIELD(System::Guid, currentPrompt);
+    DECLARE_INSTANCE_FIELD(StringW, currentPromptId);
 )

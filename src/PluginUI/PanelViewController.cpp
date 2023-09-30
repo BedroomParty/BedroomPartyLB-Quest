@@ -26,6 +26,11 @@
 #include "Utils/TweeningUtils.hpp"
 #include "PluginUI/TextHoverEffect.hpp"
 #include "PluginUI/RainbowAnimation.hpp"
+#include "Utils/CoroUtils.hpp"
+#include "UnityEngine/WaitForSeconds.hpp"
+
+using namespace System::Collections;
+using namespace UnityEngine;
 
 DEFINE_TYPE(BedroomPartyLB::UI, PanelViewController);
 namespace BedroomPartyLB::UI
@@ -44,9 +49,9 @@ namespace BedroomPartyLB::UI
 
     UnityEngine::Material* PanelViewController::GetRoundEdgeMaterial()
     {
-        static SafePtrUnity<UnityEngine::Material> roundEdgeMaterial;
+        static SafePtrUnity<Material> roundEdgeMaterial;
         if (roundEdgeMaterial) return roundEdgeMaterial.ptr();
-        roundEdgeMaterial = UnityEngine::Resources::FindObjectsOfTypeAll<UnityEngine::Material *>().First([](auto &v){ return v->get_name() == "UINoGlowRoundEdge"; });
+        roundEdgeMaterial = Resources::FindObjectsOfTypeAll<Material *>().First([](auto &v){ return v->get_name() == "UINoGlowRoundEdge"; });
         return roundEdgeMaterial.ptr();
     }
 
@@ -64,7 +69,7 @@ namespace BedroomPartyLB::UI
 
     void PanelViewController::OpenUserProfile()
     {
-        UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + localPlayerInfo.userID);
+        Application::OpenURL(Constants::USER_PROFILE_LINK + localPlayerInfo.userID);
     }
 
     void PanelViewController::BPLogoClick()
@@ -74,7 +79,7 @@ namespace BedroomPartyLB::UI
 
     void PanelViewController::OpenWebsite()
     {
-        UnityEngine::Application::OpenURL("https://thebedroom.party");
+        Application::OpenURL("https://thebedroom.party");
     }
 
     void PanelViewController::PostParse()
@@ -87,7 +92,7 @@ namespace BedroomPartyLB::UI
     void PanelViewController::SetSeasons(int currentSeason)
     {
         this->currentSeason = currentSeason;
-        UnityEngine::Sprite* placeholderSprite = BSML::Utilities::LoadSpriteRaw(IncludedAssets::Logo_png);
+        Sprite* placeholderSprite = BSML::Utilities::LoadSpriteRaw(IncludedAssets::Logo_png);
         seasonList->seasonList.reserve(currentSeason + 5);
         for (int i = 0; i < currentSeason; i++)
         {
@@ -104,7 +109,7 @@ namespace BedroomPartyLB::UI
     void PanelViewController::OnPlayerUsernameClick()
     {
         if (localPlayerInfo.userID.empty()) return;
-        UnityEngine::Application::OpenURL(Constants::USER_PROFILE_LINK + localPlayerInfo.userID);
+        Application::OpenURL(Constants::USER_PROFILE_LINK + localPlayerInfo.userID);
     }
 
     void PanelViewController::OnSeasonTextClick()
@@ -124,10 +129,7 @@ namespace BedroomPartyLB::UI
         playerAvatar->set_material(GetRoundEdgeMaterial());
         playerAvatarLoading->SetActive(false);
         if (error) return;
-        Lapiz::Utilities::MainThreadScheduler::Schedule([this]()
-        {
-            SetSeasons(15); 
-        });
+        SetSeasons(15); 
         leaderboard.get_bedroomPartyStaffAsync([this](std::vector<std::string> staff)
         {
             if (std::find(staff.begin(), staff.end(), localPlayerInfo.userID) != staff.end())
@@ -143,19 +145,18 @@ namespace BedroomPartyLB::UI
         prompt_text->SetText(text);
         prompt_loader->set_active(loader);
         TweeningUtils::FadeText(prompt_text, true, 0.2f);
+        currentPromptId = System::Guid::NewGuid().ToString();
         if (time < 0) return;
-        auto guid = System::Guid::NewGuid();
-        currentPrompt = guid;
-        std::thread([this, guid, time]()
+        std::string guid = currentPromptId;
+        CoroUtils::RunCoroutine([=]() -> custom_types::Helpers::Coroutine
         {
-            std::this_thread::sleep_for(std::chrono::seconds(time));
-            Lapiz::Utilities::MainThreadScheduler::Schedule([this, guid]()
-            {
-                if (currentPrompt != guid) return;
-                TweeningUtils::FadeText(prompt_text, false, 0.15f);
-                prompt_loader->set_active(false);
-            }); 
-        }).detach();
+            std::string localGuid = std::move(guid);
+            co_yield reinterpret_cast<IEnumerator*>(WaitForSeconds::New_ctor(time));
+            if (currentPromptId != localGuid) co_return;
+            TweeningUtils::FadeText(prompt_text, false, 0.15f);
+            prompt_loader->set_active(false);
+            co_return;
+        });
     }
 
     StringW PanelViewController::get_currentVersion()
