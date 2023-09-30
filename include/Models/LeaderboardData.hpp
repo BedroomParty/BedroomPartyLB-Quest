@@ -64,4 +64,8 @@ namespace BedroomPartyLB::Models
         NAMED_VALUE(int, scoreCount, "scoreCount");
         NAMED_VECTOR(BPLeaderboardEntry, scores, "scores");
     )
+
+    DECLARE_JSON_CLASS(LeaderboardRequestError,
+        NAMED_VALUE_OPTIONAL(std::string, error, "error");
+    )
 }

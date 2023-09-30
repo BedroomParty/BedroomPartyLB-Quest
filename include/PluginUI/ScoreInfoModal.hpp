@@ -49,7 +49,7 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, ScoreInfoModal, Il2CppObject,
     DECLARE_INSTANCE_METHOD(void, OnUserNameTextClick);
     DECLARE_INSTANCE_METHOD(void, OnInfoButtonClick);
     DECLARE_INSTANCE_METHOD(void, PostParse);
-    DECLARE_INSTANCE_METHOD(void, Close);
+    DECLARE_INSTANCE_METHOD(void, Close, bool animated = false);
 
     public:
     void setScoreModalText(BedroomPartyLB::Models::BPLeaderboardEntry& entry, int index);

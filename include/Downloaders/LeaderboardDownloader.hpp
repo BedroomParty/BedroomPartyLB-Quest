@@ -6,5 +6,5 @@
 namespace BedroomPartyLB::Downloaders
 {
 
-    void DownloadLeaderboardAsync(GlobalNamespace::IDifficultyBeatmap* beatmap, int page, int scope, std::function<void(std::optional<Models::BPLeaderboard>)> callback);
+    void DownloadLeaderboardAsync(GlobalNamespace::IDifficultyBeatmap* beatmap, int page, int scope, std::function<void(std::optional<Models::BPLeaderboard>,std::string)> callback);
 }

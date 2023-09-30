@@ -82,20 +82,17 @@ namespace BedroomPartyLB::WebUtils
     void GetImageAsync(std::string URL, std::function<void(Sprite*)> callback)
     {
         using DLFinish = System::Action_1<AsyncOperation*>;
-        Lapiz::Utilities::MainThreadScheduler::Schedule([=]()
+        auto request = UnityWebRequestTexture::GetTexture(URL);
+        request->SetRequestHeader("User-Agent", std::string(MOD_ID) + " " + VERSION);
+        request->SendWebRequest()->add_completed(MakeDelegate<DLFinish*>([=](AsyncOperation* value)
         {
-            auto request = UnityWebRequestTexture::GetTexture(URL);
-            request->SetRequestHeader("User-Agent", std::string(MOD_ID) + " " + VERSION);
-            request->SendWebRequest()->add_completed(MakeDelegate<DLFinish*>([=](AsyncOperation* value)
-            {
-                if (request->get_isHttpError() || request->get_isNetworkError()) return callback(nullptr);
-                auto downloadHandlerTexture = reinterpret_cast<DownloadHandlerTexture*>(request->get_downloadHandler());
-                auto texture = downloadHandlerTexture->get_texture();
-                if (texture == nullptr) return callback(nullptr);
-                auto sprite = BSML::Utilities::LoadSpriteFromTexture(texture);
-                callback(sprite);
-                request->Dispose();
-            }));
-        });
+            if (request->get_isHttpError() || request->get_isNetworkError()) return callback(nullptr);
+            auto downloadHandlerTexture = reinterpret_cast<DownloadHandlerTexture*>(request->get_downloadHandler());
+            auto texture = downloadHandlerTexture->get_texture();
+            if (texture == nullptr) return callback(nullptr);
+            auto sprite = BSML::Utilities::LoadSpriteFromTexture(texture);
+            callback(sprite);
+            request->Dispose();
+        }));
     }
 }

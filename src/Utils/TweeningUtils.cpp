@@ -42,7 +42,7 @@ namespace BedroomPartyLB::TweeningUtils
 
         tween->onCompleted = MakeDelegate<Action*>([fadeIn, text]()
         {
-            if (text == nullptr) return;
+            if (text == nullptr || !text->get_gameObject()->get_activeSelf()) return;
             text->get_gameObject()->SetActive(fadeIn);
         });
 

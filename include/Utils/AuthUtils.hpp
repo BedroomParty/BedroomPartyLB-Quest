@@ -2,6 +2,7 @@
 
 #include <functional>
 #include "rapidjson-macros/shared/macros.hpp"
+#include <string>
 
 namespace BedroomPartyLB::AuthUtils
 {
@@ -21,7 +22,6 @@ namespace BedroomPartyLB::AuthUtils
         NAMED_VALUE(std::string, gameVersion, "gameVersion");
         NAMED_VALUE(std::string, pluginVersion, "pluginVersion");
 
-        AuthBody() = default;
         AuthBody(std::string id, std::string gameVersion, std::string pluginVersion) :
                 id(id), gameVersion(gameVersion), pluginVersion(pluginVersion) {}
 

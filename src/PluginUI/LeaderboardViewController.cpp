@@ -35,10 +35,18 @@
 #include "Models/LocalPlayerInfo.hpp"
 #include "Utils/TweeningUtils.hpp"
 #include "UnityEngine/Application.hpp"
+#include "GlobalNamespace/HMTask.hpp"
+#include "System/Action.hpp"
+#include "EasyDelegate.hpp"
 
 using ScoreData = GlobalNamespace::LeaderboardTableView::ScoreData;
 using namespace HMUI;
 using namespace UnityEngine::UI;
+using namespace System::Threading;
+using namespace UnityEngine;
+using namespace GlobalNamespace;
+using namespace System;
+using namespace EasyDelegate;
 
 DEFINE_TYPE(BedroomPartyLB::UI, LeaderboardViewController);
 
@@ -197,39 +205,36 @@ namespace BedroomPartyLB::UI
         if (AuthUtils::authState == AuthUtils::ERROR) return SetLoading(false, "Auth Failed");
         if (AuthUtils::authState != AuthUtils::AUTHED) return SetLoading(false, "Authenticating...");
 
-        std::string refreshId = static_cast<std::string>(System::Guid::NewGuid().ToString());
+        std::string refreshId = System::Guid::NewGuid().ToString();
         currentRefreshId = refreshId;
         BPLeaderboard->tableView->SetDataSource(nullptr, true);
         for (auto image : playerAvatars) image->get_gameObject()->set_active(false);
         for (auto image : avatarLoadings) image->get_gameObject()->set_active(false);
         AnnihilatePlayerSprites();
+        scoreInfoModal->Close(true);
         SetLoading(true);
-        std::thread t([difficultyBeatmap, refreshId, this]
+        HMTask::New_ctor(MakeDelegate<Action*>([]()
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            Thread::Sleep(350);
+        }), MakeDelegate<Action*>([difficultyBeatmap, refreshId, this]()
+        {
             if (currentRefreshId != refreshId) return;
-            Lapiz::Utilities::MainThreadScheduler::Schedule([difficultyBeatmap, refreshId, this]() 
+            Downloaders::DownloadLeaderboardAsync(difficultyBeatmap, page, scope, [this, refreshId](std::optional<Models::BPLeaderboard> pageLeaderboard, std::string errorMessage)
             {
-                Downloaders::DownloadLeaderboardAsync(difficultyBeatmap, page, scope, [this, refreshId](std::optional<Models::BPLeaderboard> pageLeaderboard)
+                if (currentRefreshId != refreshId) return;
+                if (pageLeaderboard.has_value() && pageLeaderboard.value().scores.size() > 0)
                 {
-                    if (currentRefreshId != refreshId) return;
-                    if (pageLeaderboard.has_value() && pageLeaderboard.value().scores.size() > 0)
-                    {
-                        std::vector<Models::BPLeaderboardEntry> scores = pageLeaderboard.value().scores;
-                        auto scoreData = CreateLeaderboardData(scores);
-                        errorText->get_gameObject()->SetActive(false);
-                        BPLeaderboard->SetScores(scoreData, GetPlayerScoreIndex(scores));
-                        RichMyText(BPLeaderboard, scores);
-                        SetLoading(false);
-                        SetPlayerSprites(scores, refreshId);
-                        return;
-                    }
-                    std::string failedText = scope == 0 ? page > 0 ? "No scores on this page!" : "No scores on this map!" : "Set a score on this map!";
-                    SetLoading(false, failedText);
-                });
-            }); 
-        });
-        t.detach();
+                    std::vector<Models::BPLeaderboardEntry> scores = pageLeaderboard.value().scores;
+                    auto scoreData = CreateLeaderboardData(scores);
+                    errorText->get_gameObject()->SetActive(false);
+                    BPLeaderboard->SetScores(scoreData, GetPlayerScoreIndex(scores));
+                    RichMyText(BPLeaderboard, scores);
+                    SetLoading(false);
+                    return SetPlayerSprites(scores, refreshId);
+                }
+                SetLoading(false, errorMessage);
+            });
+        }))->Run();
     }
 
     void LeaderboardViewController::SetPlayerSprites(std::vector<BedroomPartyLB::Models::BPLeaderboardEntry> players, std::string refreshId)
@@ -242,17 +247,14 @@ namespace BedroomPartyLB::UI
             std::string url = string_format("%suser/%s/avatar", Constants::BASE_URL.c_str(), players[i].userID.c_str());
             WebUtils::GetImageAsync(url, [i, refreshId, this](UnityEngine::Sprite* sprite)
             { 
-                Lapiz::Utilities::MainThreadScheduler::Schedule([i, refreshId, sprite, this]()
-                {
-                    if (currentRefreshId != refreshId){
-                        if (sprite) Object::Destroy(sprite->get_texture());
-                        Object::Destroy(sprite);
-                        return;
-                    }
-                    playerAvatars[i]->set_sprite(sprite ? sprite : BSML::Utilities::LoadSpriteRaw(IncludedAssets::Player_png));
-                    playerAvatars[i]->get_gameObject()->set_active(true);
-                    avatarLoadings[i]->get_gameObject()->set_active(false); 
-                }); 
+                if (currentRefreshId != refreshId){
+                    if (sprite) Destroy(sprite->get_texture());
+                    Destroy(sprite);
+                    return;
+                }
+                playerAvatars[i]->set_sprite(sprite ? sprite : BSML::Utilities::LoadSpriteRaw(IncludedAssets::Player_png));
+                playerAvatars[i]->get_gameObject()->set_active(true);
+                avatarLoadings[i]->get_gameObject()->set_active(false);  
             });
         }
     }

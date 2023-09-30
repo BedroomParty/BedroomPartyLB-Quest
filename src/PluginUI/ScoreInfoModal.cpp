@@ -35,11 +35,11 @@ namespace BedroomPartyLB::UI
         mainModalInfo->set_active(!isMoreInfo);
     }
 
-    void ScoreInfoModal::Close(){
+    void ScoreInfoModal::Close(bool animated){
         if (!scoreInfo || !scoreInfo->m_CachedPtr.m_value) return;
         isMoreInfo = true;
         OnInfoButtonClick();
-        scoreInfo->Hide(false, nullptr);
+        scoreInfo->Hide(animated, nullptr);
     }
 
     void ScoreInfoModal::setScoreModalText(Models::BPLeaderboardEntry& entry, int index)
@@ -102,7 +102,9 @@ namespace BedroomPartyLB::UI
         profileImageLoading->set_active(true);
         profileImage->get_gameObject()->set_active(false);
 
-        CoroUtils::RunCoroutine(leaderboard.get_leaderboardViewController(), [this, index]() -> custom_types::Helpers::Coroutine
+        scoreInfo->Show(true, true, nullptr);
+
+        CoroUtils::RunCoroutine(scoreInfo, [this, index]() -> custom_types::Helpers::Coroutine
         {
             auto img = leaderboard.get_leaderboardViewController()->playerAvatars[index];
             while(!img->get_sprite()) co_yield nullptr;
@@ -111,7 +113,5 @@ namespace BedroomPartyLB::UI
             profileImage->get_gameObject()->set_active(true);
             co_return;
         });
-
-        scoreInfo->Show(true, true, nullptr);
     }
 }

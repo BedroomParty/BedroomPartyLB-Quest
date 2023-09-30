@@ -27,9 +27,14 @@
 #include "Models/ExtraSongData.hpp"
 #include "GlobalNamespace/PracticeViewController.hpp"
 #include "UnityEngine/Resources.hpp"
+#include "GlobalNamespace/HMTask.hpp"
+#include "EasyDelegate.hpp"
+#include "System/Action.hpp"
 
 using namespace GlobalNamespace;
 using namespace BedroomPartyLB;
+using namespace EasyDelegate;
+using namespace System;
 
 extern Models::CustomLeaderboard leaderboard;
 
@@ -102,5 +107,6 @@ MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletion
 
     leaderboard.get_panelViewController()->SetPrompt("Uploading Score...", -1, true);
 
-    std::thread(&UploadUtils::TryUploadScore, url, requestBody).detach();
+    std::function<void()> func = std::bind(&UploadUtils::TryUploadScore, url, requestBody);
+    HMTask::New_ctor(MakeDelegate<Action*>(func), nullptr)->Run();
 }

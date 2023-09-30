@@ -1,20 +1,16 @@
 #include "Utils/UploadUtils.hpp"
-#include <thread>
-#include <future>
 #include "Utils/AuthUtils.hpp"
 #include "lapiz/shared/utilities/MainThreadScheduler.hpp"
 #include "Models/LocalPlayerInfo.hpp"
 #include "Models/CustomLeaderboard.hpp"
 #include "Utils/WebUtils.hpp"
-
-template <typename T>
-using AwaitableFunc = std::function<void(std::function<void(T)>)>;
+#include "Utils/AwaitUtils.hpp"
 
 namespace BedroomPartyLB::UploadUtils
 {
     using namespace System::Net;
-
-    int tryAgain = true;
+    using namespace AwaitUtils;
+    using namespace System::Threading;
 
     auto getSessionKey(std::function<void(bool)> callback)
     {
@@ -24,39 +20,26 @@ namespace BedroomPartyLB::UploadUtils
         });
     }
 
-    template <typename T>
-    T AwaitValue(AwaitableFunc<T> func)
+    void HandleScoreUploadResult(bool success, std::string errorMessage)
     {
-        T *output = new T();
-        bool *inProgress = new bool(true);
-        Lapiz::Utilities::MainThreadScheduler::Schedule([func, output, inProgress]()
-        { 
-            func([output, inProgress](T value)
-            {
-                *output = value;
-                *inProgress = false; 
-            }); 
-        });
-        while (*inProgress) std::this_thread::yield();
-        T newval = T(*output);
-        delete output;
-        delete inProgress;
-        return newval;
-    }
-
-    void HandleScoreUploadResult(bool success)
-    {
-        Lapiz::Utilities::MainThreadScheduler::Schedule([success]()
+        Lapiz::Utilities::MainThreadScheduler::Schedule([success, errorMessage]()
         {
-            if (!success) return leaderboard.get_panelViewController()->SetPrompt("<color=#f0584a>Failed to upload...</color>", 7);
-            leaderboard.get_panelViewController()->SetPrompt("<color=#43e03a>Successfully uploaded score!</color>", 5);
+            if (!success) return leaderboard.get_panelViewController()->SetPrompt(errorMessage, 7);
+            leaderboard.get_panelViewController()->SetPrompt(errorMessage, 5);
             leaderboard.get_leaderboardViewController()->RefreshLeaderboard(leaderboard.currentDifficultyBeatmap); 
         });
     }
 
+    std::string RetrieveErrorMessage(int responseCode)
+    {
+        if (responseCode == HttpStatusCode::OK) return "<color=#43e03a>Successfully uploaded score!</color>";
+        if (responseCode == HttpStatusCode::Conflict) return "<color=#f0584a>Failed to upload. Did not beat previous score</color>";
+        return "<color=#f0584a>Failed to upload...</color>";
+    }
+
     void TryUploadScore(std::string url, std::string body)
     {
-        if (AuthUtils::authState == AuthUtils::ERROR) return HandleScoreUploadResult(false);
+        if (AuthUtils::authState == AuthUtils::ERROR) return HandleScoreUploadResult(false, "<color=#f0584a>Failed to upload...</color>");
 
         long time = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
@@ -66,29 +49,28 @@ namespace BedroomPartyLB::UploadUtils
             for (int i = 0; i < 3; i++)
             {
                 success = AwaitValue(std::function(&getSessionKey));
-                if (!success) std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+                if (!success) Thread::Sleep(2000);
                 else break;
             }
-            if (!success) return HandleScoreUploadResult(false);
+            if (!success) return HandleScoreUploadResult(false, "<color=#f0584a>Failed to upload...</color>");
         }
-        tryAgain = true;
         bool uploadSuccess = false;
-        AwaitableFunc<bool> upload = std::bind(&UploadScore, url, body, std::placeholders::_1);
+        int responseCode;
+        AwaitableFunc<bool, int> upload = std::bind(&UploadScore, url, body, std::placeholders::_1);
         for (int i = 0; i < 3; i++)
         {
-            uploadSuccess = AwaitValue(upload);
-            if (!uploadSuccess && tryAgain) std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+            std::tie(uploadSuccess, responseCode) = AwaitValue(upload);
+            if (!uploadSuccess && responseCode != HttpStatusCode::Conflict) Thread::Sleep(2000);
             else break;
         }
-        return HandleScoreUploadResult(uploadSuccess);
+        return HandleScoreUploadResult(uploadSuccess, RetrieveErrorMessage(responseCode));
     }
 
-    void UploadScore(std::string url, std::string requestBody, std::function<void(bool)> callback)
+    void UploadScore(std::string url, std::string requestBody, std::function<void(bool,int)> callback)
     {
         BedroomPartyLB::WebUtils::PostAsync(url, requestBody, false, [callback](std::string value, bool success, int responseCode)
         {
-            tryAgain = responseCode != HttpStatusCode::Conflict;
-            callback(success); 
+            callback(success, responseCode); 
         });
     }
 }

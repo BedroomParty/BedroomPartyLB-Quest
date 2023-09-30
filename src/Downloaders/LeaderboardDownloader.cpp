@@ -10,7 +10,21 @@
 
 namespace BedroomPartyLB::Downloaders
 {
-    void DownloadLeaderboardAsync(GlobalNamespace::IDifficultyBeatmap* beatmap, int page, int scope, std::function<void(std::optional<Models::BPLeaderboard>)> callback)
+    std::string RetrieveErrorMessage(std::string& response)
+    {
+        Models::LeaderboardRequestError requestError;
+        rapidjson::Document document;
+        document.Parse(response.data());
+        if(document.HasParseError() || !document.IsObject()) return "Leaderboard Request Failed";
+        requestError.Deserialize(document.GetObject());
+        std::string errorMessage = requestError.error.value();
+        if (errorMessage == "Player score not found") return "Set a score on this map!";
+        if (errorMessage == "Leaderboard not found") return "No scores on this map!";
+        if (errorMessage.find("No scores found for map") != std::string::npos) return "No scores on this page!";
+        return "error";
+    }
+
+    void DownloadLeaderboardAsync(GlobalNamespace::IDifficultyBeatmap* beatmap, int page, int scope, std::function<void(std::optional<Models::BPLeaderboard>,std::string)> callback)
     {
         std::string beatmapID = beatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Substring(13);
         std::string difficulty = std::to_string(beatmap->get_difficultyRank());
@@ -21,10 +35,10 @@ namespace BedroomPartyLB::Downloaders
 
         WebUtils::GetAsync(url, [callback](std::string value, bool success) 
         {
-            if (!success || value == "Failed to find leaderboard") return callback({});
+            if (!success) return callback({}, RetrieveErrorMessage(value));
             Models::BPLeaderboard pageLeaderboard;
             ReadFromString(value, pageLeaderboard);
-            callback(pageLeaderboard);
+            callback(pageLeaderboard, "");
         });
     }
 }
