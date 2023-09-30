@@ -46,4 +46,9 @@ namespace EasyDelegate{
     T MakeDelegate(mem_func_ptr<TName, TRet, TArgs...> fp, TObj obj){
         return custom_types::MakeDelegate<T>(std::function<TRet(TArgs...)>(bind(fp, obj)));
     }
+
+    template <typename T, typename TRet, typename... TArgs, typename... TObj>
+    T MakeDelegate(func_ptr<TRet, TArgs...> fp, TObj... obj){
+        return custom_types::MakeDelegate<T>(std::function<TRet()>(std::bind(fp, obj...)));
+    }
 }

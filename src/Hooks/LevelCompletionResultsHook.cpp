@@ -107,6 +107,5 @@ MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletion
 
     leaderboard.get_panelViewController()->SetPrompt("Uploading Score...", -1, true);
 
-    std::function<void()> func = std::bind(&UploadUtils::TryUploadScore, url, requestBody);
-    HMTask::New_ctor(MakeDelegate<Action*>(func), nullptr)->Run();
+    HMTask::New_ctor(MakeDelegate<Action*>(&UploadUtils::TryUploadScore, url, requestBody), nullptr)->Run();
 }
