@@ -1,24 +1,16 @@
 #include "Utils/UploadUtils.hpp"
-#include "Utils/AuthUtils.hpp"
 #include "lapiz/shared/utilities/MainThreadScheduler.hpp"
 #include "Models/LocalPlayerInfo.hpp"
 #include "Models/CustomLeaderboard.hpp"
 #include "Utils/WebUtils.hpp"
 #include "Utils/AwaitUtils.hpp"
+#include "Utils/AuthUtils.hpp"
 
 namespace BedroomPartyLB::UploadUtils
 {
     using namespace System::Net;
     using namespace AwaitUtils;
     using namespace System::Threading;
-
-    auto getSessionKey(std::function<void(bool)> callback)
-    {
-        AuthUtils::RequestNewSessionKey([callback](bool success)
-        { 
-            callback(success); 
-        });
-    }
 
     void HandleScoreUploadResult(bool success, std::string errorMessage)
     {
@@ -48,7 +40,7 @@ namespace BedroomPartyLB::UploadUtils
             bool success = false;
             for (int i = 0; i < 3; i++)
             {
-                success = AwaitValue(std::function(&getSessionKey));
+                success = AwaitValue(&AuthUtils::RequestNewSessionKey);
                 if (!success) Thread::Sleep(2000);
                 else break;
             }
@@ -56,10 +48,9 @@ namespace BedroomPartyLB::UploadUtils
         }
         bool uploadSuccess = false;
         int responseCode;
-        AwaitableFunc<bool, int> upload = std::bind(&UploadScore, url, body, std::placeholders::_1);
         for (int i = 0; i < 3; i++)
         {
-            std::tie(uploadSuccess, responseCode) = AwaitValue(upload);
+            std::tie(uploadSuccess, responseCode) = AwaitValue(&UploadScore, url, body);
             if (!uploadSuccess && responseCode != HttpStatusCode::Conflict) Thread::Sleep(2000);
             else break;
         }
