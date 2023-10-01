@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "main.hpp"
 
 namespace BedroomPartyLB::Models{
 
@@ -10,6 +11,7 @@ namespace BedroomPartyLB::Models{
         std::vector<int> avgHandAccLeft;
         std::vector<float> avgHandTDRight;
         std::vector<float> avgHandTDLeft;
+        std::vector<std::pair<int,int>> totalBlocksHit;
         int perfectStreak = 0;
 
         inline void reset() {
@@ -18,14 +20,8 @@ namespace BedroomPartyLB::Models{
             avgHandAccLeft.clear();
             avgHandTDRight.clear();
             avgHandTDLeft.clear();
+            totalBlocksHit.clear();
             perfectStreak = 0;
-        }
-
-        int GetTotalFromList(const std::vector<int>& list) const
-        {
-            int result = 0;
-            for (const auto& value : list) result += value;
-            return result;
         }
 
         template<typename T>
@@ -37,12 +33,33 @@ namespace BedroomPartyLB::Models{
             return sum / (float)list.size();
         }
 
-        float GetFcAcc() const
+        int GetMaxScoreForScoringType(int scoringType) const
         {
-            int blocksHit = avgHandAccLeft.size() + avgHandAccRight.size();
-            if (blocksHit == 0) return 0.0f;
-            float averageHitScore = (float)(GetTotalFromList(avgHandAccLeft) + GetTotalFromList(avgHandAccRight)) / (float)blocksHit;
-            float fcAcc = averageHitScore / 115.0f * 100.0f;
+            switch (scoringType)
+            {
+                case 1:
+                case 2:
+                case 3: 
+                    return 115;
+                case 4:
+                    return 70;
+                case 5:
+                    return 20;
+                default:
+                    return 0;
+            }
+        }
+
+        inline float GetFcAcc() const
+        {
+            if (totalBlocksHit.empty()) return 0.0f;
+            int realScore = 0, maxScore = 0;
+            for (auto& p : totalBlocksHit)
+            {
+                realScore += p.first;
+                maxScore += GetMaxScoreForScoringType(p.second);
+            }
+            float fcAcc = (float)realScore/(float)maxScore * 100.0f;
             return fcAcc;
         }
 

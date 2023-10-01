@@ -20,6 +20,8 @@
 #include "main.hpp"
 #include "GlobalNamespace/GamePause.hpp"
 #include "Models/CustomLeaderboard.hpp"
+#include "GlobalNamespace/NoteCutInfo.hpp"
+#include "GlobalNamespace/NoteData.hpp"
 
 BedroomPartyLB::Models::ExtraSongData extraSongData;
 using namespace GlobalNamespace;
@@ -48,11 +50,13 @@ MAKE_AUTO_HOOK_MATCH(HandleCutFinish, &CutScoreBuffer::HandleSaberSwingRatingCou
     {
         extraSongData.avgHandAccLeft.push_back(self->get_cutScore());
         extraSongData.avgHandTDLeft.push_back(std::abs(self->noteCutInfo.cutNormal.z));
+        extraSongData.totalBlocksHit.push_back(std::make_pair(self->get_cutScore(), self->get_noteCutInfo().noteData->get_scoringType()));
     }
     else if (self->noteCutInfo.noteData->colorType == ColorType::ColorB)
     {
         extraSongData.avgHandAccRight.push_back(self->get_cutScore());
         extraSongData.avgHandTDRight.push_back(std::abs(self->noteCutInfo.cutNormal.z));
+        extraSongData.totalBlocksHit.push_back(std::make_pair(self->get_cutScore(), self->get_noteCutInfo().noteData->get_scoringType()));
     }
     if (self->get_cutScore() == 115)
     {

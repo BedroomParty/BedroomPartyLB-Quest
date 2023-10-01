@@ -43,36 +43,21 @@ std::string GetModifiers(LevelCompletionResults* levelCompletionResults)
     std::string modifiers = "";
     auto levelModifiers = levelCompletionResults->gameplayModifiers;
 
-    if (levelModifiers->noFailOn0Energy && levelCompletionResults->energy == 0)
-        modifiers += "NF ";
-    if (levelModifiers->songSpeed == GameplayModifiers::SongSpeed::Faster)
-        modifiers += "FS ";
-    if (levelModifiers->songSpeed == GameplayModifiers::SongSpeed::SuperFast)
-        modifiers += "SF ";
-    if (levelModifiers->songSpeed == GameplayModifiers::SongSpeed::Slower)
-        modifiers += "SS ";
-    if (levelModifiers->energyType == GameplayModifiers::EnergyType::Battery)
-        modifiers += "BE ";
-    if (levelModifiers->enabledObstacleType == GameplayModifiers::EnabledObstacleType::NoObstacles)
-        modifiers += "NO ";
-    if (levelModifiers->proMode)
-        modifiers += "PM ";
-    if (levelModifiers->instaFail)
-        modifiers += "IF ";
-    if (levelModifiers->failOnSaberClash)
-        modifiers += "SC ";
-    if (levelModifiers->noBombs)
-        modifiers += "NB ";
-    if (levelModifiers->strictAngles)
-        modifiers += "SA ";
-    if (levelModifiers->disappearingArrows)
-        modifiers += "DA ";
-    if (levelModifiers->ghostNotes)
-        modifiers += "GN ";
-    if (levelModifiers->smallCubes)
-        modifiers += "SC";
-    if (levelModifiers->noArrows)
-        modifiers += "NA ";
+    if (levelModifiers->noFailOn0Energy && levelCompletionResults->energy == 0) modifiers += "NF ";
+    if (levelModifiers->songSpeed == GameplayModifiers::SongSpeed::Faster) modifiers += "FS ";
+    if (levelModifiers->songSpeed == GameplayModifiers::SongSpeed::SuperFast) modifiers += "SF ";
+    if (levelModifiers->songSpeed == GameplayModifiers::SongSpeed::Slower) modifiers += "SS ";
+    if (levelModifiers->energyType == GameplayModifiers::EnergyType::Battery) modifiers += "BE ";
+    if (levelModifiers->enabledObstacleType == GameplayModifiers::EnabledObstacleType::NoObstacles) modifiers += "NO ";
+    if (levelModifiers->proMode) modifiers += "PM ";
+    if (levelModifiers->instaFail) modifiers += "IF ";
+    if (levelModifiers->failOnSaberClash) modifiers += "SC ";
+    if (levelModifiers->noBombs) modifiers += "NB ";
+    if (levelModifiers->strictAngles) modifiers += "SA ";
+    if (levelModifiers->disappearingArrows) modifiers += "DA ";
+    if (levelModifiers->ghostNotes) modifiers += "GN ";
+    if (levelModifiers->smallCubes) modifiers += "SC";
+    if (levelModifiers->noArrows) modifiers += "NA ";
 
     return modifiers;
 }
@@ -102,6 +87,7 @@ MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletion
                                                       levelCompletionResults->multipliedScore, levelCompletionResults->modifiedScore,
                                                       accuracy, levelCompletionResults->missedCount, levelCompletionResults->badCutsCount,
                                                       levelCompletionResults->fullCombo, modifiers, pauses, accL, accR, tdL, tdR, streak, fcAcc).toString();
+    extraSongData.reset();
 
     std::string url = Constants::BASE_URL + "leaderboard/" + beatmapID + "/upload";
 
