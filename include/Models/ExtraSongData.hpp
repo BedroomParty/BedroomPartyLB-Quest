@@ -50,13 +50,13 @@ namespace BedroomPartyLB::Models{
             }
         }
 
-        inline float GetFcAcc() const
+        inline float GetFcAcc(float multiplier) const
         {
             if (totalBlocksHit.empty()) return 0.0f;
             int realScore = 0, maxScore = 0;
             for (auto& p : totalBlocksHit)
             {
-                realScore += p.first;
+                realScore += p.first * multiplier;
                 maxScore += GetMaxScoreForScoringType(p.second);
             }
             float fcAcc = (float)realScore/(float)maxScore * 100.0f;

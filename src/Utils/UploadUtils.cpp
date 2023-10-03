@@ -26,6 +26,7 @@ namespace BedroomPartyLB::UploadUtils
     {
         if (responseCode == HttpStatusCode::OK) return "<color=#43e03a>Successfully uploaded score!</color>";
         if (responseCode == HttpStatusCode::Conflict) return "<color=#f0584a>Failed to upload. Did not beat previous score</color>";
+        if (responseCode == HttpStatusCode::BadRequest) return "<color=#f0584a>Failed to upload. Blame Nuggo for breaking changes</color>";
         return "<color=#f0584a>Failed to upload...</color>";
     }
 

@@ -30,11 +30,14 @@
 #include "GlobalNamespace/HMTask.hpp"
 #include "EasyDelegate.hpp"
 #include "System/Action.hpp"
+#include "UnityEngine/Resources.hpp"
+#include "GlobalNamespace/GameplayModifiersModelSO.hpp"
 
 using namespace GlobalNamespace;
 using namespace BedroomPartyLB;
 using namespace EasyDelegate;
 using namespace System;
+using namespace UnityEngine;
 
 extern Models::CustomLeaderboard leaderboard;
 
@@ -62,6 +65,11 @@ std::string GetModifiers(LevelCompletionResults* levelCompletionResults)
     return modifiers;
 }
 
+float GetModifierScoreMultiplier(LevelCompletionResults* results, GameplayModifiersModelSO* modifiersModel)
+{
+    return modifiersModel->GetTotalMultiplier(modifiersModel->CreateModifierParamsList(results->gameplayModifiers), results->energy);
+}
+
 MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletionResultsHelper::ProcessScore, void, PlayerData* playerData, PlayerLevelStatsData* playerLevelStats, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, PlatformLeaderboardsModel* platformLeaderboardsModel)
 {
     LevelCompletionResultsHelper_ProcessScore(playerData, playerLevelStats, levelCompletionResults, transformedBeatmapData, difficultyBeatmap, platformLeaderboardsModel);
@@ -81,7 +89,9 @@ MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletion
     float tdL = extraSongData.GetAverageFromList(extraSongData.leftHandTimeDependency);
     float tdR = extraSongData.GetAverageFromList(extraSongData.rightHandTimeDependency);
     int streak = extraSongData.perfectStreak;
-    float fcAcc = levelCompletionResults->fullCombo ? accuracy : extraSongData.GetFcAcc();
+
+    float multiplier = GetModifierScoreMultiplier(levelCompletionResults, platformLeaderboardsModel->gameplayModifiersModel);
+    float fcAcc = levelCompletionResults->fullCombo ? accuracy : extraSongData.GetFcAcc(multiplier);
 
     std::string requestBody = Models::ScoreUploadBody(difficultyBeatmap->get_difficultyRank(), characteristic, localPlayerInfo.userID,
                                                       levelCompletionResults->multipliedScore, levelCompletionResults->modifiedScore,
