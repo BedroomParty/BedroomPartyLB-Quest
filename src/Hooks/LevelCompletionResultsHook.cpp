@@ -76,10 +76,10 @@ MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletion
 
     auto modifiers = GetModifiers(levelCompletionResults);
     int pauses = extraSongData.pauses;
-    float accL = extraSongData.GetAverageFromList(extraSongData.avgHandAccLeft);
-    float accR = extraSongData.GetAverageFromList(extraSongData.avgHandAccRight);
-    float tdL = extraSongData.GetAverageFromList(extraSongData.avgHandTDLeft);
-    float tdR = extraSongData.GetAverageFromList(extraSongData.avgHandTDRight);
+    float accL = extraSongData.GetAverageFromList(extraSongData.leftHandAccuracy);
+    float accR = extraSongData.GetAverageFromList(extraSongData.rightHandAccuracy);
+    float tdL = extraSongData.GetAverageFromList(extraSongData.leftHandTimeDependency);
+    float tdR = extraSongData.GetAverageFromList(extraSongData.rightHandTimeDependency);
     int streak = extraSongData.perfectStreak;
     float fcAcc = levelCompletionResults->fullCombo ? accuracy : extraSongData.GetFcAcc();
 

@@ -7,19 +7,19 @@ namespace BedroomPartyLB::Models{
 
     typedef struct ExtraSongData{
         int pauses = 0;
-        std::vector<int> avgHandAccRight;
-        std::vector<int> avgHandAccLeft;
-        std::vector<float> avgHandTDRight;
-        std::vector<float> avgHandTDLeft;
+        std::vector<int> rightHandAccuracy;
+        std::vector<int> leftHandAccuracy;
+        std::vector<float> rightHandTimeDependency;
+        std::vector<float> leftHandTimeDependency;
         std::vector<std::pair<int,int>> totalBlocksHit;
         int perfectStreak = 0;
 
         inline void reset() {
             pauses = 0;
-            avgHandAccRight.clear();
-            avgHandAccLeft.clear();
-            avgHandTDRight.clear();
-            avgHandTDLeft.clear();
+            rightHandAccuracy.clear();
+            leftHandAccuracy.clear();
+            rightHandTimeDependency.clear();
+            leftHandTimeDependency.clear();
             totalBlocksHit.clear();
             perfectStreak = 0;
         }

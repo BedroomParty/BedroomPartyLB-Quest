@@ -90,14 +90,14 @@ namespace BedroomPartyLB::UI
 
         std::string accLeftNum = string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s", infoFontSize, StringUtils::format_float(entry.accL).c_str());
         std::string accLeftPerc = string_format("Left Hand Acc: <size=%f><color=#ffd42a>%s%%", infoFontSize, StringUtils::format_float(float(entry.accL)/115*100).c_str());
-        TextHoverEffect::AddEffect(avgHandAccLeft, FontStyles::Normal, FontStyles::Normal, accLeftNum, accLeftPerc);
+        TextHoverEffect::AddEffect(leftHandAccuracy, FontStyles::Normal, FontStyles::Normal, accLeftNum, accLeftPerc);
 
         std::string accRightNum = string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s", infoFontSize, StringUtils::format_float(entry.accR).c_str());
         std::string accRightPerc = string_format("Right Hand Acc: <size=%f><color=#ffd42a>%s%%", infoFontSize, StringUtils::format_float(float(entry.accR)/115*100).c_str());
-        TextHoverEffect::AddEffect(avgHandAccRight, FontStyles::Normal, FontStyles::Normal, accRightNum, accRightPerc);
+        TextHoverEffect::AddEffect(rightHandAccuracy, FontStyles::Normal, FontStyles::Normal, accRightNum, accRightPerc);
         
-        avgHandTDLeft->SetText(string_format("Left Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdL).c_str()));
-        avgHandTDRight->SetText(string_format("Right Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdR).c_str()));
+        leftHandTimeDependency->SetText(string_format("Left Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdL).c_str()));
+        rightHandTimeDependency->SetText(string_format("Right Hand TD: <size=%f><color=#ffd42a>%s</size>", infoFontSize, StringUtils::format_float(entry.tdR).c_str()));
 
         profileImageLoading->set_active(true);
         profileImage->get_gameObject()->set_active(false);

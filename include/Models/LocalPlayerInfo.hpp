@@ -6,8 +6,8 @@
 namespace BedroomPartyLB::Models
 {
     DECLARE_JSON_CLASS(LocalPlayerInfo,
-        NAMED_VALUE_DEFAULT(std::string, userID, "", "game_id");
-        NAMED_VALUE_DEFAULT(std::string, discordID, "", "discord_id");
+        NAMED_VALUE_DEFAULT(std::string, userID, "", "gameID");
+        NAMED_VALUE_DEFAULT(std::string, discordID, "", "discordID");
         NAMED_VALUE_DEFAULT(std::string, username, "null", "username");
         NAMED_VALUE_DEFAULT(std::string, avatarLink, "oops", "avatar");
         NAMED_VALUE_DEFAULT(std::string, sessionKey, "", "sessionKey");

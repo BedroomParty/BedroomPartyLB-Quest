@@ -66,12 +66,12 @@
 
                 <vertical id="moreModalInfo" active="false" spacing="1" child-expand-height="true" child-expand-width="false" child-control-width="false" pad="3" child-align="MiddleCenter" pref-width="60">
                     <horizontal spacing="3" child-align="MiddleCenter" child-control-width="true" horizontal-fit="PreferredSize">
-                        <text rich-text="true" id="avgHandAccLeft" font-size="3.1" text="avgHandAccLeft" align="Center"/>
-                        <text rich-text="true" id="avgHandAccRight" font-size="3.1" text="avgHandAccRight" align="Center"/>
+                        <text rich-text="true" id="leftHandAccuracy" font-size="3.1" text="leftHandAccuracy" align="Center"/>
+                        <text rich-text="true" id="rightHandAccuracy" font-size="3.1" text="rightHandAccuracy" align="Center"/>
                     </horizontal>
                     <horizontal spacing="3" child-align="MiddleCenter" child-control-width="true" horizontal-fit="PreferredSize">
-                        <text rich-text="true" id="avgHandTDLeft" font-size="3.1" text="avgHandTDLeft" align="Center"/>
-                        <text rich-text="true" id="avgHandTDRight" font-size="3.1" text="avgHandTDRight" align="Center"/>
+                        <text rich-text="true" id="leftHandTimeDependency" font-size="3.1" text="leftHandTimeDependency" align="Center"/>
+                        <text rich-text="true" id="rightHandTimeDependency" font-size="3.1" text="rightHandTimeDependency" align="Center"/>
                     </horizontal>
                     <horizontal spacing="3" child-align="MiddleCenter" child-control-width="true" horizontal-fit="PreferredSize">
                         <text rich-text="true" id="perfectStreak" font-size="3.1" text="perfectStreak" align="Center"/>

@@ -66,3 +66,6 @@ extern.cmake
 
 # QMOD Schema
 mod.json.schema
+
+# Funni
+.vs/

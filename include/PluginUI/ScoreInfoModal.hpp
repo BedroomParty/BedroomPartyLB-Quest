@@ -31,10 +31,10 @@ DECLARE_CLASS_CODEGEN(BedroomPartyLB::UI, ScoreInfoModal, Il2CppObject,
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, modifiersScoreText);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, fcScoreText);
 
-    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, avgHandAccLeft);
-    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, avgHandAccRight);
-    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, avgHandTDLeft);
-    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, avgHandTDRight);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, leftHandAccuracy);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, rightHandAccuracy);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, leftHandTimeDependency);
+    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, rightHandTimeDependency);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, perfectStreak);
     DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, pauses);
 
