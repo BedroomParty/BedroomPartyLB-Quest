@@ -17,8 +17,8 @@ namespace BedroomPartyLB::Models
         NAMED_VALUE(bool, fullCombo, "fullCombo");
         NAMED_VALUE(std::string, modifiers, "modifiers");
         NAMED_VALUE(int, pauses, "pauses");
-        NAMED_VALUE(float, accLeft, "leftHandAccuracy");
-        NAMED_VALUE(float, accRight, "rightHandAccuracy");
+        NAMED_VALUE(float, accLeft, "leftHandAverageScore");
+        NAMED_VALUE(float, accRight, "rightHandAverageScore");
         NAMED_VALUE(float, tdLeft, "leftHandTimeDependency");
         NAMED_VALUE(float, tdRight, "rightHandTimeDependency");
         NAMED_VALUE(int, perfStreak, "perfectStreak");

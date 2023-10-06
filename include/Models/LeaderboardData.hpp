@@ -33,8 +33,8 @@ namespace BedroomPartyLB::Models
         NAMED_VALUE_DEFAULT(long, timeSet, 0, "timeSet");
         NAMED_VALUE_DEFAULT(int, rank, 0, "position");
         NAMED_VALUE_DEFAULT(int, pauses, 0, "pauses");
-        NAMED_VALUE_DEFAULT(FlexibleFloat, accL, 0, "leftHandAccuracy");
-        NAMED_VALUE_DEFAULT(FlexibleFloat, accR, 0, "rightHandAccuracy");
+        NAMED_VALUE_DEFAULT(FlexibleFloat, accL, 0, "leftHandAverageScore");
+        NAMED_VALUE_DEFAULT(FlexibleFloat, accR, 0, "rightHandAverageScore");
         NAMED_VALUE_DEFAULT(FlexibleFloat, tdL, 0, "leftHandTimeDependency");
         NAMED_VALUE_DEFAULT(FlexibleFloat, tdR, 0, "rightHandTimeDependency");
         NAMED_VALUE_DEFAULT(int, perfectStreak, 0, "perfectStreak");

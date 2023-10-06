@@ -48,13 +48,13 @@ MAKE_AUTO_HOOK_MATCH(HandleCutFinish, &CutScoreBuffer::HandleSaberSwingRatingCou
     HandleCutFinish(self, counter);
     if (self->noteCutInfo.noteData->colorType == ColorType::ColorA)
     {
-        extraSongData.leftHandAccuracy.push_back(self->get_cutScore());
+        extraSongData.leftHandAverageScore.push_back(self->get_cutScore());
         extraSongData.leftHandTimeDependency.push_back(std::abs(self->noteCutInfo.cutNormal.z));
         extraSongData.totalBlocksHit.emplace_back(self->get_cutScore(), self->get_noteCutInfo().noteData->get_scoringType());
     }
     else if (self->noteCutInfo.noteData->colorType == ColorType::ColorB)
     {
-        extraSongData.rightHandAccuracy.push_back(self->get_cutScore());
+        extraSongData.rightHandAverageScore.push_back(self->get_cutScore());
         extraSongData.rightHandTimeDependency.push_back(std::abs(self->noteCutInfo.cutNormal.z));
         extraSongData.totalBlocksHit.emplace_back(self->get_cutScore(), self->get_noteCutInfo().noteData->get_scoringType());
     }
