@@ -5,7 +5,7 @@
     "info": {
       "name": "BedroomParty-LB",
       "id": "BedroomParty-LB",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "url": null,
       "additionalData": {
         "overrideSoName": "libBedroomParty-LB.so",
@@ -68,18 +68,18 @@
         "logcat": [
           "pwsh ./scripts/start-logging.ps1"
         ],
+        "stack": [
+          "pwsh ./scripts/ndk-stack.ps1"
+        ],
+        "build": [
+          "pwsh ./scripts/build.ps1"
+        ],
         "qmod": [
           "pwsh ./scripts/build.ps1",
           "pwsh ./scripts/createqmod.ps1"
         ],
         "copy": [
           "pwsh ./scripts/copy.ps1"
-        ],
-        "build": [
-          "pwsh ./scripts/build.ps1"
-        ],
-        "stack": [
-          "pwsh ./scripts/ndk-stack.ps1"
         ],
         "tomb": [
           "pwsh ./scripts/pull-tombstone.ps1"
