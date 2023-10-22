@@ -13,6 +13,7 @@ namespace BedroomPartyLB::Models{
         std::vector<float> leftHandTimeDependency;
         int maxPossibleScore = 0;
         int perfectStreak = 0;
+        int maxMultipliedScore = 0;
 
         inline void reset() {
             pauses = 0;
@@ -22,6 +23,7 @@ namespace BedroomPartyLB::Models{
             leftHandTimeDependency.clear();
             maxPossibleScore = 0;
             perfectStreak = 0;
+            maxMultipliedScore = 0;
         }
 
         int GetTotalFromList(const std::vector<int>& list) const

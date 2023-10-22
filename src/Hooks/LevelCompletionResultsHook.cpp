@@ -32,6 +32,7 @@
 #include "System/Action.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "GlobalNamespace/GameplayModifiersModelSO.hpp"
+#include "GlobalNamespace/ScoreController.hpp"
 
 using namespace GlobalNamespace;
 using namespace BedroomPartyLB;
@@ -70,14 +71,19 @@ float GetModifierScoreMultiplier(LevelCompletionResults* results, GameplayModifi
     return modifiersModel->GetTotalMultiplier(modifiersModel->CreateModifierParamsList(results->gameplayModifiers), results->energy);
 }
 
+MAKE_AUTO_HOOK_MATCH(fuckmeinthecunt, &ScoreController::OnDestroy, void, ScoreController* self)
+{
+    extraSongData.maxMultipliedScore = self->immediateMaxPossibleMultipliedScore;
+    fuckmeinthecunt(self);
+}
+
 MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletionResultsHelper::ProcessScore, void, PlayerData* playerData, PlayerLevelStatsData* playerLevelStats, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, PlatformLeaderboardsModel* platformLeaderboardsModel)
 {
     LevelCompletionResultsHelper_ProcessScore(playerData, playerLevelStats, levelCompletionResults, transformedBeatmapData, difficultyBeatmap, platformLeaderboardsModel);
     if (levelCompletionResults->levelEndStateType != LevelCompletionResults::LevelEndStateType::Cleared) return;
     if (levelCompletionResults->modifiedScore == 0 || levelCompletionResults->multipliedScore == 0) return;
     if (!difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Contains("custom")) return;
-    float maxScore = ScoreModel::ComputeMaxMultipliedScoreForBeatmap(transformedBeatmapData);
-    float accuracy = levelCompletionResults->modifiedScore / maxScore * 100;
+    float accuracy = levelCompletionResults->modifiedScore / extraSongData.maxMultipliedScore * 100;
 
     std::string beatmapID = difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Substring(13);
     std::string characteristic = playerLevelStats->beatmapCharacteristic->serializedName;
