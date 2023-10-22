@@ -22,6 +22,7 @@
 #include "Models/CustomLeaderboard.hpp"
 #include "GlobalNamespace/NoteCutInfo.hpp"
 #include "GlobalNamespace/NoteData.hpp"
+#include "GlobalNamespace/ScoreModel_NoteScoreDefinition.hpp"
 
 BedroomPartyLB::Models::ExtraSongData extraSongData;
 using namespace GlobalNamespace;
@@ -50,15 +51,15 @@ MAKE_AUTO_HOOK_MATCH(HandleCutFinish, &CutScoreBuffer::HandleSaberSwingRatingCou
     {
         extraSongData.leftHandAverageScore.push_back(self->get_cutScore());
         extraSongData.leftHandTimeDependency.push_back(std::abs(self->noteCutInfo.cutNormal.z));
-        extraSongData.totalBlocksHit.emplace_back(self->get_cutScore(), self->get_noteCutInfo().noteData->get_scoringType());
+        extraSongData.maxPossibleScore += self->get_maxPossibleCutScore();
     }
     else if (self->noteCutInfo.noteData->colorType == ColorType::ColorB)
     {
         extraSongData.rightHandAverageScore.push_back(self->get_cutScore());
         extraSongData.rightHandTimeDependency.push_back(std::abs(self->noteCutInfo.cutNormal.z));
-        extraSongData.totalBlocksHit.emplace_back(self->get_cutScore(), self->get_noteCutInfo().noteData->get_scoringType());
+        extraSongData.maxPossibleScore += self->get_maxPossibleCutScore();
     }
-    if (self->get_cutScore() == 115)
+    if (self->get_cutScore() == self->get_maxPossibleCutScore() && self->get_maxPossibleCutScore() != self->get_noteScoreDefinition()->fixedCutScore)
     {
         currentPerfectHits++;
         if (currentPerfectHits > extraSongData.perfectStreak) extraSongData.perfectStreak = currentPerfectHits;     
@@ -70,5 +71,4 @@ MAKE_AUTO_HOOK_MATCH(Pause, &GamePause::Pause, void, GamePause* self)
 {
     Pause(self);
     extraSongData.pauses++;
-    getLogger().info("paused %i times", extraSongData.pauses);
 }

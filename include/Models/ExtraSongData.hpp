@@ -11,7 +11,7 @@ namespace BedroomPartyLB::Models{
         std::vector<int> leftHandAverageScore;
         std::vector<float> rightHandTimeDependency;
         std::vector<float> leftHandTimeDependency;
-        std::vector<std::pair<int,int>> totalBlocksHit;
+        int maxPossibleScore = 0;
         int perfectStreak = 0;
 
         inline void reset() {
@@ -20,8 +20,16 @@ namespace BedroomPartyLB::Models{
             leftHandAverageScore.clear();
             rightHandTimeDependency.clear();
             leftHandTimeDependency.clear();
-            totalBlocksHit.clear();
+            maxPossibleScore = 0;
             perfectStreak = 0;
+        }
+
+        int GetTotalFromList(const std::vector<int>& list) const
+        {
+            if (list.empty()) return 0;
+            int sum = 0;
+            for (const auto& f : list) sum += f;
+            return sum;
         }
 
         template<typename T>
@@ -33,36 +41,13 @@ namespace BedroomPartyLB::Models{
             return sum / (float)list.size();
         }
 
-        int GetMaxScoreForScoringType(int scoringType) const
-        {
-            switch (scoringType)
-            {
-                case 1:
-                case 2:
-                case 3: 
-                    return 115;
-                case 4:
-                    return 70;
-                case 5:
-                    return 20;
-                default:
-                    return 0;
-            }
-        }
-
         inline float GetFcAcc(float multiplier) const
         {
-            if (totalBlocksHit.empty()) return 0.0f;
-            int realScore = 0, maxScore = 0;
-            for (auto& p : totalBlocksHit)
-            {
-                realScore += p.first * multiplier;
-                maxScore += GetMaxScoreForScoringType(p.second);
-            }
-            float fcAcc = (float)realScore/(float)maxScore * 100.0f;
+            if (maxPossibleScore == 0) return 0.0f;
+            int realScore = static_cast<int>(std::floor((float)(GetTotalFromList(leftHandAverageScore) + GetTotalFromList(rightHandAverageScore)) * multiplier));
+            float fcAcc = (float)realScore/(float)maxPossibleScore * 100.0f;
             return fcAcc;
         }
-
     }ExtraSongData;
 }
 extern BedroomPartyLB::Models::ExtraSongData extraSongData;
