@@ -83,7 +83,7 @@ MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletion
     if (levelCompletionResults->levelEndStateType != LevelCompletionResults::LevelEndStateType::Cleared) return;
     if (levelCompletionResults->modifiedScore == 0 || levelCompletionResults->multipliedScore == 0) return;
     if (!difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Contains("custom")) return;
-    float accuracy = levelCompletionResults->modifiedScore / extraSongData.maxMultipliedScore * 100;
+    float accuracy = (float)levelCompletionResults->modifiedScore / (float)extraSongData.maxMultipliedScore * 100;
 
     std::string beatmapID = difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Substring(13);
     std::string characteristic = playerLevelStats->beatmapCharacteristic->serializedName;
