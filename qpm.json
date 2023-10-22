@@ -57,11 +57,6 @@
       "additionalData": {}
     },
     {
-      "id": "lapiz",
-      "versionRange": "^0.1.11",
-      "additionalData": {}
-    },
-    {
       "id": "rapidjson-macros",
       "versionRange": "^1.0.0",
       "additionalData": {}
