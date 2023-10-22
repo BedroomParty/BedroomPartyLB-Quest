@@ -148,15 +148,14 @@ namespace BedroomPartyLB::UI
         currentPromptId = System::Guid::NewGuid().ToString();
         if (time < 0) return;
         std::string guid = currentPromptId;
-        CoroUtils::RunCoroutine([=]() -> custom_types::Helpers::Coroutine
+        CoroUtils::RunCoroutine([this](std::string guid, int time) -> custom_types::Helpers::Coroutine
         {
-            std::string localGuid = std::move(guid);
             co_yield reinterpret_cast<IEnumerator*>(WaitForSeconds::New_ctor(time));
-            if (currentPromptId != localGuid) co_return;
+            if (currentPromptId != guid) co_return;
             TweeningUtils::FadeText(prompt_text, false, 0.15f);
             prompt_loader->set_active(false);
             co_return;
-        });
+        }, guid, time);
     }
 
     StringW PanelViewController::get_currentVersion()

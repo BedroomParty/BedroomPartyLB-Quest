@@ -104,14 +104,13 @@ namespace BedroomPartyLB::UI
 
         scoreInfo->Show(true, true, nullptr);
 
-        CoroUtils::RunCoroutine(scoreInfo, [this, index]() -> custom_types::Helpers::Coroutine
+        CoroUtils::RunCoroutine(scoreInfo, [this](HMUI::ImageView* img) -> custom_types::Helpers::Coroutine
         {
-            auto img = leaderboard.get_leaderboardViewController()->playerAvatars[index];
             while(!img->get_sprite()) co_yield nullptr;
             profileImage->set_sprite(img->get_sprite());
             profileImageLoading->set_active(false);
             profileImage->get_gameObject()->set_active(true);
             co_return;
-        });
+        }, leaderboard.get_leaderboardViewController()->playerAvatars[index]);
     }
 }

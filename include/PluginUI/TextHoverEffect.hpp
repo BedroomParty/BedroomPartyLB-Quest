@@ -15,7 +15,7 @@
         classof(UnityEngine::EventSystems::IPointerExitHandler*), classof(UnityEngine::EventSystems::IEventSystemHandler*) \
     } \
 
-___DECLARE_TYPE_WRAPPER_INHERITANCE(BedroomPartyLB::UI, TextHoverEffect, Il2CppTypeEnum::IL2CPP_TYPE_CLASS, UnityEngine::MonoBehaviour, "BedroomPartyLB::UI", INTERFACES, 0, nullptr,
+DECLARE_CLASS_CODEGEN_INTERFACES(BedroomPartyLB::UI, TextHoverEffect, UnityEngine::MonoBehaviour, std::vector<Il2CppClass*>(INTERFACES),
 
     DECLARE_OVERRIDE_METHOD(void, OnPointerEnter, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerEnterHandler::OnPointerEnter>::get());
     DECLARE_OVERRIDE_METHOD(void, OnPointerExit, il2cpp_utils::il2cpp_type_check::MetadataGetter<&::UnityEngine::EventSystems::IPointerExitHandler::OnPointerExit>::get());
