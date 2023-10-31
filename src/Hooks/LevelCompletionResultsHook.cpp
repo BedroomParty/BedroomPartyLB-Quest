@@ -33,6 +33,7 @@
 #include "UnityEngine/Resources.hpp"
 #include "GlobalNamespace/GameplayModifiersModelSO.hpp"
 #include "GlobalNamespace/ScoreController.hpp"
+#include "bs-utils/shared/utils.hpp"
 
 using namespace GlobalNamespace;
 using namespace BedroomPartyLB;
@@ -80,6 +81,7 @@ MAKE_AUTO_HOOK_MATCH(fuckmeinthecunt, &ScoreController::OnDestroy, void, ScoreCo
 MAKE_AUTO_HOOK_MATCH(LevelCompletionResultsHelper_ProcessScore, &LevelCompletionResultsHelper::ProcessScore, void, PlayerData* playerData, PlayerLevelStatsData* playerLevelStats, LevelCompletionResults* levelCompletionResults, IReadonlyBeatmapData* transformedBeatmapData, IDifficultyBeatmap* difficultyBeatmap, PlatformLeaderboardsModel* platformLeaderboardsModel)
 {
     LevelCompletionResultsHelper_ProcessScore(playerData, playerLevelStats, levelCompletionResults, transformedBeatmapData, difficultyBeatmap, platformLeaderboardsModel);
+    if (!bs_utils::Submission::getEnabled()) return;
     if (levelCompletionResults->levelEndStateType != LevelCompletionResults::LevelEndStateType::Cleared) return;
     if (levelCompletionResults->modifiedScore == 0 || levelCompletionResults->multipliedScore == 0) return;
     if (!difficultyBeatmap->get_level()->i_IPreviewBeatmapLevel()->get_levelID()->Contains("custom")) return;

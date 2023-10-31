@@ -61,31 +61,36 @@
         "id": "rapidjson-macros",
         "versionRange": "^1.0.0",
         "additionalData": {}
+      },
+      {
+        "id": "bs-utils",
+        "versionRange": "^0.7.2",
+        "additionalData": {}
       }
     ],
     "workspace": {
       "scripts": {
-        "logcat": [
-          "pwsh ./scripts/start-logging.ps1"
+        "build": [
+          "pwsh ./scripts/build.ps1"
+        ],
+        "restart": [
+          "pwsh ./scripts/restart-game.ps1"
         ],
         "stack": [
           "pwsh ./scripts/ndk-stack.ps1"
         ],
-        "build": [
-          "pwsh ./scripts/build.ps1"
+        "copy": [
+          "pwsh ./scripts/copy.ps1"
         ],
         "qmod": [
           "pwsh ./scripts/build.ps1",
           "pwsh ./scripts/createqmod.ps1"
         ],
-        "copy": [
-          "pwsh ./scripts/copy.ps1"
-        ],
         "tomb": [
           "pwsh ./scripts/pull-tombstone.ps1"
         ],
-        "restart": [
-          "pwsh ./scripts/restart-game.ps1"
+        "logcat": [
+          "pwsh ./scripts/start-logging.ps1"
         ]
       }
     }
@@ -104,6 +109,20 @@
         }
       },
       "version": "0.3.3"
+    },
+    {
+      "dependency": {
+        "id": "bs-utils",
+        "versionRange": "=0.7.2",
+        "additionalData": {
+          "soLink": "https://github.com/sc2ad/QuestBS-Utils/releases/download/v0.7.2/libbs-utils.so",
+          "debugSoLink": "https://github.com/sc2ad/QuestBS-Utils/releases/download/v0.7.2/debug_libbs-utils.so",
+          "overrideSoName": "libbs-utils.so",
+          "modLink": "https://github.com/sc2ad/QuestBS-Utils/releases/download/v0.7.2/BS-Utils.qmod",
+          "branchName": "version-v0.7.2"
+        }
+      },
+      "version": "0.7.2"
     },
     {
       "dependency": {

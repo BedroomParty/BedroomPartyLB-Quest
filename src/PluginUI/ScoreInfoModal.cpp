@@ -18,6 +18,7 @@ namespace BedroomPartyLB::UI
     void ScoreInfoModal::PostParse()
     {
         TextHoverEffect::AddEffect(usernameScoreText, FontStyles::Underline, FontStyles::Normal);
+        profileImage->set_material(leaderboard.get_panelViewController()->GetRoundEdgeMaterial());
         isMoreInfo = false;
     }
 
