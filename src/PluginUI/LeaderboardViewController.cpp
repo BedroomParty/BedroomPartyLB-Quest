@@ -69,6 +69,7 @@ namespace BedroomPartyLB::UI
             {
                 img->set_sprite(nullptr);
                 img->get_gameObject()->set_active(false);
+                img->set_material(leaderboard.get_panelViewController()->GetRoundEdgeMaterial());
             }
         }
         CheckPage();
